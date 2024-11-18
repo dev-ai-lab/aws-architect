@@ -90,6 +90,8 @@ Default output format [None]:
 ![aws-iam](media/aws-iam.png)
 ### IAM Permissions
 - Users and groups can be assigned JSON documents called policies
+- Policy: a json document that defines a set of permissions to making requests to aws services that can be used by IAM users, User groups and IAM roles
+- Permissions defined in a policy
 ```
 {
   "Version": "2012-10-17",  // The version of the policy language. This is a fixed value.
@@ -176,5 +178,15 @@ Default output format [None]:
 - Use access keys
 - Use IAM reports
 
-## EC2 Service
+## EC2 Service (Elastic Compute Cloud) - Infras as a service
+*Notes*:
+Setting up budget to avoid surprisings: account --> budgets --> setup i.e zero spend budget --> add email
+### EC2 Capabilities
+- Renting virtual machines (EC2)
+- Storing data on virtual drives (EBS)
+- Distributing load across machines (ELB)
+- Scaling services using an auto-scaling group (ASG)
+
+
+
 
