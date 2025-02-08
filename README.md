@@ -452,13 +452,14 @@ echo "<h1>Hello World from $(hostname -f)</h1>" > /var/www/html/index.html
     - gp2: I/O increases if disk size increases
     - gp3 & IO1: can increase IO independent of size
     - Root terminated by default
+  ![efs-creation-demo.gif](media/efs-creation-demo.gif)
   - EBS:
     - Mounting 100s of instances across AZs
     - Linux system only
   - Instance Store:
     - It is physically attached to EC2 instance. If instance lost, storage is lost
 
-## High availability and scalability
+### High availability and scalability
 - Scalability 
   - Vertically i.e moving from t2.micro to t2.large
     - i.e common for non-distributed systems i.e databases, RDS, ElasticCache etc
@@ -470,7 +471,7 @@ echo "<h1>Hello World from $(hostname -f)</h1>" > /var/www/html/index.html
     - Auto scaling group multi-AZ
     - Load Balancer multi AZ
 
-### ELB - AWS managed Load Balancer
+#### ELB - AWS managed Load Balancer
 - Expose a single point of entry (DNS) to the app
 - Seamlessly handle failure of downstream instance
 - Does regular health check of the instances
@@ -484,6 +485,10 @@ echo "<h1>Hello World from $(hostname -f)</h1>" > /var/www/html/index.html
 
 ![elastic-load-balancer.png](media/elastic-load-balancer.png)
 
+- Security consideration
+  - EC2 accepts incoming traffic only from SG that is assigned to LB on port 80
+  - While LB accepts HTTP and HTTPS from everyone on port 80
+  
 - Types:
   - Classic (Old) - 2009
   - Application LB: HTTP, HTTPS, Websocket - 2016: Layer 7 only LB 
@@ -495,26 +500,71 @@ echo "<h1>Hello World from $(hostname -f)</h1>" > /var/www/html/index.html
       - routing based on hostname (one.example.com & other.example.com two routs routed to two different target groups)
       - Routing based on query string, headers
     - ALB are great fit for microservices and container-based application (docker, AWS ECS)
-      ![type-application-load-balancer.png](media/type-application-load-balancer.png)
+    
+  ![type-application-load-balancer.png](media/type-application-load-balancer.png)
     - Target groups of ALB
       - EC2 instances (can be managed by auto-scaling group) - HTTP
       - ECS tasks - HTTP
       - Lambda functions - HTTP request is translated into a JSON event
       - IP addresses (private IPs)
     - ALB can route to multiple target groups
+    
     ![alb-multiple-targets.png](media/alb-multiple-targets.png)
     - Health check are at the target group level
     - It has a fixed hostname (XXX.region.elb.amazonaws.com)
     - Application servers don't see the IP of the client directly (the true IP is inserted into the header `X-Forwarded-For`), as well as the port (`X-Forwarded-Port`) and protocol (`X-Forwarded-Proto`)
-    ![alb-termination-&-forwarding.png](media/alb-termination-and-forwarding.png)
-  - Network LB: TCP, TLS (secure TLS), UDP - 2017
+    
+  ![alb-termination-&-forwarding.png](media/alb-termination-and-forwarding.png)
+  ![alb-setup-demo.gif](media/alb-setup-demo.gif)
+  ![alb-rule-setup-demo.gif](media/alb-rule-setup-demo.gif)
+    
+  - Network LB: TCP, TLS (secure TLS), UDP - 2017. 
+    - A layer 4 LB, High Performance (millions of requests per seconds)
+    - Forwards TCP & UDP traffic to the instances
+    - Ultra-low latency
+    - It has one static IP per AZ (can use an elastic IP for this purpose) - whitelisting specific IPs
+    - Not included in free tier
+    - Use case: app needs to be access through specific IPs, --> then use NLB
+    - Target group:
+      - EC2 instances
+      - Private IPs (own or EC2)
+      - Another ALB: NLB --> ALB, getting benefits of both
+    - Health check: TCP, HTTP, and HTTPS
+    
+    ![nlb-demo.gif](media/nlb-demo.gif)
+    
   - **Gateway** LB: operates at layer 3 (Network layer) - IP protocol
-  
-- LB can be setup as private or public 
-- Security consideration
-  - EC2 accepts incoming traffic only from SG that is assigned to LB on port 80
-  - While LB accepts HTTP and HTTPS from everyone on port 80
-
+    - Deploy, scale and manage a fleet if 3rd party network virtual appliances i.e Firewalls, Intrusion detection & Prevention Systems, Deep packet inspection system, payload manipulation
+    - Layer 3 LB (IP layer)
+    - Functions:
+      - transparent network gateway: single entry/exit for all traffic
+      - Load balancer: across virtual appliances
+    - Target group:
+      - EC2 instances
+      - Ip addresses (must be private IPs) of both own and aws resources
+    - Uses `GENEVE` protocol on port `6081
+    
+    ![gateway-load-balancer.png](media/gateway-load-balancer.png)
+- LB can be setup as private or public
+- **Sticky Sessions**:
+  - stickiness: same client redirected to the same instance behind LB
+  - How it works: cookie is sent as part of client request that has expiration date
+  - Usecase: make sure the use doesn't lose his session data (such as user's login data)
+  - may bring imbalance
+  - Types:
+    - application-based
+      - Custom cookie
+        - generated by the target
+        - can include any custom attribute
+        - Can't have AWSALB, AWSALBAPP or AWSALBTG
+      - application cookie
+        - generated by load balancer
+        - name is AWSALBAPP
+    - duration-based:
+      - generated by LB
+      - name is AWSALB for ALB, AWSELB for CLB
+      
+  ![sticky-session-demo-alb.gif](media/sticky-session-demo-alb.gif)
 ## AWS ESK
 - using `eksctl` create k8s cluster on [aws](https://docs.aws.amazon.com/eks/latest/userguide/create-cluster.html). 
 
