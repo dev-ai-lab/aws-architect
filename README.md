@@ -38,9 +38,9 @@
     * [**2️⃣ Top-Level Domain (TLD) (`.com`, `.org`, `.net`, `.edu`)**](#2-top-level-domain-tld-com-org-net-edu)
     * [**3️⃣ Second-Level Domain (SLD) (`example.com`)**](#3-second-level-domain-sld-examplecom)
     * [**4️⃣ Subdomains (`www.example.com`, `api.example.com`)**](#4-subdomains-wwwexamplecom-apiexamplecom)
-    * [**📌 Summary: Hierarchical Breakdown**](#-summary-hierarchical-breakdown)
+    * [** Summary: Hierarchical Breakdown**](#summary-hierarchical-breakdown)
     * [**DNS Records Explained (A, AAAA, CNAME & More)**](#dns-records-explained-a-aaaa-cname--more)
-      * [**📌 Summary Table**](#-summary-table)
+      * [** Summary Table**](#summary-table)
     * [**Key Features of AWS Route 53**](#key-features-of-aws-route-53)
     * [Route 53 Demos](#route-53-demos)
       * [Routing Policies (Control How Traffic is Directed)](#routing-policies-control-how-traffic-is-directed)
@@ -1267,7 +1267,7 @@ Subdomains are **prefixes added to the main domain** to organize different secti
 - This means that `api.www.example.com` is a subdomain of `www.example.com`, which is itself a subdomain of example.com.
 ---
 
-### **📌 Summary: Hierarchical Breakdown**
+### **Summary: Hierarchical Breakdown**
 ```
 www.example.com.
 │   │   └── Subdomain (www)
@@ -1278,7 +1278,6 @@ www.example.com.
 - The **TLD (`.com`)** directs to the right domain registrar.
 - The **SLD (`example.com`)** directs to the specific domain owner’s DNS.
 - The **Subdomain (`www, api`)** directs to different services or servers.
-
 ---
 
 ### **DNS Records Explained (A, AAAA, CNAME & More)**
@@ -1287,7 +1286,7 @@ DNS (**Domain Name System**) records are **instructions stored in a DNS server**
 Each record type serves a different purpose. Let’s break them down:
 
 
-#### **📌 Summary Table**
+#### **Summary Table**
 | **Record Type** | **Purpose** | **Example** |
 |---------------|-----------|------------|
 | **A** | Maps a domain to an IPv4 address | `example.com → 192.168.1.1` |
@@ -3378,6 +3377,7 @@ Data can be stored in **Amazon S3**, processed in real time using **Kinesis Data
 
 ### **Amazon SageMaker**
 Amazon SageMaker is a **fully managed service** for developers and data scientists to **build, train, and deploy machine learning (ML) models**. It simplifies the **end-to-end ML process**, eliminating the need to manage infrastructure. SageMaker streamlines tasks that are typically complex and scattered across multiple services, making ML development more efficient.
+
 ![aws-sageMaker.png](media/aws-ml/aws-sageMaker.png)
 
 
