@@ -2194,15 +2194,16 @@ Waterfall model for transitioning between storage classes:
 - collect and store streaming data in **real-time**
 
 ![drafted-kinesis-data-stream.png](media/messaging/drafted-kinesis-data-stream.png)
-- Kinesis Data Stream:
-  - Retention between 1 day to 365 days
-  - Ability to reprocess (replay) data
-  - Once data is inserted in Kinesis, it can’t be deleted (immutability)
-  - Data that shares the same partition goes to the same shard (ordering) • Producers: AWS SDK, Kinesis Producer Library (KPL), Kinesis Agent
-  - Consumers:
-    - Write your own: Kinesis Client Library (KCL), AWS SDK
-    - Managed: AWS Lambda, Kinesis Data Firehose, Kinesis Data Analytics
-    - You have multiple consumers receiving data in parallel, the use enhanced fanout. See [here](https://aws.amazon.com/blogs/aws/kds-enhanced-fanout/).
+
+**Kinesis Data Stream:**
+- Retention between 1 day to 365 days
+- Ability to reprocess (replay) data
+- Once data is inserted in Kinesis, it can’t be deleted (immutability)
+- Data that shares the same partition goes to the same shard (ordering) • Producers: AWS SDK, Kinesis Producer Library (KPL), Kinesis Agent
+- Consumers:
+  - Write your own: Kinesis Client Library (KCL), AWS SDK
+  - Managed: AWS Lambda, Kinesis Data Firehose, Kinesis Data Analytics
+  - You have multiple consumers receiving data in parallel, the use enhanced fanout. See [here](https://aws.amazon.com/blogs/aws/kds-enhanced-fanout/).
   - Capacity Modes
     1. Provisioned
        - You choose the number of shards provisioned, scale manually or using API
@@ -2216,31 +2217,32 @@ Waterfall model for transitioning between storage classes:
   - Demos
 
 ![kinesis-data-stream-demo.gif](media/messaging/kinesis-data-stream-demo.gif)
-- Amazon Data Firehose:
-  - data collected in firehose can be transformed using a lambda (ex. CSV to JSON).
-  - the data is stored in buffer and flushed once in a while into different destinations
-  - as in diagram, one can write data or failed data into S3 bucket
-  - automatic scaling, serverless, near-real-time with buffering capabilities
-  - supports:
-    - CSV, JSON, Parquet, Avro, Raw Text, Binary data
-  - conversion to parquet/ORC, compressions with gzip/snappy
-  - data 
 
-- Kinesis Data Stream vs Amazon Data Firehose
-  - KDS:
-    - stream data collection
-    - producer, consumer mode
-    - real time 
-    - provisioned/on-demand mode
-    - upto 365 days data storage
-    - replay capabilities
-  - ADF:
-    - loading streaming data into S3/Redshift/OpenSearch/3rd Party etc
-    - fully managed
-    - near real-time
-    - automatic scaling
-    - no data storage
-    - no replay capabilities
+**Amazon Data Firehose:**
+- data collected in firehose can be transformed using a lambda (ex. CSV to JSON).
+- the data is stored in buffer and flushed once in a while into different destinations
+- as in diagram, one can write data or failed data into S3 bucket
+- automatic scaling, serverless, near-real-time with buffering capabilities
+- supports:
+  - CSV, JSON, Parquet, Avro, Raw Text, Binary data
+- conversion to parquet/ORC, compressions with gzip/snappy
+- data 
+
+**Kinesis Data Stream vs Amazon Data Firehose**
+- KDS:
+  - stream data collection
+  - producer, consumer mode
+  - real time 
+  - provisioned/on-demand mode
+  - upto 365 days data storage
+  - replay capabilities
+- ADF:
+  - loading streaming data into S3/Redshift/OpenSearch/3rd Party etc
+  - fully managed
+  - near real-time
+  - automatic scaling
+  - no data storage
+  - no replay capabilities
 
 ![drafted-aws-data-firehose.png](media/messaging/drafted-aws-data-firehose.png)
   - Demo
