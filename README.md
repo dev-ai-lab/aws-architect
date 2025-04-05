@@ -2243,6 +2243,7 @@ Waterfall model for transitioning between storage classes:
   - automatic scaling
   - no data storage
   - no replay capabilities
+  - When KDS is set as the source for ADF, Kinesis Agent can't send directly to ADF, instead it should send to KDS
 
 ![drafted-aws-data-firehose.png](media/messaging/drafted-aws-data-firehose.png)
   - Demo
