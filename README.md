@@ -35,16 +35,11 @@
   * [AWS RDS, Aurora, ElastiCache](#aws-rds-aurora-elasticache)
   * [AWS Route 53](#aws-route-53)
     * [**Understanding DNS Hierarchical Naming Structure**](#understanding-dns-hierarchical-naming-structure)
-    * [**1️⃣ Root Domain (`.`)**](#1-root-domain-)
-    * [**2️⃣ Top-Level Domain (TLD) (`.com`, `.org`, `.net`, `.edu`)**](#2-top-level-domain-tld-com-org-net-edu)
-    * [**3️⃣ Second-Level Domain (SLD) (`example.com`)**](#3-second-level-domain-sld-examplecom)
-    * [**4️⃣ Subdomains (`www.example.com`, `api.example.com`)**](#4-subdomains-wwwexamplecom-apiexamplecom)
     * [**Summary: Hierarchical Breakdown**](#summary-hierarchical-breakdown)
     * [**DNS Records Explained (A, AAAA, CNAME & More)**](#dns-records-explained-a-aaaa-cname--more)
-      * [**Summary Table**](#summary-table)
     * [**Key Features of AWS Route 53**](#key-features-of-aws-route-53)
     * [Route 53 Demos](#route-53-demos)
-      * [Routing Policies (Control How Traffic is Directed)](#routing-policies-control-how-traffic-is-directed)
+    * [Routing Policies (Control How Traffic is Directed)](#routing-policies-control-how-traffic-is-directed)
     * [**Why Use Route 53?**](#why-use-route-53)
   * [AWS S3 (Simple Storage Service)](#aws-s3-simple-storage-service)
     * [**Key Features of AWS S3**](#key-features-of-aws-s3)
@@ -55,7 +50,7 @@
     * [AWS snowball](#aws-snowball)
     * [AWS FSx](#aws-fsx)
     * [AWS Storage Gateway](#aws-storage-gateway)
-      * [Demos](#demos)
+    * [Demos](#demos)
     * [AWS Transfer Family](#aws-transfer-family)
     * [AWS DataSync](#aws-datasync)
     * [Storage comparison](#storage-comparison)
@@ -85,8 +80,6 @@
   * [Database Choices in AWS](#database-choices-in-aws)
   * [AWS data analytics](#aws-data-analytics)
     * [AWS Athena](#aws-athena)
-      * [**Performance Optimization:**](#performance-optimization)
-      * [**Federated Query:**](#federated-query)
     * [AWS Redshift](#aws-redshift)
       * [**Redshift Cluster Architecture:**](#redshift-cluster-architecture)
       * [**Snapshots & Disaster Recovery:**](#snapshots--disaster-recovery)
@@ -139,15 +132,11 @@
     * [AWS Secrets Manager](#aws-secrets-manager)
     * [AWS Certificate Manager (ACM)](#aws-certificate-manager-acm)
     * [AWS WAF – Web Application Firewall](#aws-waf--web-application-firewall)
-      * [**Key Features:**](#key-features-5)
     * [**AWS Shield – DDoS Protection**](#aws-shield--ddos-protection)
-      * [**What is a DDoS Attack?**](#what-is-a-ddos-attack)
       * [**AWS Shield Offerings**](#aws-shield-offerings)
-        * [**1. AWS Shield Standard (Free & Automatic)**](#1-aws-shield-standard-free--automatic)
-        * [**2. AWS Shield Advanced (Premium DDoS Protection)**](#2-aws-shield-advanced-premium-ddos-protection)
       * [**DDoS Protection Scope**](#ddos-protection-scope)
     * [**AWS Firewall Manager**](#aws-firewall-manager)
-      * [**Key Features:**](#key-features-6)
+      * [**Key Features:**](#key-features-5)
       * [**How It Works:**](#how-it-works)
     * [**AWS WAF vs. Firewall Manager vs. Shield**](#aws-waf-vs-firewall-manager-vs-shield)
     * [AWS Best Practices for DDoS Resiliency](#aws-best-practices-for-ddos-resiliency)
@@ -157,14 +146,14 @@
       * [Attack surface reduction](#attack-surface-reduction)
     * [AWS Guardrail](#aws-guardrail)
     * [**Amazon GuardDuty**](#amazon-guardduty)
-      * [**Key Features:**](#key-features-7)
+      * [**Key Features:**](#key-features-6)
       * [**Response & Automation:**](#response--automation)
       * [**Additional Security Benefits:**](#additional-security-benefits)
     * [**Amazon Inspector**](#amazon-inspector)
       * [**What Amazon Inspector Evaluates:**](#what-amazon-inspector-evaluates)
-      * [**Key Features:**](#key-features-8)
+      * [**Key Features:**](#key-features-7)
     * [**AWS Macie**](#aws-macie)
-      * [**Key Features:**](#key-features-9)
+      * [**Key Features:**](#key-features-8)
   * [Amazon VPC](#amazon-vpc)
     * [Public vs. Private IP (IPv4)](#public-vs-private-ip-ipv4)
     * [**VPC in AWS – IPv4 Overview**](#vpc-in-aws--ipv4-overview)
@@ -174,7 +163,7 @@
       * [**Key Requirements:**](#key-requirements)
       * [**Limitations & Considerations:**](#limitations--considerations)
     * [**NAT Gateway**](#nat-gateway)
-      * [**Key Features:**](#key-features-10)
+      * [**Key Features:**](#key-features-9)
       * [**NAT Gateway & High Availability**](#nat-gateway--high-availability)
       * [**NAT Gateway vs NAT Instance**](#nat-gateway-vs-nat-instance)
     * [Security Groups & NACLs](#security-groups--nacls)
@@ -206,7 +195,7 @@
       * [Transit Gateway – Share Direct Connect between multiple accounts](#transit-gateway--share-direct-connect-between-multiple-accounts)
     * [VPC - Traffic Mirroring](#vpc---traffic-mirroring)
       * [**Traffic Flow:**](#traffic-flow)
-      * [**Key Features:**](#key-features-11)
+      * [**Key Features:**](#key-features-10)
       * [**Use Cases:**](#use-cases-5)
     * [**IPv6 in AWS**](#ipv6-in-aws)
     * [**IPv6 in VPC**](#ipv6-in-vpc)
@@ -245,7 +234,7 @@
       * [RDS & Aurora PostgreSQL Migrations](#rds--aurora-postgresql-migrations)
       * [**On-Premises Strategy with AWS**](#on-premises-strategy-with-aws)
     * [**AWS Backup**](#aws-backup)
-      * [**Key Features**](#key-features-12)
+      * [**Key Features**](#key-features-11)
       * [**AWS Backup Vault Lock**](#aws-backup-vault-lock)
     * [**AWS Application Discovery Service**](#aws-application-discovery-service)
     * [**AWS Application Migration Service (MGN)**](#aws-application-migration-service-mgn)
@@ -269,13 +258,13 @@
       * [**Key Benefits:**](#key-benefits)
     * [Demo](#demo-2)
   * [Amazon Simple Email Service (SES)](#amazon-simple-email-service-ses)
-    * [**Key Features:**](#key-features-13)
+    * [**Key Features:**](#key-features-12)
   * [Amazon Pinpoint](#amazon-pinpoint)
-    * [**Key Features:**](#key-features-14)
+    * [**Key Features:**](#key-features-13)
   * [Systems Manager](#systems-manager)
     * [SSM Session Manager](#ssm-session-manager)
     * [Run Command](#run-command)
-      * [**Key Features:**](#key-features-15)
+      * [**Key Features:**](#key-features-14)
     * [AWS Systems Manager - Patch Manager](#aws-systems-manager---patch-manager)
       * [**Maintenance Windows**](#maintenance-windows)
     * [AWS Systems Manager – Automation](#aws-systems-manager--automation)
@@ -285,17 +274,17 @@
     * [AWS Cost Explorer](#aws-cost-explorer)
     * [AWS Compute Optimizer](#aws-compute-optimizer)
     * [AWS Cost Anomaly Detection](#aws-cost-anomaly-detection)
-      * [**Key Features:**](#key-features-16)
+      * [**Key Features:**](#key-features-15)
     * [AWS Outpost](#aws-outpost)
     * [AWS Batch](#aws-batch)
-      * [**Key Features:**](#key-features-17)
+      * [**Key Features:**](#key-features-16)
       * [**Batch vs. Lambda**](#batch-vs-lambda)
     * [Amazon AppFlow](#amazon-appflow)
-      * [**Key Features:**](#key-features-18)
+      * [**Key Features:**](#key-features-17)
     * [AWS Amplify – Web & Mobile Apps](#aws-amplify--web--mobile-apps)
-      * [**Key Features:**](#key-features-19)
+      * [**Key Features:**](#key-features-18)
     * [AWS Instance Scheduler](#aws-instance-scheduler)
-      * [**Key Features:**](#key-features-20)
+      * [**Key Features:**](#key-features-19)
   * [GitOps](#gitops)
   * [IaC and Infrastructure](#iac-and-infrastructure)
   * [Documentation](#documentation)
@@ -344,6 +333,12 @@
     * [**Key Categories:**](#key-categories)
   * [More AWS Architecture Examples](#more-aws-architecture-examples)
   * [Exams materials](#exams-materials)
+  * [AWS Pricing model](#aws-pricing-model)
+    * [**S3 (Simple Storage Service)**](#s3-simple-storage-service)
+    * [**EFS (Elastic File System)**](#efs-elastic-file-system)
+    * [**EBS (Elastic Block Store)**](#ebs-elastic-block-store)
+    * [**Other Storage Services**](#other-storage-services)
+    * [**Data Transfer**](#data-transfer)
 * [AWS AI/ML Path](#aws-aiml-path)
 <!-- TOC -->
 # AWS Solution Architect
@@ -830,6 +825,7 @@ echo "<h1>Hello World from $(hostname -f)</h1>" > /var/www/html/index.html
 - Spot instances: short workload, can lose instances. 
   - Most cost-efficient in aws.
   - Upto 90%  discount
+  - Suitable for applications that has flexible start and end times
 - Dedicated Hosts: book entire physical server. Used for server bound software licenses (per-socket, per-core, pe-VM)
   - strong regulation (compliance)
   - complex licensing
@@ -1235,7 +1231,7 @@ DNS follows a **hierarchical naming structure**, where each part of a domain nam
 
 ---
 
-### **1️⃣ Root Domain (`.`)**
+**1️⃣ Root Domain (`.`)**
 - The top-most level in DNS, though it is usually **invisible** in URLs.
 - Represented by a single `.` (dot) at the end (`example.com.`).
 - Managed by **Root Name Servers** (operated by ICANN & others).
@@ -1245,7 +1241,7 @@ DNS follows a **hierarchical naming structure**, where each part of a domain nam
 
 ---
 
-### **2️⃣ Top-Level Domain (TLD) (`.com`, `.org`, `.net`, `.edu`)**
+**2️⃣ Top-Level Domain (TLD) (`.com`, `.org`, `.net`, `.edu`)**
 - The next level below the root.
 - Common types of TLDs:
   - **Generic TLDs (gTLDs)** → `.com`, `.org`, `.net`, `.info`
@@ -1256,7 +1252,7 @@ DNS follows a **hierarchical naming structure**, where each part of a domain nam
 
 ---
 
-### **3️⃣ Second-Level Domain (SLD) (`example.com`)**
+**3️⃣ Second-Level Domain (SLD) (`example.com`)**
 - The main part of a domain name.
 - Registered with a domain registrar (e.g., AWS Route 53, GoDaddy, Namecheap).
 - Can have multiple **subdomains**.
@@ -1265,7 +1261,7 @@ DNS follows a **hierarchical naming structure**, where each part of a domain nam
 
 ---
 
-### **4️⃣ Subdomains (`www.example.com`, `api.example.com`)**
+**4️⃣ Subdomains (`www.example.com`, `api.example.com`)**
 Subdomains are **prefixes added to the main domain** to organize different sections of a website.
 
 | **Subdomain** | **Purpose** |
@@ -1300,7 +1296,8 @@ DNS (**Domain Name System**) records are **instructions stored in a DNS server**
 Each record type serves a different purpose. Let’s break them down:
 
 
-#### **Summary Table**
+**Summary Table**
+
 | **Record Type** | **Purpose** | **Example** |
 |---------------|-----------|------------|
 | **A** | Maps a domain to an IPv4 address | `example.com → 192.168.1.1` |
@@ -1398,7 +1395,7 @@ Each record type serves a different purpose. Let’s break them down:
 
 ![cname-alias-apex-demo.gif](media/cname-alias-apex-demo.gif)
 
-#### Routing Policies (Control How Traffic is Directed)
+### Routing Policies (Control How Traffic is Directed)
 AWS Route 53 has several routing policies to **control how users reach your website**:
 
 | **Routing Policy** | **How It Works**                                                                | **Use Case** |
@@ -1515,7 +1512,6 @@ AWS Route 53 has several routing policies to **control how users reach your webs
 - **Global DNS Management** – Perfect for businesses serving users worldwide.
 
 ## AWS S3 (Simple Storage Service)
-
 Think of **AWS S3** like an **infinite online hard drive** where you can store and retrieve any kind of file (documents, images, videos, backups, etc.) anytime from anywhere in the world.
 
 - Use cases:
@@ -1628,10 +1624,11 @@ Think of **AWS S3** like an **infinite online hard drive** where you can store a
       - low latency & high throughput
       - use cases: Big data analytics, mobile and gaming apps, content distribution
       - 99.99% availability
-    - **S3 Infrequent Access (IA)** → For data you don’t use often, lower cost.
-      - for data accessed less frequently but requires rapid access
+    - **S3 Standard Infrequent Access (IA)** → For data you don’t use often, lower cost.
+      - for data accessed less frequently but requires rapid access (in milliseconds latency)
       - 99.9% availability
       - use cases: DR, backups
+    - **S3 Intelligent-Tiering** → Automatically moves files between Standard and IA to optimize cost.
     - **S3 One-Zone Infrequent Access (IA)** →
       - 11 9's durability in a single AZ
       - 99.5% availability
@@ -1643,7 +1640,6 @@ Think of **AWS S3** like an **infinite online hard drive** where you can store a
       - Glacier Instant retrieval: milliseconds retrieval, min 90 days
       - Glacier flexible retrieval: expedited (1 to 5 minutes), standard (3 to 5 hours), bulk (5 to 12 hours). Min storage 90 days
       - Glacier deep archive: long term storage. standard (12 hours), bulk (48 hours). Min storage 180 days
-    - **S3 Intelligent-Tiering** → Automatically moves files between Standard and IA to optimize cost.
    - For archive objects move them to Glacier or Glacier Deep Archive
    - Move b/w classes automated using life cycle rules
      - we can set expiration actions (to delete files at a specific time later)
@@ -1788,7 +1784,7 @@ Waterfall model for transitioning between storage classes:
 - MFA Delete:
   - versioning must be active 
   - permanently delete an object
-  - suspend versioning
+  - suspend versioning. Versioning can't be disabled once enabled, it can only be suspended
   - MFA can be activated only through CLI by using root credentials
   - how?
     - to use MFA, root must set up MFA device already
@@ -1820,6 +1816,9 @@ Waterfall model for transitioning between storage classes:
 
 ![s3-logging-demo.gif](media/s3/s3-logging-demo.gif)
 ![s3-logging-demo-2.gif](media/s3/s3-logging-demo-2.gif)
+
+- S3 Object retention
+  - one can set retention period on the object version only (implicitly through bucket default setting or explicitly through `retain until date` parameter)
 
 - S3 pre-signed URLs
   - generate using S3 console, aws cli, sdk
@@ -2113,8 +2112,9 @@ Waterfall model for transitioning between storage classes:
 
 ![aws-storage-gateway-summary.png](media/advanced-storage/drafted-aws-storage-gateway-summary.png)
 
-#### Demos
+### Demos
 ![aws-storage-gw-demo.gif](media/advanced-storage/aws-storage-gw-demo.gif)
+
 ### AWS Transfer Family
 - service for file transfers into and out of Amazon S3 or Amazon EFS using FTP protocol
 - supported protocols
@@ -2229,6 +2229,8 @@ Waterfall model for transitioning between storage classes:
   - it has limited throughput because of ordering
   - Ordering by message group ID (all message in the same group are ordered) - mandatory parameter
   - Name must end with `.fifo`
+  - Because of ordering it supports `300msg/s`
+  - with batching (max. batching 10 message per operation), it can reach max of `3000msg/s
 
 ![aws-sqs-additional.png](media/messaging/aws-sqs-additional.png)
 
@@ -2655,7 +2657,7 @@ Waterfall model for transitioning between storage classes:
     - Maximum execution time: 900 seconds (15 minutes)
     - Environment variables (4 KB)
     - Disk capacity in the “function container” (in /tmp): 512 MB to 10GB
-    - Concurrency executions: 1000 (can be increased)
+    - Concurrency executions: 1000 (can be increased by contacting aws support)
   - Deployment:
     - Lambda function deployment size (compressed .zip): 50 MB
     - Size of uncompressed deployment (code + dependencies): 250 MB
@@ -3178,14 +3180,14 @@ Waterfall model for transitioning between storage classes:
 ### AWS Athena
 Amazon Athena is a **serverless query service** that allows users to analyze data stored in **Amazon S3** using **standard SQL** (built on **Presto**). It supports various file formats, including **CSV, JSON, ORC, Avro, and Parquet**, and costs **$5 per TB of data scanned**. Athena is commonly used for **business intelligence, analytics, and log analysis** and integrates well with **Amazon QuickSight** for reporting.
 
-#### **Performance Optimization:**
+**Performance Optimization:**
 - Use **columnar storage** like **Apache Parquet or ORC** for faster queries and cost savings.
 - Convert data using **AWS Glue** and **compress** files (gzip, bzip2, etc.) for better performance.
 - **Partition datasets** in S3 to improve query efficiency (e.g., `s3://bucket/table/year=2023/month=1/`).
 - Use **larger files (>128MB)** to minimize overhead.
 
-#### **Federated Query:**
-Athena supports **federated queries**, allowing SQL queries across **multiple data sources** (relational, non-relational, and custom) using **AWS Lambda-based Data Source Connectors** (e.g., **CloudWatch Logs, DynamoDB, RDS**). Query results can be stored back in **Amazon S3**.
+**Federated Query:**
+- Athena supports **federated queries**, allowing SQL queries across **multiple data sources** (relational, non-relational, and custom) using **AWS Lambda-based Data Source Connectors** (e.g., **CloudWatch Logs, DynamoDB, RDS**). Query results can be stored back in **Amazon S3**.
 
 ![aws-athena.png](media/aws-data-analytics/aws-athena.png)
 
@@ -3730,7 +3732,7 @@ AWS KMS (Key Management Service)
 - Never ever store your secrets in plaintext, especially in your code! 
   - KMS Key Encryption also available through API calls (SDK, CLI)
   - Encrypted secrets can be stored in the code / environment variables
-
+- Upon KMS key deletion it goes into `pending deletion` status
 - KMS family & types:
   - KMS Keys is the new name of KMS Customer Master Key
   - Symmetric (AES-256 keys)
@@ -3979,7 +3981,7 @@ AWS WAF helps protect your web applications from common threats like **SQL injec
   - AppSync GraphQL API
   - Cognito User Pool
 
-#### **Key Features:**
+**Key Features:**
 - **Web ACL Rules:** Control access to your web applications.
 - **IP Sets:**
   - Supports up to **10,000 IP addresses** per set.
@@ -4009,19 +4011,19 @@ Demo
 
 AWS Shield is a managed **Distributed Denial of Service (DDoS)** protection service that helps safeguard AWS applications from malicious traffic overload.
 
-#### **What is a DDoS Attack?**
-A **DDoS (Distributed Denial of Service) attack** floods a system with **massive amounts of requests** to disrupt availability.
+**What is a DDoS Attack?**:
+- A **DDoS (Distributed Denial of Service) attack** floods a system with **massive amounts of requests** to disrupt availability.
 
 #### **AWS Shield Offerings**
 
-##### **1. AWS Shield Standard (Free & Automatic)**
+**1. AWS Shield Standard (Free & Automatic)**
 - Enabled by default for all AWS customers
 - Protects against common DDoS attacks, including:
   - **SYN/UDP Floods**
   - **Reflection attacks**
   - Other Layer 3 & Layer 4 network attacks
 
-##### **2. AWS Shield Advanced (Premium DDoS Protection)**
+**2. AWS Shield Advanced (Premium DDoS Protection)**
 - $3,000 per month per organization
 - Designed for mission-critical applications running on:
   - **Amazon EC2**
@@ -4029,11 +4031,10 @@ A **DDoS (Distributed Denial of Service) attack** floods a system with **massive
   - **Amazon CloudFront**
   - **AWS Global Accelerator**
   - **Amazon Route 53**
-
-**Key Benefits:**
-- 24/7 AWS DDoS Response Team (DRP) support
-- Protection from cost spikes due to DDoS-related traffic surges
-- Automatic Layer 7 attack mitigation via AWS WAF (automatically creates and applies rules)
+  - **Key Benefits:**
+    - 24/7 AWS DDoS Response Team (DRP) support
+    - Protection from cost spikes due to DDoS-related traffic surges
+    - Automatic Layer 7 attack mitigation via AWS WAF (automatically creates and applies rules)
 
 #### **DDoS Protection Scope**
 - **Layer 3 & 4 Attacks** (Network & Transport Layer) – mitigated by both Shield Standard & Advanced
