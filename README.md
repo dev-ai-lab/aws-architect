@@ -1216,7 +1216,7 @@ To influence this, use placement group
   - Custom metrics
 - Scaling Cooldowns
   - after scaling activities happens, it goes into cooldown period (default 300 seconds)
-  - during this period not terminate or launch happens
+  - during this period no terminate or launch happens
 
 ## AWS RDS, Aurora, ElastiCache
 - see the documentation in bank-docs under section Databases
