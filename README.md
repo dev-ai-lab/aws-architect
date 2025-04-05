@@ -30,7 +30,8 @@
     * [EC2 Instance Store](#ec2-instance-store)
     * [AWS EFS - Elastic File System](#aws-efs---elastic-file-system)
     * [High availability and scalability](#high-availability-and-scalability)
-      * [ELB - AWS managed Load Balancer](#elb---aws-managed-load-balancer)
+  * [ELB - AWS managed Load Balancer](#elb---aws-managed-load-balancer)
+  * [Auto Scaling Group (ASG)](#auto-scaling-group-asg)
   * [AWS RDS, Aurora, ElastiCache](#aws-rds-aurora-elasticache)
   * [AWS Route 53](#aws-route-53)
     * [**Understanding DNS Hierarchical Naming Structure**](#understanding-dns-hierarchical-naming-structure)
@@ -38,9 +39,9 @@
     * [**2️⃣ Top-Level Domain (TLD) (`.com`, `.org`, `.net`, `.edu`)**](#2-top-level-domain-tld-com-org-net-edu)
     * [**3️⃣ Second-Level Domain (SLD) (`example.com`)**](#3-second-level-domain-sld-examplecom)
     * [**4️⃣ Subdomains (`www.example.com`, `api.example.com`)**](#4-subdomains-wwwexamplecom-apiexamplecom)
-    * [** Summary: Hierarchical Breakdown**](#summary-hierarchical-breakdown)
+    * [**Summary: Hierarchical Breakdown**](#summary-hierarchical-breakdown)
     * [**DNS Records Explained (A, AAAA, CNAME & More)**](#dns-records-explained-a-aaaa-cname--more)
-      * [** Summary Table**](#summary-table)
+      * [**Summary Table**](#summary-table)
     * [**Key Features of AWS Route 53**](#key-features-of-aws-route-53)
     * [Route 53 Demos](#route-53-demos)
       * [Routing Policies (Control How Traffic is Directed)](#routing-policies-control-how-traffic-is-directed)
@@ -142,6 +143,8 @@
     * [**AWS Shield – DDoS Protection**](#aws-shield--ddos-protection)
       * [**What is a DDoS Attack?**](#what-is-a-ddos-attack)
       * [**AWS Shield Offerings**](#aws-shield-offerings)
+        * [**1. AWS Shield Standard (Free & Automatic)**](#1-aws-shield-standard-free--automatic)
+        * [**2. AWS Shield Advanced (Premium DDoS Protection)**](#2-aws-shield-advanced-premium-ddos-protection)
       * [**DDoS Protection Scope**](#ddos-protection-scope)
     * [**AWS Firewall Manager**](#aws-firewall-manager)
       * [**Key Features:**](#key-features-6)
@@ -179,6 +182,7 @@
       * [**Default NACL:**](#default-nacl)
       * [**Ephemeral Ports**](#ephemeral-ports)
     * [**VPC Peering**](#vpc-peering)
+    * [VPC sharing](#vpc-sharing-)
     * [VPC Endpoints (AWS PrivateLink)](#vpc-endpoints-aws-privatelink)
       * [Types of VPC Endpoints](#types-of-vpc-endpoints)
     * [VPC Flow Logs](#vpc-flow-logs)
@@ -279,6 +283,7 @@
       * [**Automation Runbooks (SSM Documents):**](#automation-runbooks-ssm-documents)
       * [**Trigger Methods:**](#trigger-methods)
     * [AWS Cost Explorer](#aws-cost-explorer)
+    * [AWS Compute Optimizer](#aws-compute-optimizer)
     * [AWS Cost Anomaly Detection](#aws-cost-anomaly-detection)
       * [**Key Features:**](#key-features-16)
     * [AWS Outpost](#aws-outpost)
@@ -795,6 +800,9 @@ EC2 or elastic computing 2 is infrastructure as a service
 - A comparison of different instance types [see](https://instances.vantage.sh/).
 - For demo purposes, we will use t2.micro
 - Fundamental part of cloud
+- User Data:
+  - executed with root privilege 
+  - executed during the boot cycle when you first launch an instance
 - User Data Example:
 ```
 #!/bin/bash
@@ -810,7 +818,9 @@ echo "<h1>Hello World from $(hostname -f)</h1>" > /var/www/html/index.html
 ![ec2-summary.png](media/ec2-summary.png)
 
 ![ec2-summary-part-2.png](media/ec2-summary-part-2.png)
-
+- Patch test:
+  - put `ReplaceUnhealthy` in standby or 
+  - put instance into standby state
 ### EC2 Purchasing Options 
 - On demand instances: short workload, pay by second
 - Reserved (1 & 3 years)
@@ -844,9 +854,12 @@ echo "<h1>Hello World from $(hostname -f)</h1>" > /var/www/html/index.html
 ![elastic-ip-allocation.gif](media/elastic-ip-allocation.gif)
 
 ### *EC2 placement groups*: 
+When you launch your EC2 instances, EC2 service attempts to place the instance in such a way that all the instances are spread out across the underlying hardware to minimize correlated failures.
+To influence this, use placement group
+- It is free of cost
 - Used to cluster instances. Strategies for the group:
-  - *Cluster*: clusters instances into a low latency group in a single AZ
-  - *Spread*: spread instances across underlying hardware ( max 7 instaces per group per AZ)
+  - *Cluster*: clusters instances into a low latency group in a single AZ, thus high network performance for use cases like HPC (tightly coupled node-to-node communication). 
+  - *Spread*: spread instances across underlying hardware ( max 7 instances per group per AZ)
   - *Partition*: spread instances across different partitions (which rely on different sets of racks) within AZ. Scales to 100s of EC2 instances per group (Hadoop, Cassandra, Kafka)
 
 ![placement-groups.png](media/placement-groups.png)
@@ -903,12 +916,12 @@ echo "<h1>Hello World from $(hostname -f)</h1>" > /var/www/html/index.html
     - billed for all provisioned capacity
     - can be increased overtime
 - EBS volume types:
-  - gp2/gp3: general purpose SSD
+  - gp2/gp3: general purpose `SSD`
     - cost-effective, low latency, boot volume/virtual desktop
     - 1 GB - 16TB
     - gp3: baseline 3000 IOPS (upto 16000), throughput of 125 MiB/s (upto 1000 MiB/s) independently
     - gp2: upto 3000 IOPS, size and IOPS are linked, IOPS upto 16000 MiB/s, 3 IOPS per GB
-  - io1/io2: highest performance SSD, Provisioned IOPS (PIOPS) SSD
+  - io1/io2: highest performance `SSD`, Provisioned IOPS (PIOPS) SSD
     - critical business applications with sustained IOPS performance
     - application that needs more than 16000 IOPS
       - i.e Databases (sensitive to storage perf and consistency)
@@ -919,8 +932,9 @@ echo "<h1>Hello World from $(hostname -f)</h1>" > /var/www/html/index.html
       - sub-millisecond latency
       - max PIOPS: 256,000 with an `IOPS:GiB` ratio of `1,000:1`
     - Supports EBS multi-attach
-  - st1 (HDD): Low cost HDD, sc1(HDD): Lowest cost HDD
-    - Can't be a root volume
+  - st1 & sc1:
+    - st1 & st2 can't be a root volume or boot volume
+    - Low cost HDDs
     - 125 GiB to 16 TiB
     - st1: throughput optimized HDD
       - Big Data, Data warehouse, Log processing
@@ -929,7 +943,7 @@ echo "<h1>Hello World from $(hostname -f)</h1>" > /var/www/html/index.html
       - archived data (infrequently accessed)
       - where the lowest cost is a factor
       - Max throughput 250 MiB/s - max IOPS 250
-- Only `gp2/gp3` and `io1/io2` can be used as `root` volumes
+- Only `gp2/gp3` , `io1/io2`  and `instance store` can be used as `root` volumes (boot volumes)
 
 ![ebs-volume-demo.gif](media/ebs-volume-demo.gif)
 
@@ -1036,7 +1050,7 @@ echo "<h1>Hello World from $(hostname -f)</h1>" > /var/www/html/index.html
     - Auto scaling group multi-AZ
     - Load Balancer multi AZ
 
-#### ELB - AWS managed Load Balancer
+## ELB - AWS managed Load Balancer
 - Expose a single point of entry (DNS) to the app
 - Seamlessly handle failure of downstream instance
 - Does regular health check of the instances
@@ -1165,44 +1179,44 @@ echo "<h1>Hello World from $(hostname -f)</h1>" > /var/www/html/index.html
   - it is time to complete "in-flight requests' while the instance is de-registering or is unhealthy
   - it is between 1 and 3600 (default 300)
 
-- Auto Scaling Group (ASG):
-  - horizontally scaling the number of instances up and down
-  - ensures max and min number of instances at any time
-  - terminate unhealthy and bring up new ones
-  - automatically register the new one to LB
-  - Launch Template:
-    - AMI + instance type
-    - EC2 User Data
-    - EBS Volumes
-    - Security Groups
-    - SSH Key Pair
-    - IAM Role for EC2 instances
-    - Network + Subnet Information
-    - LB Info
+## Auto Scaling Group (ASG)
+- horizontally scaling the number of instances up and down
+- ensures max and min number of instances at any time
+- terminate unhealthy and bring up new ones
+- automatically register the new one to LB
+- Launch Template:
+  - AMI + instance type
+  - EC2 User Data
+  - EBS Volumes
+  - Security Groups
+  - SSH Key Pair
+  - IAM Role for EC2 instances
+  - Network + Subnet Information
+  - LB Info
   - Demo:
   
   ![auto-scaling-demo.gif](media/auto-scaling-demo.gif)
   - Auto Scaling Group Adjustment Demo
 
   ![auto-scaling-group-adjustment-demo.gif](media/auto-scaling-group-adjustment-demo.gif)
-  - Auto Scaling Groups - Scaling Policies
-    - Dynamic Scaling
-      - Target tracking scaling
-        - easy to setup i.e I want the average CPU usage in ASG to stay at 40%
-      - Simple / Step Scaling
-        - when a CloudWatch alarm is triggered (i.e CPU > 70%), then add 2 units
-    - Scheduled Scaling
-      - i.e increase the min capacity to 10 at 5pm on Fridays
-    - Predictive Scaling: continuously forecast load and schedule scaling ahead. ML driven
+- Scaling Policies
+  - Dynamic Scaling
+    - Target tracking scaling
+      - easy to setup i.e I want the average CPU usage in ASG to stay at 40%
+    - Simple / Step Scaling
+      - when a CloudWatch alarm is triggered (i.e CPU > 70%), then add 2 units
+  - Scheduled Scaling
+    - i.e increase the min capacity to 10 at 5pm on Fridays
+  - Predictive Scaling: continuously forecast load and schedule scaling ahead. ML driven
     - Analyze historical data --> generate forecast --> schedule scaling actions
-    - Good Metrics:
-      - CPUUtilization: Average CPU usage across all EC2 instances
-      - RequestCountPerTarget
-      - Average Network IN/OUT
-      - Custom metrics
-    - Scaling Cooldowns
-      - after scaling activities happens, it goes into cooldown period (default 300 seconds)
-      - during this period not terminate or launch happens
+- Good Metrics:
+  - CPUUtilization: Average CPU usage across all EC2 instances
+  - RequestCountPerTarget
+  - Average Network IN/OUT
+  - Custom metrics
+- Scaling Cooldowns
+  - after scaling activities happens, it goes into cooldown period (default 300 seconds)
+  - during this period not terminate or launch happens
 
 ## AWS RDS, Aurora, ElastiCache
 - see the documentation in bank-docs under section Databases
@@ -1533,6 +1547,7 @@ Think of **AWS S3** like an **infinite online hard drive** where you can store a
       - text key/value paris
     - Tags
     - version ID
+- It offers strong read-after-write consistency automatically without changes to performance or availabilities
 
 - Demo:
 
@@ -1582,7 +1597,7 @@ Think of **AWS S3** like an **infinite online hard drive** where you can store a
   - **Replication** → Copies data to another AWS region for disaster recovery.
     - CRR (cross region replication)
     - SRR (same region replication)
-
+  - Or use sync command to copy between S3 source and S3 destination
 ![s3-replicaiton.png](media/s3/s3-replicaiton.png)
     - Demo:
 
@@ -1622,6 +1637,8 @@ Think of **AWS S3** like an **infinite online hard drive** where you can store a
       - 99.5% availability
       - use cases: storing secondary backup copies of on-premise data
       - with expiration deletion option
+      - The minimum storage duration is 30 days before you transition objects from S3 standard to S3 One Zone-IA
+      - it costs 20% less than S3 Standard-IA
     - **S3 Glacier** → For long-term archiving, very cheap but slow retrieval.
       - Glacier Instant retrieval: milliseconds retrieval, min 90 days
       - Glacier flexible retrieval: expedited (1 to 5 minutes), standard (3 to 5 hours), bulk (5 to 12 hours). Min storage 90 days
@@ -1634,6 +1651,7 @@ Think of **AWS S3** like an **infinite online hard drive** where you can store a
      - rules can be applied to a certain prefix  or entire bucket or a specific tags
      - Storage class analysis done by s3 bucket. Analysis is available between 24 to 48 hours. It can be used for optimization of object moves b/w tiers
 
+Waterfall model for transitioning between storage classes:
 ![s3-storage-class-move.png](media/s3/drafted-s3-storage-class-move.png)
 
 ![s3-storage-classes-demo.gif](media/s3/s3-storage-classes-demo.gif)
@@ -1946,6 +1964,8 @@ Think of **AWS S3** like an **infinite online hard drive** where you can store a
     - improve performance for a wide range of apps over TCP and UDP
     - no cache
       - proxying packets at the edge to applications running in one or more AWS regions
+    - It uses endpoint weights to determine proportion of traffic that is directed to the endpoint
+    - Blue-green deployment
     - good fit for non-HTTP use cases, such as gaming (UDP), IoT (MQTT), or Voice over IP
     - good for HTTP use cases that requires static IP addresses
 - pricing:
@@ -1997,10 +2017,10 @@ Think of **AWS S3** like an **infinite online hard drive** where you can store a
 
 ![3rd-party-filesystem.png](media/advanced-storage/3rd-party-filesystem.png)
 
-- FSx for Windows (file server)
+- FSx for Windows File Server
   - supports SMB protocol and NTFS
   - can be mounted on linux EC2 instances
-  - DFS support
+  - Microsoft Distributed File System (DFS) support
   - scale up 10s GB/s
   - storage options: SSD(latency sensitive apps), HDD (cheap)
 - FSx for Lustre
@@ -2168,7 +2188,7 @@ Think of **AWS S3** like an **infinite online hard drive** where you can store a
   - Possible **duplicate messages**. That should be taken into account when developing the app.
 - Best-Effort Ordering:
   - Messages **may arrive out of order**
-
+- Offers buffer capabilities to smooth out temporary volume spikes without losing messages or increasing latency
  **Ideal for** scalable, fault-tolerant messaging where occasional duplicates & out-of-order delivery are acceptable.
 - Multiple consumers:
   - each consumer will receive a different set of messages
@@ -2300,6 +2320,7 @@ Think of **AWS S3** like an **infinite online hard drive** where you can store a
   - Consumers:
     - Write your own: Kinesis Client Library (KCL), AWS SDK
     - Managed: AWS Lambda, Kinesis Data Firehose, Kinesis Data Analytics
+    - You have multiple consumers receiving data in parallel, the use enhanced fanout. See [here](https://aws.amazon.com/blogs/aws/kds-enhanced-fanout/).
   - Capacity Modes
     1. Provisioned
        - You choose the number of shards provisioned, scale manually or using API
@@ -2603,6 +2624,7 @@ Think of **AWS S3** like an **infinite online hard drive** where you can store a
     - Limited by time - short executions
     - Run on-demand
     - Scaling is automated!
+    - AWS lambda layer for reusable code
 - Easy Pricing:
   - Pay per request (call)
     - First 1,000,000 requests are free
@@ -2743,7 +2765,7 @@ Think of **AWS S3** like an **infinite online hard drive** where you can store a
 - Lambda in VPC:
   - By default, your Lambda function is launched outside your own VPC (in an AWS-owned VPC)
   - Therefore, it cannot access resources in your VPC (RDS, ElastiCache, internal ELB...)
-
+  - VPC-enabled lambda
 ![lambda-vpc-default.png](media/serverless/lambda-vpc-default.png)
 
   - we need to launch our lambda in our VPC (in private subnet): 
@@ -4103,7 +4125,9 @@ Amazon GuardDuty is an **intelligent threat detection** service that helps prote
   - **VPC Flow Logs** – Identifies unusual internal traffic and suspicious IP addresses.
   - **DNS Logs** – Detects compromised EC2 instances sending encoded data via DNS queries.
   - **Optional Features** – Supports **EKS Audit Logs, RDS & Aurora, EBS, Lambda, and S3 Data Events**.
-
+- to cleanup:
+  - disabled: terminate & clean all data
+  - suspend: stop the analysis but the data will be intact
 #### **Response & Automation:**
 - Set up **Amazon EventBridge rules** to trigger notifications or automated responses.
 - EventBridge rules can integrate with **AWS Lambda** or **SNS**.
@@ -4359,7 +4383,8 @@ Creating VPC peering
 ![vpc-peering-demo-1.gif](media/vpc/vpc-peering-demo-1.gif)
 Updating Routing Table:
 ![vpc-peering-demo-2.gif](media/vpc/vpc-peering-demo-2.gif)
-
+### VPC sharing 
+See [here](https://docs.aws.amazon.com/vpc/latest/userguide/vpc-sharing.html)
 ### VPC Endpoints (AWS PrivateLink)
 - AWS services have public URLs.
 - VPC Endpoints enable private network access to AWS services, bypassing the public Internet.
@@ -5113,6 +5138,8 @@ Defines scheduled times for automated tasks on instances.
 - Cost Explorer – Savings Plan Alternative to Reserved Instances
 - Cost Explorer – Forecast Usage
 
+### AWS Compute Optimizer
+To look at instance type recommendation
 ### AWS Cost Anomaly Detection
 Uses ML to monitor cost and usage, detecting unusual spikes or trends **without manual thresholds**.
 
@@ -5732,6 +5759,44 @@ Explore more at: Use it along the journey in the role of an architect
 - AWS youtube [channel](https://www.youtube.com/@AWSEventsChannel):
 - AWS Well-architected [framework](https://docs.aws.amazon.com/wellarchitected/latest/framework/welcome.html): 
 
+## AWS Pricing model
+
+### **S3 (Simple Storage Service)**
+- Standard: **$0.023/GB**
+- Intelligent-Tiering: **$0.023 (frequent)** / **$0.0125 (infrequent)**
+- Standard-IA: **$0.0125/GB**
+- One Zone-IA: **$0.01/GB**
+- Glacier: **$0.004/GB**
+- Glacier Deep Archive: **$0.00099/GB**
+
+### **EFS (Elastic File System)**
+- Standard: **$0.30/GB**
+- One Zone: **$0.16/GB**
+- Infrequent Access (IA): **$0.025/GB**
+
+### **EBS (Elastic Block Store)**
+- General Purpose SSD (gp3): **$0.08/GB**
+- General Purpose SSD (gp2): **$0.1/GB**
+- Provisioned IOPS SSD (io2): **$0.125/GB**
+- Throughput Optimized HDD (st1): **$0.045/GB**
+- Cold HDD (sc1): **$0.015/GB**
+- Snapshots: **$0.05/GB**
+
+### **Other Storage Services**
+- AWS Backup (EBS/EFS/RDS): **~$0.05/GB**
+- FSx for Windows File Server: **~$0.13/GB**
+- FSx for Lustre (scratch): **$0.14/GB**
+- RDS General Purpose SSD: **~$0.115/GB**
+- Aurora Storage: **$0.10/GB**
+
+### **Data Transfer**
+- S3 to Internet: **$0.09/GB (first 10TB/month)**
+- Inbound to AWS: **Free**
+
+---
+
+Let me know if you want this as a CSV, PDF, or in tabular format!
 # AWS AI/ML Path
 
 ![aws-ai-ml-certification-path.png](media/aws-ai-ml-certification-path.png)
+
