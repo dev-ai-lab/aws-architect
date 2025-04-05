@@ -952,7 +952,7 @@ To influence this, use placement group
     - It has only static DNS name and not static IP. Only NLB has static IP
     - supports redirect from HTTP to HTTPS
     - Routing:
-      - routing based on path (example.com/user & example.com/post routed to two different target groups)
+      - routing based on path (content-based routing) (example.com/user & example.com/post routed to two different target groups)
       - routing based on hostname (one.example.com & other.example.com two routs routed to two different target groups)
       - Routing based on query string, headers
     - ALB are great fit for microservices and container-based application (docker, AWS ECS)
