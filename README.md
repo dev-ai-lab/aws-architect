@@ -7,15 +7,6 @@
     * [Install aws cli on MacOS:](#install-aws-cli-on-macos)
   * [IAM](#iam)
     * [IAM Advanced Topics:](#iam-advanced-topics)
-      * [Organization:](#organization)
-      * [IAM Conditions](#iam-conditions)
-      * [IAM for S3:](#iam-for-s3)
-      * [IAM Roles vs Resource Based Policies - Cross account:](#iam-roles-vs-resource-based-policies---cross-account)
-      * [Amazon EventBridge - Security](#amazon-eventbridge---security)
-      * [IAM Permission Boundary & Policy Evaluation:](#iam-permission-boundary--policy-evaluation)
-      * [AWS IAM Identity Center (successor to AWS Single Sign-On)](#aws-iam-identity-center-successor-to-aws-single-sign-on)
-      * [AWS Directory Services](#aws-directory-services)
-      * [AWS Control Tower - a service on top of the organization](#aws-control-tower---a-service-on-top-of-the-organization)
   * [EC2 Service (Elastic Compute Cloud) - Infras as a service](#ec2-service-elastic-compute-cloud---infras-as-a-service)
     * [EC2 Capabilities](#ec2-capabilities)
     * [EC2 Purchasing Options](#ec2-purchasing-options-)
@@ -24,8 +15,6 @@
     * [Elastic Network Interface (ENI)](#elastic-network-interface-eni)
     * [EC2 instance Hibernate:](#ec2-instance-hibernate)
     * [EC2 Instance Storage - EBS](#ec2-instance-storage---ebs)
-      * [EBS Snapshots](#ebs-snapshots)
-      * [EBS Encryption](#ebs-encryption)
     * [EC2 AMI](#ec2-ami)
     * [EC2 Instance Store](#ec2-instance-store)
     * [AWS EFS - Elastic File System](#aws-efs---elastic-file-system)
@@ -509,7 +498,7 @@ Default output format [None]:
   - Use IAM reports
 
 ### IAM Advanced Topics:
-#### Organization:
+**Organization:**
 - **Global service** for managing multiple AWS accounts.
 - **Management account** oversees the organization; others are **member accounts**.
 - **Member accounts** can belong to only one organization.
@@ -536,7 +525,8 @@ Default output format [None]:
 ![iam-scp-allow-deny.png](media/iam/iam-scp-allow-deny.png)
 - Demo
 ![iam-organization-demo.gif](media/iam/iam-organization-demo.gif)
-#### IAM Conditions
+
+**IAM Conditions:**
 - `aws:SourceIp` restrict the client IP from which the API calls are being made
   ```
   {
@@ -634,7 +624,8 @@ Default output format [None]:
       ]
   }
   ```
-#### IAM for S3:
+
+**IAM for S3:**
 - `s3:ListBucket` permission applies to `arn:aws:s3:::test`
   - => bucket level permission
 - `s3:GetObject`, `s3:PutObject`, `s3:DeleteObject` applies to `arn:awn:s3:::test/*`
@@ -663,7 +654,7 @@ Default output format [None]:
 - `aws:PrincipalOrgID` can be used in any resource policies to restrict access to accounts that are member of an AWS Organization
 ![iam-principal-org-id.png](media/iam/iam-principal-org-id.png)
 
-#### IAM Roles vs Resource Based Policies - Cross account:
+**IAM Roles vs Resource Based Policies - Cross account:**
 - attaching a resource-based policy to a resource (example: S3 bucket policy) 
 - OR using a role as a proxy
 - When you assume a role (user, application or service), you give up your original permissions and take the permissions assigned to the role 
@@ -673,14 +664,14 @@ Default output format [None]:
 
 ![iam-role-vs-resource-policy.png](media/iam/iam-role-vs-resource-policy.png)
 
-#### Amazon EventBridge - Security
+**Amazon EventBridge - Security:**
 - When a rule runs, it needs permissions on the target 
   - Resource-based policy: Lambda, SNS, SQS, S3 buckets, API Rule Gateway... 
   - IAM role: Kinesis stream, Systems Manager Run Command, ECS task...
 
 ![eventbridge-iam-role-vs-policy.png](media/iam/eventbridge-iam-role-vs-policy.png)
 
-#### IAM Permission Boundary & Policy Evaluation:
+**IAM Permission Boundary & Policy Evaluation:**
 - IAM Permission Boundaries are supported for users and roles (not groups)
 - Advanced feature to use a managed policy to set the maximum permissions an IAM entity can get.
 ![img.png](media/iam/iam-permission-boundary.png)
@@ -703,15 +694,15 @@ Default output format [None]:
 ![iam-policy-evaluation-example.png](media/iam/iam-policy-evaluation-example.png)
 
 
-#### AWS IAM Identity Center (successor to AWS Single Sign-On)
-Provides a single sign-on (SSO) solution for accessing:
-- All AWS accounts within AWS Organizations
-- Business cloud applications (e.g., Salesforce, Box, Microsoft 365)
-- SAML 2.0-enabled applications
-- EC2 Windows instances
-- Identity providers:
-  - Built-in identity store within IAM Identity Center
-  - Third-party providers such as Active Directory (AD), OneLogin, and Okta
+**AWS IAM Identity Center (successor to AWS Single Sign-On)**
+- Provides a single sign-on (SSO) solution for accessing:
+  - All AWS accounts within AWS Organizations
+  - Business cloud applications (e.g., Salesforce, Box, Microsoft 365)
+  - SAML 2.0-enabled applications
+  - EC2 Windows instances
+  - Identity providers:
+    - Built-in identity store within IAM Identity Center
+    - Third-party providers such as Active Directory (AD), OneLogin, and Okta
 
 Login Flow:
 
@@ -738,7 +729,7 @@ AWS IAM Identity Center Fine-grained Permissions and Assignments:
 
 ![iam-id-center-fine-grained-permissions.png](media/iam/iam-id-center-fine-grained-permissions.png)
 
-#### AWS Directory Services
+**AWS Directory Services**
 - AWS Managed Microsoft AD
   - Create your own AD in AWS, manage users locally, support MFA
   - Establish “trust” connections with your on-premises AD
@@ -763,7 +754,7 @@ IAM Identity Center – Active Directory Setup:
 Demo:
 ![aws-ad-demo.gif](media/iam/aws-ad-demo.gif)
 
-#### AWS Control Tower - a service on top of the organization
+**AWS Control Tower - a service on top of the organization**
 - Easy way to set up and govern a secure and compliant multi-account- AWS environment based on best practices
 - AWS Control Tower uses AWS Organizations to create accounts
 - Benefits:
@@ -950,7 +941,7 @@ To influence this, use placement group
   - Upto 16 instances at a time only
   - Use a file system that is cluster aware
 
-#### EBS Snapshots
+**EBS Snapshots**
 - Backup of an EBS at anytime
 - Recommended to first detach
 - Can copy across AZ or Regions
@@ -972,7 +963,7 @@ To influence this, use placement group
 
 ![snapshot-demo.gif](media/snapshot-demo.gif)
 
-#### EBS Encryption
+**EBS Encryption**
 - Encrypted EBS volumes, means encryption of:
   - data at rest
   - in flight data between instance and volume
@@ -3195,14 +3186,14 @@ Amazon Athena is a **serverless query service** that allows users to analyze dat
 
 Amazon **Redshift** is a **cloud-based data warehouse** optimized for **OLAP (Online Analytical Processing)** and analytics. It is based on **PostgreSQL** but is not used for **OLTP**. Redshift offers **10x better performance** than traditional data warehouses, scales to **petabytes of data**, and uses **columnar storage** for efficient queries. It follows a **pay-as-you-go** model based on provisioned instances and supports **SQL-based querying**.
 
-#### **Redshift Cluster Architecture:**
+**Redshift Cluster Architecture:**
 - **Leader Node:** Manages query planning and result aggregation.
 - **Compute Nodes:** Execute queries and return results to the leader.
 - **Reserved Instances** help save costs.
 - Integrates with **BI tools** like **Amazon QuickSight** and **Tableau**.
 - Compared to **Athena**, Redshift is faster for **complex queries, joins, and aggregations** due to indexing.
 
-#### **Snapshots & Disaster Recovery:**
+**Snapshots & Disaster Recovery:**
 - Supports **Multi-AZ mode** for high availability in some clusters.
 - **Snapshots (backups)** are stored in **S3** and are **incremental**.
 - Can restore snapshots to a new cluster.
@@ -3210,7 +3201,7 @@ Amazon **Redshift** is a **cloud-based data warehouse** optimized for **OLAP (On
 - **Manual snapshots** persist until deleted.
 - Supports **cross-region snapshot replication**.
 
-#### **Redshift Spectrum:**
+**Redshift Spectrum:**
 - Allows querying **data in S3 without loading it** into Redshift.
 - Requires a **Redshift cluster** to start the query.
 - Utilizes **thousands of Spectrum nodes** for query execution.
@@ -3220,7 +3211,7 @@ Amazon **Redshift** is a **cloud-based data warehouse** optimized for **OLAP (On
 ### **Amazon OpenSearch Service Summary**
 Amazon OpenSearch Service is the **successor to Amazon Elasticsearch**, enabling **full-text search** across any field, including **partial matches**. It is commonly used as a **complement to other databases** for search functionality.
 
-#### **Key Features:**
+**Key Features:**
 - Supports **managed and serverless** deployment modes.
 - **Does not natively support SQL**, but a plugin can enable it.
 - Can ingest data from **Kinesis Data Firehose, AWS IoT, and CloudWatch Logs**.
@@ -3234,15 +3225,15 @@ Would you like a summary for **AWS Redshift** instead?
 
 Amazon **EMR (Elastic MapReduce)** is a **big data processing service** that helps create **Hadoop clusters** on **EC2 instances** for analyzing large datasets. It includes **Apache Spark, HBase, Presto, and Flink** and handles **provisioning and configuration** automatically. EMR supports **auto-scaling** and integrates with **Spot Instances** for cost efficiency.
 
-#### **Use Cases:**
+**Use Cases:**
 - **Big data processing, machine learning, web indexing, and data analytics.**
 
-#### **EMR Cluster Node Types:**
+**EMR Cluster Node Types:**
 - **Master Node:** Manages cluster coordination and health (long-running).
 - **Core Node:** Runs tasks and stores data (long-running).
 - **Task Node (optional):** Runs tasks only (often **Spot Instances**).
 
-#### **Purchasing Options:**
+**Purchasing Options:**
 - **On-Demand:** Reliable, non-terminable.
 - **Reserved:** Cost savings (1-year+ commitment).
 - **Spot Instances:** Cheaper but can be terminated anytime.
@@ -3253,13 +3244,13 @@ Clusters can be **long-running** or **transient (temporary)** depending on the w
 
 Amazon QuickSight is a **serverless, machine learning-powered business intelligence (BI) service** used to create **interactive dashboards** and gain business insights. It is **fast, automatically scalable, and embeddable**, with **per-session pricing**.
 
-#### **Key Features & Use Cases:**
+**Key Features & Use Cases:**
 - Used for **business analytics, visualizations, ad-hoc analysis, and data insights**.
 - Integrates with **RDS, Aurora, Athena, Redshift, and S3**.
 - Uses the **SPICE engine** for in-memory computation when data is imported.
 - **Enterprise edition** supports **Column-Level Security (CLS)**.
 
-#### **Dashboard & Analysis:**
+**Dashboard & Analysis:**
 - Users and groups exist **within QuickSight (not IAM)**.
 - A **dashboard** is a **read-only** snapshot of an analysis that can be shared.
 - Dashboards retain **filters, parameters, sorting, and controls**.
@@ -3273,7 +3264,7 @@ Amazon QuickSight is a **serverless, machine learning-powered business intellige
 
 Amazon Glue is a **managed, serverless ETL (Extract, Transform, Load) service** used to **prepare and transform data** for analytics.
 
-#### **Key Features:**
+**Key Features:**
 - **Glue Job Bookmarks**: Avoids re-processing old data.
 - **Glue Elastic Views**: Uses **SQL** to combine and replicate data across multiple stores, **serverless** with change tracking.
 - **Glue DataBrew**: Cleans and normalizes data using **pre-built transformations**.
@@ -3286,7 +3277,7 @@ Amazon Glue is a **managed, serverless ETL (Extract, Transform, Load) service** 
 
 Amazon Lake Formation is a **fully managed service** that helps **set up and manage data lakes** efficiently. It simplifies **data discovery, cleansing, transformation, and ingestion** by automating complex tasks like **data collection, cataloging, and deduplication** using **ML Transforms**.
 
-#### **Key Features:**
+**Key Features:**
 - **Centralized data lake** for structured & unstructured data.
 - **Pre-built integrations** with S3, RDS, Relational & NoSQL databases.
 - **Fine-grained access control** (row & column-level security).
@@ -3305,12 +3296,12 @@ Lake Formation streamlines **data governance and analytics**, making it easier t
 
 Amazon MSK is a **fully managed Apache Kafka** service on AWS, serving as an **alternative to Amazon Kinesis**. It allows users to **create, update, and delete Kafka clusters** while AWS manages **Kafka broker nodes and Zookeeper nodes**.
 
-#### **Key Features:**
+**Key Features:**
 - **Deploys in your VPC** with **multi-AZ (up to 3)** for high availability.
 - **Automatic recovery** from common Kafka failures.
 - **Data stored on EBS** for as long as needed.
 
-#### **MSK Serverless:**
+**MSK Serverless:**
 - Runs **Apache Kafka without capacity management**.
 - **Automatically provisions and scales** compute and storage.
 
@@ -3321,7 +3312,7 @@ Amazon MSK is a **fully managed Apache Kafka** service on AWS, serving as an **a
 A **serverless big data ingestion pipeline** is designed for **real-time data collection, transformation, and SQL-based querying**, with reports stored in **Amazon S3** for further analysis and dashboard creation.
 ![big-data-ingestion-pl.png](media/aws-data-analytics/big-data-ingestion-pl.png)
 
-#### **Pipeline Components:**
+**Pipeline Components:**
 - **IoT Core**: Collects data from IoT devices.
 - **Kinesis**: Streams data in real time.
 - **Firehose**: Delivers data to **S3** with near real-time (1 min) latency.
@@ -3335,7 +3326,7 @@ A **serverless big data ingestion pipeline** is designed for **real-time data co
 
 Amazon Rekognition is a **machine learning-powered service** that detects **objects, people, text, and scenes** in images and videos. It offers **facial analysis and search** for user verification, people counting, and celebrity recognition.
 
-#### **Key Use Cases:**
+**Key Use Cases:**
 - **Labeling & Content Moderation** (detect inappropriate content)
 - **Text Detection** (extract text from images/videos)
 - **Face Detection & Analysis** (gender, age, emotions, etc.)
@@ -3343,7 +3334,7 @@ Amazon Rekognition is a **machine learning-powered service** that detects **obje
 - **Celebrity Recognition**
 - **Pathing** (tracking objects in videos, e.g., sports analysis)
 
-#### **Content Moderation:**
+**Content Moderation:**
 - Identifies **inappropriate or offensive** content in images and videos.
 - Common in **social media, broadcast media, advertising, and e-commerce** for user safety.
 - Allows setting a **Minimum Confidence Threshold** for flagging content.
@@ -3356,7 +3347,7 @@ Amazon Rekognition is a **machine learning-powered service** that detects **obje
 
 Amazon Transcribe is an **automatic speech-to-text service** that uses **Automatic Speech Recognition (ASR)** for fast and accurate transcription. It can **automatically detect languages** and **remove Personally Identifiable Information (PII) using redaction**.
 
-#### **Use Cases:**
+**Use Cases:**
 - **Transcribing customer service calls**
 - **Automating closed captioning and subtitles**
 - **Generating metadata for media assets** to create a searchable archive
@@ -3365,7 +3356,7 @@ Amazon Transcribe is an **automatic speech-to-text service** that uses **Automat
 
 Amazon Polly is a **text-to-speech (TTS) service** that uses **deep learning** to generate **lifelike speech**, enabling applications to talk.
 
-#### **Customization Features:**
+**Customization Features:**
 - **Lexicons:** Customize pronunciation (e.g., acronyms, stylized words).
 - **SSML (Speech Synthesis Markup Language):** Enhance speech with:
   - Emphasis on words/phrases
@@ -3390,7 +3381,7 @@ Amazon Comprehend is a **fully managed, serverless Natural Language Processing (
 - Perform **tokenization** and **parts of speech** analysis.
 - **Automatically categorize** text files by topic.
 
-#### **Use Cases:**
+**Use Cases:**
 - Analyzing **customer interactions (e.g., emails)** to identify factors leading to positive or negative experiences.
 - **Grouping articles** by topics that Amazon Comprehend discovers.
 
@@ -3420,7 +3411,7 @@ Key features include:
 
 Amazon Personalize is a **fully managed machine learning (ML) service** that provides **real-time personalized recommendations** for applications. It uses the **same technology as Amazon.com** and can be integrated into **websites, apps, SMS, and email marketing systems**.
 
-#### **Key Features:**
+**Key Features:**
 - No need to build, train, or deploy ML models—**quick implementation (days, not months)**.
 - Use cases: **product recommendations, content ranking, and personalized marketing**.
 - Ideal for industries like **retail, media, and entertainment**.
@@ -3430,7 +3421,7 @@ Amazon Personalize is a **fully managed machine learning (ML) service** that pro
 ### **Amazon Textract**
 Amazon Textract is an **AI/ML-powered service** that **automatically extracts text, handwriting, and data** from scanned documents, including **PDFs and images**. It can also **extract structured data** from **forms and tables**.
 
-#### **Use Cases:**
+**Use Cases:**
 - **Financial Services** – Invoices, financial reports
 - **Healthcare** – Medical records, insurance claims
 - **Public Sector** – Tax forms, ID documents, passports
@@ -4014,7 +4005,7 @@ AWS Shield is a managed **Distributed Denial of Service (DDoS)** protection serv
 **What is a DDoS Attack?**:
 - A **DDoS (Distributed Denial of Service) attack** floods a system with **massive amounts of requests** to disrupt availability.
 
-#### **AWS Shield Offerings**
+**AWS Shield Offerings**
 
 **1. AWS Shield Standard (Free & Automatic)**
 - Enabled by default for all AWS customers
@@ -4036,7 +4027,7 @@ AWS Shield is a managed **Distributed Denial of Service (DDoS)** protection serv
     - Protection from cost spikes due to DDoS-related traffic surges
     - Automatic Layer 7 attack mitigation via AWS WAF (automatically creates and applies rules)
 
-#### **DDoS Protection Scope**
+**DDoS Protection Scope**
 - **Layer 3 & 4 Attacks** (Network & Transport Layer) – mitigated by both Shield Standard & Advanced
 - **Layer 7 Attacks** (Application Layer) – mitigated by Shield Advanced with AWS WAF
 
@@ -4046,7 +4037,7 @@ This ensures comprehensive protection against both basic and sophisticated DDoS 
 
 AWS Firewall Manager is a **centralized security management** service for managing firewall rules across all accounts in an AWS Organization.
 
-#### **Key Features:**
+**Key Features:**
 - **Security Policies** – Define and enforce a common set of security rules.
 - **WAF Rules** – Manage rules for **ALB, API Gateway, and CloudFront**.
 - **AWS Shield Advanced** – Protect **ALB, CLB, NLB, Elastic IPs, and CloudFront**.
@@ -4054,7 +4045,7 @@ AWS Firewall Manager is a **centralized security management** service for managi
 - **AWS Network Firewall** – Manage **VPC-level** firewall policies.
 - **Route 53 Resolver DNS Firewall** – Protect domain name resolution at the DNS level.
 
-#### **How It Works:**
+**How It Works:**
 - Policies are created **at the regional level**.
 - Rules automatically apply to **new and existing resources** across all accounts.
 - Ensures **consistent security and compliance** across the organization.
@@ -4071,7 +4062,7 @@ For comprehensive security, **use all three services together** based on your ne
 ### AWS Best Practices for DDoS Resiliency
 ![DDoS-best-practices.png](media/encryption-security/DDoS-best-practices.png)
 
-#### Edge Location Mitigation (BP1, BP3)
+**Edge Location Mitigation (BP1, BP3)**
 - BP1 – CloudFront
   - Web Application delivery at the edge
   - Protect from DDoS Common Attacks (SYN floods, UDP reflection...)
@@ -4082,7 +4073,8 @@ For comprehensive security, **use all three services together** based on your ne
 - BP3 – Route 53
   - Domain Name Resolution at the edge
   - DDoS Protection mechanism
-#### Best practices for DDoS mitigation
+
+**Best practices for DDoS mitigation**
 - Infrastructure layer defense (BP1, BP3, BP6)
   - Protect Amazon EC2 against high traffic
   - That includes using Global Accelerator, Route 53, CloudFront, Elastic Load Balancing
@@ -4090,7 +4082,8 @@ For comprehensive security, **use all three services together** based on your ne
   - Helps scale in case of sudden traffic surges including a flash crowd or a DDoS attack
 - Elastic Load Balancing (BP6)
   - Elastic Load Balancing scales with the traffic increases and will distribute the traffic to many EC2 instances 
-#### Application Layer Defense
+
+**Application Layer Defense**
 - Detect and filter malicious web requests (BP1, BP2)
   - CloudFront cache static content and serve it from edge locations, protecting your backend
   - AWS WAF is used on top of CloudFront and Application Load Balancer to filter and block requests based on request signatures
@@ -4100,7 +4093,7 @@ For comprehensive security, **use all three services together** based on your ne
 - ShieldAdvanced(BP1,BP2,BP6)
   - Shield Advanced automatic application layer DDoS mitigation automatically creates, evaluates and deploys AWS WAF rules to mitigate layer 7 attacks
 
-#### Attack surface reduction
+**Attack surface reduction**
 - Obfuscating AWS resources (BP1, BP4, BP6)
   - Using CloudFront, API Gateway, Elastic Load Balancing to hide your backend resources (Lambda functions, EC2 instances)
 - Security groups and NetworkACLs (BP5)
@@ -4117,7 +4110,7 @@ For comprehensive security, **use all three services together** based on your ne
 
 Amazon GuardDuty is an **intelligent threat detection** service that helps protect your AWS account using **machine learning, anomaly detection, and third-party threat intelligence**.
 
-#### **Key Features:**
+**Key Features:**
 - **Easy to Enable** – One-click activation with a **30-day free trial**, no software installation required.
 - **Threat Detection Sources:**
   - **CloudTrail Event Logs** – Detects unusual API calls and unauthorized deployments.
@@ -4129,11 +4122,12 @@ Amazon GuardDuty is an **intelligent threat detection** service that helps prote
 - to cleanup:
   - disabled: terminate & clean all data
   - suspend: stop the analysis but the data will be intact
-#### **Response & Automation:**
+
+**Response & Automation:**
 - Set up **Amazon EventBridge rules** to trigger notifications or automated responses.
 - EventBridge rules can integrate with **AWS Lambda** or **SNS**.
 
-#### **Additional Security Benefits:**
+**Additional Security Benefits:**
 - GuardDuty can detect **cryptocurrency mining attacks**, with a dedicated finding category for such threats.
 
 This service helps **continuously monitor and secure your AWS environment** against potential threats.
@@ -4144,7 +4138,7 @@ This service helps **continuously monitor and secure your AWS environment** agai
 
 Amazon Inspector is an **automated security assessment** service for **EC2 instances, container images, and Lambda functions**, providing **continuous scanning** to detect vulnerabilities.
 
-#### **What Amazon Inspector Evaluates:**
+**What Amazon Inspector Evaluates:**
 - **EC2 Instances**
   - **Network Reachability** – Identifies unintended network exposure.
   - **Package Vulnerabilities** – Checks installed software against a **CVE (Common Vulnerabilities & Exposures) database**.
@@ -4153,7 +4147,7 @@ Amazon Inspector is an **automated security assessment** service for **EC2 insta
 - **Lambda Functions**
   - Assesses **function code and package dependencies** during deployment.
 
-#### **Key Features:**
+**Key Features:**
 - **Continuous scanning**, triggered **only when needed**.
 - Assigns a **risk score** to prioritize vulnerabilities.
 - Integrates with **AWS Security Hub** and **Amazon EventBridge** for automated notifications and responses.
@@ -4166,7 +4160,7 @@ Amazon Inspector helps **proactively detect and mitigate security risks** across
 
 AWS Macie is a **fully managed data security and privacy service** that uses **machine learning** and **pattern matching** to discover and protect sensitive data in AWS.
 
-#### **Key Features:**
+**Key Features:**
 - Automatically **identifies and alerts** on **sensitive data**, including **personally identifiable information (PII)**.
 
 Macie helps enhance **data visibility, compliance, and security** across AWS environments.
@@ -4278,13 +4272,13 @@ Bastion Interaction
 
 A **NAT (Network Address Translation) Instance** enables **EC2 instances in private subnets** to access the internet while keeping them private.
 
-#### **Key Requirements:**
+**Key Requirements:**
 - Must be in a **public subnet** with an **Elastic IP**.
 - **Source/Destination Check** must be **disabled**.
 - **Route tables** must direct private subnet traffic to the NAT instance.
 - Uses a **pre-configured Amazon Linux AMI** (support ended on **Dec 31, 2020**).
 
-#### **Limitations & Considerations:**
+**Limitations & Considerations:**
 - **Not highly available** – Requires **Auto Scaling Group (ASG) across multiple AZs** for resilience.
 - **Bandwidth limited** by the EC2 instance type.
 - **Security Group Rules:**
@@ -4301,7 +4295,7 @@ Demo:
 
 A **fully managed, high-availability NAT service** that enables private subnet EC2 instances to access the internet.
 
-#### **Key Features:**
+**Key Features:**
 - **AWS-managed** – No administration, automatic scaling (5 Gbps → 100 Gbps).
 - **Elastic IP & IGW required** (Private Subnet → NATGW → IGW).
 - **Per-hour + bandwidth costs** apply.
@@ -4309,7 +4303,8 @@ A **fully managed, high-availability NAT service** that enables private subnet E
 - **No Security Groups required**.
 
 **Preferred over NAT Instances** due to better performance and reliability.
-#### **NAT Gateway & High Availability**
+
+**NAT Gateway & High Availability**
 
 - **Resilient within a single AZ** but not across AZs.
 - **For fault tolerance**, deploy **multiple NAT Gateways** in different AZs.
@@ -4318,7 +4313,7 @@ A **fully managed, high-availability NAT service** that enables private subnet E
 ![nat-gw-high-availability.png](media/vpc/nat-gw-high-availability.png)
 
 
-#### **NAT Gateway vs NAT Instance**
+**NAT Gateway vs NAT Instance**
 ![nat-gw-vs-nat-instance.png](media/vpc/nat-gw-vs-nat-instance.png)
 
 Demo
@@ -4330,7 +4325,7 @@ Demo
 
 ![sg-nacl-comparison.png](media/vpc/sg-nacl-comparison.png)
 
-#### **Network ACL (NACL)**
+**Network ACL (NACL)**
 
 - **Subnet-level firewall** controlling **inbound & outbound traffic**.
 - Each **subnet has one NACL** (default assigned to new subnets).
@@ -4341,13 +4336,13 @@ Demo
 - **Recommended rule increments: 100**.
 - **Useful for blocking specific IPs at the subnet level**.
 
-#### **Default NACL:**
+**Default NACL:**
 - **Allows all inbound & outbound traffic** for associated subnets.
 - **Do not modify** the Default NACL—create a **custom NACL instead**.
 
 ![default-nacl.png](media/vpc/default-nacl.png)
 
-#### **Ephemeral Ports**
+**Ephemeral Ports**
 
 - Used for **temporary responses** in client-server connections.
 - Clients connect to a **defined port** and receive responses on an **ephemeral port**.
@@ -4397,7 +4392,7 @@ See [here](https://docs.aws.amazon.com/vpc/latest/userguide/vpc-sharing.html)
 
 ![vpc-endpoint-conn-options.png](media/vpc/vpc-endpoint-conn-options.png)
 
-#### Types of VPC Endpoints
+**Types of VPC Endpoints**
 
 - **Interface Endpoints** (PrivateLink)
   - Creates an **ENI** (private IP) as an entry point (**requires Security Group**)
@@ -4425,7 +4420,7 @@ Demo
 - Logs can be sent to **S3, CloudWatch Logs, or Kinesis Data Firehose**.
 - Supports AWS-managed interfaces (**ELB, RDS, ElastiCache, Redshift, WorkSpaces, NATGW, Transit Gateway**).
 
-#### VPC Flow Logs Syntax
+**VPC Flow Logs Syntax**
 ![vpc-flow-logs-syntax.png](media/vpc/vpc-flow-logs-syntax.png)
 
 - **srcaddr & dstaddr** – Identify problematic IPs.
@@ -4435,10 +4430,10 @@ Demo
 - Query logs with **Athena (S3) or CloudWatch Logs Insights**.
 - [Flow Logs Examples](https://docs.aws.amazon.com/vpc/latest/userguide/flow-logs-records-examples.html).
 
-#### VPC Flow Logs – Troubleshoot SG & NACL issues
+**VPC Flow Logs – Troubleshoot SG & NACL issues**
 ![vpc-flow-log-troubleshooting.png](media/vpc/vpc-flow-log-troubleshooting.png)
 
-#### VPC Flow Logs – Architectures
+**VPC Flow Logs – Architectures**
 
 ![vpc-flow-logs-architecture.png](media/vpc/vpc-flow-logs-architecture.png)
 
@@ -4473,7 +4468,7 @@ Site-to-Site VPN Connections:
 
 ![aws-site-to-site-vpn-routing.png](media/vpc/aws-site-to-site-vpn-routing.png)
 
-#### AWS VPN CloudHub
+**AWS VPN CloudHub**
 - Provide secure communication between multiple sites, if you have multiple VPN connections
 - Low-cost hub-and-spoke model for primary or secondary network connectivity between different locations (VPN only)
 - It’s a VPN connection so it goes over the public Internet
@@ -4481,7 +4476,7 @@ Site-to-Site VPN Connections:
 
 ![aws-vpn-cloudhub.png](media/vpc/aws-vpn-cloudhub.png)
 
-#### Demo
+**Demo**
 ![aws-s2s-vpn-connection-demo.gif](media/vpc/aws-s2s-vpn-connection-demo.gif)
 
 
@@ -4491,7 +4486,7 @@ Site-to-Site VPN Connections:
 - Requires a **Direct Connect** location & **Virtual Private Gateway** on your VPC.
 - Access **both public (S3) & private (EC2) resources** on the same connection.
 
-#### **Use Cases:**
+**Use Cases:**
 ✔ **Higher bandwidth** – Large data transfers, lower cost.  
 ✔ **Consistent performance** – Ideal for real-time data.  
 ✔ **Hybrid environments** – On-prem + cloud integration.  
@@ -4499,13 +4494,13 @@ Site-to-Site VPN Connections:
 
 ![aws-direct-conn-diagram.png](media/vpc/aws-direct-conn-diagram.png)
 
-#### **Direct Connect Gateway**
+**Direct Connect Gateway**
 
 ✔ **Connect multiple VPCs** across **different regions** (same account) using **a single Direct Connect**.
 
 ![aws-direct-connect-gw.png](media/vpc/aws-direct-connect-gw.png)
 
-#### **Direct Connect – Connection Types**
+**Direct Connect – Connection Types**
 
 ✔ **Dedicated Connections** (1, 10, 100 Gbps)
 - **Physical ethernet port** dedicated to the customer.
@@ -4517,17 +4512,17 @@ Site-to-Site VPN Connections:
 - **Availability:** 1, 2, 5, 10 Gbps at select partners.
 - **Setup time:** Usually **1+ month**.
 
-#### **Direct Connect – Encryption**
+**Direct Connect – Encryption**
 
 ✔ **Not encrypted**, but **private** by default.  
 ✔ Use **Direct Connect + VPN** for **IPsec encryption**.  
 ✔ Adds **security** but increases **complexity**.
 
 
-#### Direct Connect - Resiliency
+**Direct Connect - Resiliency**
 ![direct-connect-encryption.png](media/vpc/direct-connect-encryption.png)
 
-#### **Site-to-Site VPN as Backup**
+**Site-to-Site VPN as Backup**
 
 ✔ If **Direct Connect fails**, use:
 - A **backup Direct Connect** (costly) or
@@ -4547,7 +4542,7 @@ Site-to-Site VPN Connections:
 
 ![complicated-nw-topology.png](media/vpc/complicated-nw-topology.png)
 
-#### Transit Gateway: Site-to-Site VPN ECMP
+**Transit Gateway: Site-to-Site VPN ECMP**
 - ECMP = Equal-cost multi-path routing
 - Routing strategy to allow to forward a packet over multiple best path
 - Use case: 
@@ -4555,25 +4550,25 @@ Site-to-Site VPN Connections:
 
 ![aws-transit-gw-with-ecmp.png](media/vpc/aws-transit-gw-with-ecmp.png)
 
-#### Transit Gateway: throughput with ECMP
+**Transit Gateway: throughput with ECMP**
 ![transit-gw-throughput-ecmp.png](media/vpc/transit-gw-throughput-ecmp.png)
 
-#### Transit Gateway – Share Direct Connect between multiple accounts
+**Transit Gateway – Share Direct Connect between multiple accounts**
 ![shared-direct-conn-multiple-ac.png](media/vpc/shared-direct-conn-multiple-ac.png)
 
 ### VPC - Traffic Mirroring
 ✔ **Captures & inspects** network traffic in your VPC in a non-intrusive manner
 ✔ Done by routing the traffic to **your security appliances**.
 
-#### **Traffic Flow:**
+**Traffic Flow:**
 - **Source (From):** ENIs (Elastic Network Interfaces).
 - **Target (To):** Another ENI or a **Network Load Balancer**.
 
-#### **Key Features:**
+**Key Features:**
 - Capture **all packets** or **specific packets** (optional truncation).
 - Source and target are in the same VPC or across VPCs if  **VPC Peering** is enabled.
 
-#### **Use Cases:**
+**Use Cases:**
 🔹 **Content inspection**  
 🔹 **Threat monitoring**  
 🔹 **Troubleshooting**
@@ -4619,7 +4614,7 @@ Demo
 
 ![egress-only-internet-gw.png](media/vpc/egress-only-internet-gw.png)
 
-#### IPv6 Routing
+**IPv6 Routing**
 ![egress-ipv6-igw.png](media/vpc/egress-ipv6-igw.png)
 
 
@@ -4637,7 +4632,7 @@ Demo
 - **NAT Instance** – Legacy method for internet access in private subnets; requires public subnet and Source/Destination check disabled.
 - **NAT Gateway** – AWS-managed, scalable IPv4 internet access for private EC2.
 
-#### **Security & Connectivity**
+**Security & Connectivity**
 
 - **NACL** – Stateless, subnet-level inbound/outbound rules, requires ephemeral ports.
 - **Security Groups** – Stateful, instance-level firewall.
@@ -4647,13 +4642,13 @@ Demo
 - **Site-to-Site VPN** – Secure tunnel between on-prem and VPC using Customer & Virtual Private Gateways.
 - **AWS VPN CloudHub** – Hub-and-spoke VPN for multi-site connections.
 
-#### **Direct Connect & PrivateLink**
+**Direct Connect & PrivateLink**
 
 - **Direct Connect** – Private link from on-prem to VPC via Direct Connect location.
 - **Direct Connect Gateway** – Connects multiple VPCs across regions.
 - **PrivateLink / VPC Endpoint Services** – Private service connections without VPC Peering or IGW, requires NLB & ENI.
 
-#### **Advanced Networking**
+**Advanced Networking**
 
 - **ClassicLink** – Connects EC2-Classic to a VPC.
 - **Transit Gateway** – Centralized transitive routing for VPC, VPN & Direct Connect.
@@ -4736,32 +4731,32 @@ Demo
 
 ![disaster-recovery-strategies.png](media/dr-and-migration/disaster-recovery-strategies.png)
 
-#### DR - Backup and Restore (High RPO)
+**DR - Backup and Restore (High RPO)**
 ![dr-backup-restore.png](media/dr-and-migration/dr-backup-restore.png)
 
-#### **Disaster Recovery – Pilot Light**
+**Disaster Recovery – Pilot Light**
 - A **small version** of the app runs in the cloud.
 - Keeps **critical core** (pilot light) always active.
 - Similar to **Backup & Restore**, but **faster** since key systems are already running.
 
 ![dr-pilot-light.png](media/dr-and-migration/dr-pilot-light.png)
 
-#### **Warm Standby**
+**Warm Standby**
 - **Full system** runs at **minimal capacity** in the cloud.
 - **Scales up** to full production during a disaster.
 
 ![dr-warm-standby.png](media/dr-and-migration/dr-warm-standby.png)
 
-#### **Multi-Site / Hot Site**
+**Multi-Site / Hot Site**
 - **Lowest RTO** (minutes or seconds) but **high cost**.
 - **Full production** runs in **both AWS and on-premise**.
 
 ![dr-hot-site-multi-site.png](media/dr-and-migration/dr-hot-site-multi-site.png)
 
-#### All AWS Multi Region
+**All AWS Multi Region**
 ![all-cloud-multi-region.png](media/dr-and-migration/all-cloud-multi-region.png)
 
-#### Disaster RecoveryTips
+**Disaster RecoveryTips**
 - Backup
   - EBS Snapshots, RDS automated backups / Snapshots, etc...
   - Regular pushes to S3 / S3 IA / Glacier, Lifecycle Policy, Cross Region Replication
@@ -4790,10 +4785,10 @@ Demo
 - **Continuous Data Replication** via CDC (Change Data Capture).
 - Requires an **EC2 instance** for replication tasks.
 
-#### DMS Sources and Targets
+**DMS Sources and Targets**
 ![dms-source-target.png](media/dr-and-migration/dms-source-target.png)
 
-#### **AWS Schema Conversion Tool (SCT)**
+**AWS Schema Conversion Tool (SCT)**
 - Converts **database schema** between different engines.
 - **OLTP**: SQL Server/Oracle → MySQL, PostgreSQL, Aurora.
 - **OLAP**: Teradata/Oracle → Redshift.
@@ -4802,20 +4797,20 @@ Demo
 
 ![schema-conversion-tool-sct.png](media/dr-and-migration/schema-conversion-tool-sct.png)
 
-#### DMS - Continuous Replication
+**DMS - Continuous Replication**
 ![dms-continuous-replication.png](media/dr-and-migration/dms-continuous-replication.png)
 
-#### **AWS DMS – Multi-AZ Deployment**
+**AWS DMS – Multi-AZ Deployment**
 - Creates a **synchronous standby replica** in another AZ.
 - **Benefits**:
   - **Data redundancy**
   - **No I/O freezes**
   - **Reduced latency spikes**
 
-#### Demo
+**Demo**
 ![dms-demo.gif](media/dr-and-migration/dms-demo.gif)
 
-#### **RDS & Aurora MySQL Migrations**
+**RDS & Aurora MySQL Migrations**
 - **RDS MySQL → Aurora MySQL**
   - Option 1: **Snapshot Restore**: Get & restore RDS MySQL snapshot to Aurora.
   - Option 2: **Read Replica**: Create Aurora Read Replica, wait for **0 lag**, then promote (time & cost involved).
@@ -4831,7 +4826,7 @@ Demo
 
 ![rds-aurora-mysql-migration.png](media/dr-and-migration/rds-aurora-mysql-migration.png)
 
-#### RDS & Aurora PostgreSQL Migrations
+**RDS & Aurora PostgreSQL Migrations**
 
 - RDS PostgreSQL to Aurora PostgreSQL
   - Option 1: DB Snapshots from RDS PostgreSQL restored as PostgreSQL Aurora DB
@@ -4845,7 +4840,7 @@ Demo
 
 ---
 
-#### **On-Premises Strategy with AWS**
+**On-Premises Strategy with AWS**
 
 - **Download Amazon Linux 2 AMI as a VM (.iso format)**
   - Supported platforms for loading: VMware, KVM, VirtualBox (Oracle VM), Microsoft Hyper-V
@@ -4876,7 +4871,7 @@ Demo
 
 AWS Backup is a **fully managed service** that helps you centrally manage and automate backups across various AWS services. It eliminates the need for custom scripts and manual backup processes.
 
-#### **Key Features**
+**Key Features**
 
 - **Centralized Backup Management**
   - Automates backups across multiple AWS services
@@ -4906,7 +4901,7 @@ AWS Backup is a **fully managed service** that helps you centrally manage and au
 ![aws-backup-flow.png](media/dr-and-migration/aws-backup-flow.png)
 
 ---
-#### **AWS Backup Vault Lock**
+**AWS Backup Vault Lock**
 
 Enforces a **WORM (Write Once, Read Many) state**, preventing backups from being deleted or modified.
 
@@ -4946,36 +4941,36 @@ Here’s a more readable and concise version while keeping all key details:
 
 ### **Transferring Large Amounts of Data to AWS**
 
-#### **Example:**
+**Example:**
 Transferring **200 TB** of data to AWS with a **100 Mbps** internet connection.
 
-#### **1. Over the Internet / Site-to-Site VPN**
+**1. Over the Internet / Site-to-Site VPN**
 - **Easy to set up** immediately.
 - **Very slow**:
   - **Time required:** ~185 days (**200 TB at 100 Mbps**).
 
-#### **2. Over AWS Direct Connect (1 Gbps)**
+**2. Over AWS Direct Connect (1 Gbps)**
 - **Takes time to set up** (over a month).
 - **Faster than VPN**:
   - **Time required:** ~18.5 days (**200 TB at 1 Gbps**).
 
-#### **3. Using AWS Snowball**
+**3. Using AWS Snowball**
 - **Requires 2-3 Snowball devices in parallel.**
 - **Faster than network-based transfers**:
   - **Time required:** ~1 week (end-to-end).
 - **Can be used with AWS Database Migration Service (DMS) for databases.**
 
-#### **For Ongoing Transfers / Replication:**
+**For Ongoing Transfers / Replication:**
 - Use **Site-to-Site VPN or Direct Connect** with **DMS or AWS DataSync**.
 
 ### **VMware Cloud on AWS**
 
-#### **Why Use It?**
+**Why Use It?**
 - Many businesses use **VMware Cloud** to manage their on-premises data centers.
 - They want to **extend capacity to AWS** while still using **VMware Cloud software**.
 - **Solution:** **VMware Cloud on AWS**
 
-#### **Use Cases:**
+**Use Cases:**
 - **Migrate** VMware vSphere-based workloads to AWS.
 - **Run** production workloads across private, public, and hybrid VMware environments.
 - **Disaster recovery** solution for business continuity.
@@ -4996,21 +4991,21 @@ AWS CloudFormation is a declarative tool for defining and provisioning AWS infra
 
 ### Benefits of CloudFormation
 
-#### **1. Infrastructure as Code**
+**1. Infrastructure as Code**
 - No manual resource creation—ensures consistency and control
 - Infrastructure changes are reviewed through code
 
-#### **2. Cost Management**
+**2. Cost Management**
 - Resources in a stack are tagged for cost tracking
 - Estimate costs directly from the template
 - Cost-saving strategy: Automate resource deletion after work hours (e.g., 5 PM) and recreation in the morning (e.g., 8 AM)
 
-#### **3. Productivity & Automation**
+**3. Productivity & Automation**
 - Quickly create and destroy infrastructure as needed
 - Auto-generate architecture diagrams
 - Declarative approach—no need to manage dependencies manually
 
-#### **4. Reusability & Extensive Support**
+**4. Reusability & Extensive Support**
 - Use existing templates from the AWS community
 - Comprehensive AWS resource support (with custom resources for unsupported ones)
 
@@ -5025,7 +5020,7 @@ Visualizes all resources and their relationships
 
 A **CloudFormation Service Role** is an IAM role that allows CloudFormation to manage stack resources on your behalf.
 
-#### **Key Benefits:**
+**Key Benefits:**
 - Enables users to create, update, or delete stack resources **without needing direct permissions**.
 - Supports **least privilege principle** by restricting user access while still allowing stack operations.
 - Users must have the **`iam:PassRole`** permission to assign the role to CloudFormation.
@@ -5080,7 +5075,7 @@ SSM Session Manager provides secure shell access to EC2 and on-premises servers 
 ### Run Command
 Run commands or scripts across multiple instances **without SSH**.
 
-#### **Key Features:**
+**Key Features:**
 - Execute commands on multiple instances via **resource groups**
 - View output in the **AWS Console**, **S3**, or **CloudWatch Logs**
 - Send **SNS notifications** on command status (In Progress, Success, Failed, etc.)
@@ -5097,7 +5092,9 @@ Automates patching for managed instances, including OS, applications, and securi
 - Integrates with **EventBridge** for automated execution.
 
 ![system-mgmr-patch-manager.png](media/system-mgmr-patch-manager.png)
-#### **Maintenance Windows**
+
+**Maintenance Windows**
+
 Defines scheduled times for automated tasks on instances.
 
 **Components:**
@@ -5111,13 +5108,13 @@ Defines scheduled times for automated tasks on instances.
 
 **AWS Systems Manager Automation** simplifies maintenance and deployment tasks for EC2 instances and other AWS resources.
 
-#### **Use Cases:**
+**Use Cases:**
 - Restart instances, create AMIs, take EBS snapshots, and more.
 
-#### **Automation Runbooks (SSM Documents):**
+**Automation Runbooks (SSM Documents):**
 - Define actions for EC2 or AWS resources (predefined or custom).
 
-#### **Trigger Methods:**
+**Trigger Methods:**
 - **Manual:** AWS Console, CLI, or SDK
 - **Event-driven:** Amazon EventBridge
 - **Scheduled:** Maintenance Windows
@@ -5144,7 +5141,7 @@ To look at instance type recommendation
 ### AWS Cost Anomaly Detection
 Uses ML to monitor cost and usage, detecting unusual spikes or trends **without manual thresholds**.
 
-#### **Key Features:**
+**Key Features:**
 - Learns historic spending patterns for accurate anomaly detection
 - Monitors AWS services, accounts, tags, and cost categories
 - Provides root-cause analysis in anomaly reports
@@ -5172,14 +5169,14 @@ Hybrid Cloud (AWS + On-premise)
 
 AWS Batch is a **fully managed service** for running batch jobs at any scale.
 
-#### **Key Features:**
+**Key Features:**
 - Runs **100,000s of batch jobs** (tasks with a defined start and end).
 - Dynamically provisions **EC2 or Spot Instances** for cost efficiency.
 - Automatically allocates **compute and memory** as needed.
 - Jobs are **Docker-based** and run on ECS.
 - Simplifies infrastructure management—just submit or schedule jobs, and AWS Batch handles the rest!
 
-#### **Batch vs. Lambda**
+**Batch vs. Lambda**
 
 | Feature       | AWS Lambda  | AWS Batch  |
 |--------------|------------|------------|
@@ -5196,7 +5193,7 @@ AWS Batch is ideal for **long-running, flexible compute jobs**, while Lambda is 
 
 Amazon AppFlow is a **fully managed service** for securely transferring data between **SaaS applications and AWS**.
 
-#### **Key Features:**
+**Key Features:**
 - **Sources:** Salesforce, SAP, Zendesk, Slack, ServiceNow.
 - **Destinations:** AWS services (S3, Redshift) and external platforms (Snowflake, Salesforce).
 - **Flexible scheduling:** On-demand, event-driven, or scheduled transfers.
@@ -5208,7 +5205,7 @@ Amazon AppFlow is a **fully managed service** for securely transferring data bet
 
 AWS Amplify is a **set of tools and services** for building and deploying **scalable full-stack** web and mobile applications.
 
-#### **Key Features:**
+**Key Features:**
 - **Built-in services:** Authentication, Storage, APIs (REST/GraphQL), CI/CD, PubSub, Analytics, AI/ML, and Monitoring.
 - **Flexible deployment:** Connect to GitHub, CodeCommit, Bitbucket, GitLab, or upload code directly.
 
@@ -5219,7 +5216,7 @@ AWS Amplify is a **set of tools and services** for building and deploying **scal
 
 AWS Instance Scheduler is a **solution** deployed using CloudFront that **automates start and stop schedules** for EC2, EC2 ASG and RDS instances, helping reduce costs.
 
-#### **Key Features:**
+**Key Features:**
 - **Automated scheduling:** Start/stop instances based on predefined schedules.
   - start, stop EC2 instances outside business hours
   - schedules are managed in DynamoDB table
@@ -5375,11 +5372,11 @@ In the context of sales channels for an insurance company, **cross-channel** ref
 4. **Consistent Branding and Messaging**:
   - The company ensures that the tone, offers, and communication remain consistent, whether the interaction happens in-person, online, or via phone.
 
-#### Examples in Insurance:
+**Examples in Insurance:**
 - A customer could begin researching insurance plans on the company's website, receive tailored recommendations through an AI chatbot, and complete the purchase through a financial advisor.
 - Integrated campaigns where advertisements on social media direct customers to personalized landing pages on the website, followed by follow-up calls from agents.
 
-#### Benefits:
+**Benefits:**
 - **Improved Customer Experience**: Seamless transitions between channels enhance satisfaction and reduce frustration.
 - **Increased Sales Opportunities**: Consistent cross-channel engagement can help convert leads into policyholders.
 - **Data-Driven Insights**: Unified data systems allow companies to analyze customer behavior and preferences across channels to optimize offerings.
@@ -5456,7 +5453,7 @@ Property insurance is a type of insurance policy that provides financial protect
 property, such as buildings, homes, businesses, and personal belongings. It covers risks like fire, theft, natural disasters, 
 vandalism, and other unexpected events, depending on the policy terms.
 
-#### Personas in Insurance
+**Personas in Insurance**
 1. Broker (Makler): Independent broker who works with multiple insurance companies
 2. Agent (Vertreter): Employee of an insurance company that sale the product directly to the clients
 3. Specialist: Expert in a particular areas of insurance or financial services with focus on specific product line
@@ -5635,11 +5632,11 @@ Efficiently move large datasets to and from AWS for HPC processing.
 ### **2. Compute & Networking**
 AWS provides specialized **compute and networking** options for high-speed, scalable HPC processing.
 
-#### **Compute Options:**
+**Compute Options:**
 - **EC2 Instances** – Choose from **CPU-optimized (C5, C6i)** or **GPU-optimized (P4, G5)** instances for different workloads.
 - **Spot Instances & Spot Fleets** – Cost-efficient computing with Auto Scaling to match demand.
 
-#### **Networking Enhancements:**
+**Networking Enhancements:**
 - **EC2 Placement Groups** – Cluster instances for **low-latency, high-throughput communication**.
 - **EC2 Enhanced Networking (SR-IOV)** – Reduces latency and increases packet throughput.
   - **Elastic Network Adapter (ENA):** Up to **100 Gbps** bandwidth.
@@ -5653,11 +5650,11 @@ AWS provides specialized **compute and networking** options for high-speed, scal
 ### **3. Storage**
 AWS provides both **instance-attached** and **network-based** storage optimized for HPC.
 
-#### **Instance-Attached Storage:**
+**Instance-Attached Storage:**
 - **Amazon EBS:** Up to **256,000 IOPS** with **io2 Block Express**.
 - **Instance Store:** Directly attached to EC2, **low latency**, capable of **millions of IOPS**.
 
-#### **Network Storage:**
+**Network Storage:**
 - **Amazon S3:** Cost-effective storage for large datasets (object storage, not a file system).
 - **Amazon EFS:** Scalable file storage with **automatic IOPS scaling**.
 - **Amazon FSx for Lustre:** HPC-optimized distributed file system.
