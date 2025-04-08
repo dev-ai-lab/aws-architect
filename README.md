@@ -561,7 +561,7 @@ Default output format [None]:
 ![eventbridge-iam-role-vs-policy.png](media/iam/eventbridge-iam-role-vs-policy.png)
 
 **IAM Permission Boundary & Policy Evaluation:**
-- IAM Permission Boundaries are supported for users and roles (not groups)
+- IAM Permission Boundaries are supported for users and roles (`not groups)
 - Advanced feature to use a managed policy to set the maximum permissions an IAM entity can get.
 ![img.png](media/iam/iam-permission-boundary.png)
 - Can be used in combinations of AWS Organizations SCP
@@ -2686,8 +2686,6 @@ Waterfall model for transitioning between storage classes:
 
 ![rds-event-notification.png](media/serverless/rds-event-notification.png)
 
-## AWS DynamoDB
-- See `bank-microservices` repository under `/bank-docs`
 ## AWS No SQL
 ### DynamoDB - NoSQL
 - **Fully managed & available:**
@@ -2703,6 +2701,7 @@ Waterfall model for transitioning between storage classes:
   - Provisioned (pre-planned RCUs/WCUs with auto-scaling) and On-Demand (automatic scaling for variable workloads).
 - Standard & Infrequent Access (IA) Table Class
 - If schema changes rapidly, then DynamoDB is the choice
+- DynamoDB + lambda tech stack --> key-value pair data processing and storing 
 
 ![img.png](media/serverless/dynamodb-table.png)
 
@@ -3535,6 +3534,7 @@ ALARM --state-reason "testing purposes"
   - Do my buckets have public access?
   - How has my ALB configuration changed?
 - **Receive SNS alerts for changes**
+- AWS Config has a managed rule named `acm-certificate-expiration-check to check for expiring certificates (configurable number of days)
 - **Per-region service** (can be aggregated across regions and accounts)
 - **Store configuration data in S3** (analyzed by Athena)
 - **Config Rules:**
@@ -4447,6 +4447,20 @@ Site-to-Site VPN Connections:
 
 **Transit Gateway – Share Direct Connect between multiple accounts**
 ![shared-direct-conn-multiple-ac.png](media/vpc/shared-direct-conn-multiple-ac.png)
+
+### Shared Services VPC
+- Instead of having the shared services in each, put it centrally and save administrative overhead and costs
+- VPC endpoints are h-scaled, highly available VPC components.
+- The endpoits allow comm. between instances in your VPC and services without imposing availability risks or bandwidth constraints on your n/w traffic.
+- it reduces data transfer charges resulitng from n/w comm. b/w private vpc and the aws services
+![shared-vpc-with-transit-gw.jpg](media/vpc/shared-vpc-with-transit-gw.jpg)
+
+### Transit VPC
+A **Transit VPC** is a **Virtual Private Cloud (VPC)** used as a **central hub** to route traffic between multiple **spoke VPCs** or **remote networks** (like on-premises data centers) in a hub-and-spoke architecture. 
+It simplifies network management by centralizing connectivity, often using **VPNs or AWS Transit Gateway** to route traffic securely and efficiently.
+- It generates additional data transfer charges for traffic traversing the transit VPC.
+
+![transit-vpc.jpg](media/vpc/transit-vpc.jpg)
 
 ### VPC - Traffic Mirroring
 ✔ **Captures & inspects** network traffic in your VPC in a non-intrusive manner
@@ -5685,7 +5699,9 @@ Explore more at: Use it along the journey in the role of an architect
 
 ---
 
-Let me know if you want this as a CSV, PDF, or in tabular format!
+## Mind Teasers (AWS)
+- running AWS RDS found to be unencrypted? How to fix?
+- 
 # AWS AI/ML Path
 
 ![aws-ai-ml-certification-path.png](media/aws-ai-ml-certification-path.png)
