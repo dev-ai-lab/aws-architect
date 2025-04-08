@@ -6,12 +6,12 @@
   * [How to access AWS:](#how-to-access-aws)
     * [Install aws cli on MacOS:](#install-aws-cli-on-macos)
   * [IAM](#iam)
-    * [IAM Advanced Topics:](#iam-advanced-topics)
+    * [IAM Advanced Topics](#iam-advanced-topics)
   * [EC2 Service (Elastic Compute Cloud) - Infras as a service](#ec2-service-elastic-compute-cloud---infras-as-a-service)
     * [EC2 Capabilities](#ec2-capabilities)
-    * [EC2 Purchasing Options](#ec2-purchasing-options-)
-    * [*Elastic IP*:](#elastic-ip-)
-    * [*EC2 placement groups*:](#ec2-placement-groups-)
+    * [EC2 Purchasing Options](#ec2-purchasing-options)
+    * [*Elastic IP*](#elastic-ip)
+    * [*EC2 placement groups*](#ec2-placement-groups)
     * [Elastic Network Interface (ENI)](#elastic-network-interface-eni)
     * [EC2 instance Hibernate:](#ec2-instance-hibernate)
     * [EC2 Instance Storage - EBS](#ec2-instance-storage---ebs)
@@ -56,7 +56,7 @@
     * [AWS App2Container (A2C)](#aws-app2container-a2c)
   * [AWS EKS (Elastic Kubernetes Service)](#aws-eks-elastic-kubernetes-service)
     * [Zoning concepts:](#zoning-concepts)
-  * [Crossplane:](#crossplane-)
+  * [Crossplane](#crossplane)
     * [Examples:](#examples)
   * [AWS Serverless overview](#aws-serverless-overview)
   * [AWS DynamoDB](#aws-dynamodb)
@@ -386,7 +386,7 @@ Default output format [None]:
   - Use access keys
   - Use IAM reports
 
-### IAM Advanced Topics:
+### IAM Advanced Topics
 **Organization:**
 - **Global service** for managing multiple AWS accounts.
 - **Management account** oversees the organization; others are **member accounts**.
@@ -696,7 +696,7 @@ echo "<h1>Hello World from $(hostname -f)</h1>" > /var/www/html/index.html
 - Patch test:
   - put `ReplaceUnhealthy` in standby or 
   - put instance into standby state
-### EC2 Purchasing Options 
+### EC2 Purchasing Options
 - On demand instances: short workload, pay by second
 - Reserved (1 & 3 years)
   - Reserved
@@ -718,7 +718,7 @@ echo "<h1>Hello World from $(hostname -f)</h1>" > /var/www/html/index.html
 
 - IPv4 costs: Configure IPAM for getting usage insights
 
-### *Elastic IP*: 
+### *Elastic IP*
 - Restart of a instance changes its public ip 
 - Is a public IP you own as long as you don't delete it.
 - Could be mapped rapidly to another instance to mask the failure of an instance
@@ -729,7 +729,7 @@ echo "<h1>Hello World from $(hostname -f)</h1>" > /var/www/html/index.html
 
 ![elastic-ip-allocation.gif](media/elastic-ip-allocation.gif)
 
-### *EC2 placement groups*: 
+### *EC2 placement groups*
 When you launch your EC2 instances, EC2 service attempts to place the instance in such a way that all the instances are spread out across the underlying hardware to minimize correlated failures.
 To influence this, use placement group
 - It is free of cost
@@ -2439,7 +2439,7 @@ Waterfall model for transitioning between storage classes:
 - prod in middle zone has its own k8s cluster
 - In Azure, a zone is a subnet
 
-## Crossplane: 
+## Crossplane
 - Crossplane is an open-source framework that enables you to manage infrastructure and services using Kubernetes APIs. 
 - Key Features of Crossplane
   - Kubernetes-Native: Uses Kubernetes Custom Resource Definitions (CRDs) and Controllers to manage resources. 
