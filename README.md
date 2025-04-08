@@ -2108,6 +2108,10 @@ Waterfall model for transitioning between storage classes:
 - FIFO Queue
   - it has limited throughput because of ordering
   - Ordering by message group ID (all message in the same group are ordered) - mandatory parameter
+  - Group Id is comparable to a partition ID
+  - to allow multiple consumers, we use group ID
+  - Each group could be related to a single producer
+  - in KDS, a shard will process one producer
   - Name must end with `.fifo`
   - Because of ordering it supports `300msg/s`
   - with batching (max. batching 10 message per operation), it can reach max of `3000msg/s
