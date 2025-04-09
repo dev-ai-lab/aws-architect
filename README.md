@@ -21,6 +21,8 @@
     * [High availability and scalability](#high-availability-and-scalability)
   * [ELB - AWS managed Load Balancer](#elb---aws-managed-load-balancer)
   * [Auto Scaling Group (ASG)](#auto-scaling-group-asg)
+    * [🔹 **Default Termination Policy (How instances are chosen for termination):**](#-default-termination-policy-how-instances-are-chosen-for-termination)
+    * [✅ Why this matters:](#-why-this-matters)
   * [AWS RDS, Aurora, ElastiCache](#aws-rds-aurora-elasticache)
   * [AWS Route 53](#aws-route-53)
     * [**Understanding DNS Hierarchical Naming Structure**](#understanding-dns-hierarchical-naming-structure)
@@ -59,7 +61,6 @@
   * [Crossplane](#crossplane)
     * [Examples:](#examples)
   * [AWS Serverless overview](#aws-serverless-overview)
-  * [AWS DynamoDB](#aws-dynamodb)
   * [AWS No SQL](#aws-no-sql)
     * [DynamoDB - NoSQL](#dynamodb---nosql)
   * [AWS API Management](#aws-api-management)
@@ -118,12 +119,14 @@
     * [Security Groups & NACLs](#security-groups--nacls)
     * [**VPC Peering**](#vpc-peering)
     * [VPC sharing](#vpc-sharing-)
-    * [VPC Endpoints (AWS PrivateLink)](#vpc-endpoints-aws-privatelink)
+    * [VPC Endpoints](#vpc-endpoints)
     * [VPC Flow Logs](#vpc-flow-logs)
     * [Summary - VPC Setup Journey](#summary---vpc-setup-journey)
     * [AWS Site-to-Site VPN](#aws-site-to-site-vpn)
     * [AWS Direct Connect (DX)](#aws-direct-connect-dx)
     * [Transit Gateway](#transit-gateway)
+    * [Shared Services VPC](#shared-services-vpc)
+    * [Transit VPC](#transit-vpc)
     * [VPC - Traffic Mirroring](#vpc---traffic-mirroring)
     * [**IPv6 in AWS**](#ipv6-in-aws)
     * [**IPv6 in VPC**](#ipv6-in-vpc)
@@ -217,6 +220,7 @@
     * [**EBS (Elastic Block Store)**](#ebs-elastic-block-store)
     * [**Other Storage Services**](#other-storage-services)
     * [**Data Transfer**](#data-transfer)
+  * [Mind Teasers (AWS)](#mind-teasers-aws)
 * [AWS AI/ML Path](#aws-aiml-path)
 <!-- TOC -->
 # AWS Solution Architect
@@ -714,7 +718,10 @@ echo "<h1>Hello World from $(hostname -f)</h1>" > /var/www/html/index.html
 - Dedicated Instances: no other customers will share your hardware
 - Capacity Reservation: reserve a capacity in specific AZ
 - Reference for pricing: lectures 44 to 47
-- Spot Fleet: check lecture 46
+- Spot Fleet: selects the spot instance pools
+  - By default, it maintains a target capacity by launching replacement instances after the spot instances in the fleet are terminated
+  - a spot instance is an unused EC2 that is available for less than the on-demand price.
+  - spot fleet uses `lowestPrice strategy.
 
 - IPv4 costs: Configure IPAM for getting usage insights
 
@@ -931,6 +938,7 @@ To influence this, use placement group
 - Seamlessly handle failure of downstream instance
 - Does regular health check of the instances
 - SSL termination (HTTPS)
+- ELB is Multi-AZ and doesn't work across regions
 - Enforce stickiness to cookies
 - High availability across zones
 - Separate public traffic from private one
@@ -1093,6 +1101,31 @@ To influence this, use placement group
 - Scaling Cooldowns
   - after scaling activities happens, it goes into cooldown period (default 300 seconds)
   - during this period no terminate or launch happens
+---
+
+### 🔹 **Default Termination Policy (How instances are chosen for termination):**
+
+When Auto Scaling needs to terminate an instance (e.g., during scale-in), it follows this **order**:
+
+1. **AZ Balance**:  
+   Tries to **keep Availability Zones balanced** by choosing the AZ with the **most instances**.
+
+2. **Oldest Launch Template**:  
+   Within that AZ, it picks instances **launched with the oldest template** unless there is an instance that uses launch configuration.
+
+3. **Oldest Instance**:  
+   If multiple instances use the same config, it terminates the **oldest EC2 instance**.
+4. The one closest to the next billing hour
+
+5. **Random Choice**:  
+   If there's still a tie, it **randomly picks** one.
+
+---
+
+### ✅ Why this matters:
+- Helps maintain **AZ balance** (for high availability).
+- Encourages rotation of **older instances**.
+- Ensures **consistent configuration** by phasing out outdated launch setups.
 
 ## AWS RDS, Aurora, ElastiCache
 - see the documentation in bank-docs under section Databases
@@ -3702,9 +3735,14 @@ Copying Snapshots across regions
 
 - Identical KMS keys in different AWS Regions that can be used interchangeably
 - Multi-Region keys have the same key ID, key material, automatic rotation... • Encrypt in one Region and decrypt in other Regions
-- No need to re-encrypt or making cross-Region API calls • KMS Multi-Region are NOT global (Primary + Replicas)
+- No need to re-encrypt or making cross-Region API calls 
+- KMS Multi-Region are NOT global (Primary + Replicas)
 - Each Multi-Region key is managed independently
-- Use cases: global client-side encryption, encryption on Global DynamoDB, Global Aurora
+- Use cases: 
+  - global client-side encryption, 
+  - encryption on Global DynamoDB, 
+  - Global Aurora
+  - storing s3 bucket data in multiple regions using the same encryption key.
 
 DynamoDB Global Tables and KMS Multi-Region Keys Client-Side encryption
 - We can encrypt specific attributes client-side in our DynamoDB table using the Amazon DynamoDB Encryption Client
@@ -4277,7 +4315,7 @@ Updating Routing Table:
 ![vpc-peering-demo-2.gif](media/vpc/vpc-peering-demo-2.gif)
 ### VPC sharing 
 See [here](https://docs.aws.amazon.com/vpc/latest/userguide/vpc-sharing.html)
-### VPC Endpoints (AWS PrivateLink)
+### VPC Endpoints
 - AWS services have public URLs.
 - VPC Endpoints enable private network access to AWS services, bypassing the public Internet.
 - Highly available, redundant, and scalable.
