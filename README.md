@@ -1910,7 +1910,7 @@ Waterfall model for transitioning between storage classes:
 ![aws-snowball-storage.png](media/advanced-storage/aws-snowball-storage.png)
 
 - Edge computing use case
-  - process data while being generated on the edge location i.e underground with internet, ships, truck etc
+  - process data while being generated on the edge location i.e underground without internet, ships, truck etc
   - limited access to internet or power
   - with snowball edge we can compute, run EC2 instances or Lambda at the edge
   - use case:
