@@ -21,8 +21,6 @@
     * [High availability and scalability](#high-availability-and-scalability)
   * [ELB - AWS managed Load Balancer](#elb---aws-managed-load-balancer)
   * [Auto Scaling Group (ASG)](#auto-scaling-group-asg)
-    * [🔹 **Default Termination Policy (How instances are chosen for termination):**](#-default-termination-policy-how-instances-are-chosen-for-termination)
-    * [✅ Why this matters:](#-why-this-matters)
   * [AWS RDS, Aurora, ElastiCache](#aws-rds-aurora-elasticache)
   * [AWS Route 53](#aws-route-53)
     * [**Understanding DNS Hierarchical Naming Structure**](#understanding-dns-hierarchical-naming-structure)
@@ -125,6 +123,7 @@
     * [AWS Site-to-Site VPN](#aws-site-to-site-vpn)
     * [AWS Direct Connect (DX)](#aws-direct-connect-dx)
     * [Transit Gateway](#transit-gateway)
+    * [Resource Access Manager (RAM)](#resource-access-manager-ram)
     * [Shared Services VPC](#shared-services-vpc)
     * [Transit VPC](#transit-vpc)
     * [VPC - Traffic Mirroring](#vpc---traffic-mirroring)
@@ -1065,6 +1064,7 @@ To influence this, use placement group
 
 ## Auto Scaling Group (ASG)
 - horizontally scaling the number of instances up and down
+- scale up vs scale out??
 - ensures max and min number of instances at any time
 - terminate unhealthy and bring up new ones
 - automatically register the new one to LB
@@ -1103,7 +1103,7 @@ To influence this, use placement group
   - during this period no terminate or launch happens
 ---
 
-### 🔹 **Default Termination Policy (How instances are chosen for termination):**
+🔹 **Default Termination Policy (How instances are chosen for termination):**
 
 When Auto Scaling needs to terminate an instance (e.g., during scale-in), it follows this **order**:
 
@@ -1122,7 +1122,7 @@ When Auto Scaling needs to terminate an instance (e.g., during scale-in), it fol
 
 ---
 
-### ✅ Why this matters:
+ ✅ **Why this matters**
 - Helps maintain **AZ balance** (for high availability).
 - Encourages rotation of **older instances**.
 - Ensures **consistent configuration** by phasing out outdated launch setups.
@@ -1791,6 +1791,9 @@ Waterfall model for transitioning between storage classes:
 - improves read performance by caching content at the edge (all around the year)
 - aws has [216 point](https://aws.amazon.com/cloudfront/features/?nc=sn&loc=2&whats-new-cloudfront.sort-by=item.additionalFields.postDateTime&whats-new-cloudfront.sort-order=desc) of presence ( edge locations)
 - DDoS protection (worldwide shutdown) by Shielld and AWS app firewall
+- Integration with Cognito User Pool:
+  - Can't directly integration with cognito
+  - would need an additional Lambda@Edge function to accomplish authentication via Cognito User Pools
 - CloudFront Origins:
   - S3 bucket
     - to allow only CF to access the bucket: use Origin Access Control (OAC)
@@ -1916,7 +1919,7 @@ Waterfall model for transitioning between storage classes:
   - use case:
     - preprocessing data, ML, transcode media
 - Snowball into Glacier:
-  - we can't import directly to glacier storage, instead:
+  - we can't import directly to S3 glacier storage, instead:
 
 ![aws-snowball-2-glacier.png](media/advanced-storage/aws-snowball-2-glacier.png)
 - Demos:
@@ -2233,8 +2236,12 @@ Waterfall model for transitioning between storage classes:
 ![drafted-kinesis-data-stream.png](media/messaging/drafted-kinesis-data-stream.png)
 
 **Kinesis Data Stream:**
+- It is a massively scalable and durable real-time data streaming
+- KDS make sure the streaming data is available to multiple real-time analytics applications, to S3, Lambda within 70 milliseconds of the data being collected.
+- Its streams scale from MBs to TBs per hour & scale from thousands to millions of PUTs per second
+- Adjust the throughput anytime
 - Retention between 1 day to 365 days
-- Ability to reprocess (replay) data
+- Ability to reprocess (replay) data or retry mechanism
 - Once data is inserted in Kinesis, it can’t be deleted (immutability)
 - Data that shares the same partition goes to the same shard (ordering) • Producers: AWS SDK, Kinesis Producer Library (KPL), Kinesis Agent
 - Consumers:
@@ -4490,6 +4497,28 @@ Site-to-Site VPN Connections:
 **Transit Gateway – Share Direct Connect between multiple accounts**
 ![shared-direct-conn-multiple-ac.png](media/vpc/shared-direct-conn-multiple-ac.png)
 
+### Resource Access Manager (RAM)
+**AWS Resource Access Manager (RAM)** lets you **share AWS resources** with other **AWS accounts** or **within your organization (via AWS Organizations)**.
+
+🔹 **Key Points**
+- Enables **secure resource sharing** without needing to copy resources (substantially reducing operational overhead).
+- Commonly shared resources:
+  - VPC subnets
+  - Transit Gateways
+  - License Manager configurations
+  - Route 53 Resolver rules
+- You control **who can access** and **what they can do**.
+
+---
+
+🔹 **Use Case Example**
+- Share a **VPC subnet** across multiple accounts so that EC2 instances in different accounts can launch into the same network (VPC).
+
+---
+
+In short: **AWS RAM** simplifies **cross-account resource sharing** while keeping it **secure and managed**.
+
+![aws-recource-access-manager.png](media/vpc/aws-recource-access-manager.png)
 ### Shared Services VPC
 - Instead of having the shared services in each, put it centrally and save administrative overhead and costs
 - VPC endpoints are h-scaled, highly available VPC components.
