@@ -1979,8 +1979,7 @@ Waterfall model for transitioning between storage classes:
 
 ![fsx-openzfs.png](media/advanced-storage/drafted-fsx-openzfs.png)
 - Demos
-
-![aws-fsx-demo.gif](media/advanced-storage/aws-fsx-demo.gif)
+See the demo [here](media/advanced-storage/aws-fsx-demo.gif)
 
 ### AWS Storage Gateway
 - S3 is a proprietary storage technology (unlike EFS / NFS), so how to expose the S3 data on-premises?
@@ -4988,10 +4987,22 @@ AWS CloudFormation is a declarative tool for defining and provisioning AWS infra
 
 CloudFormation simplifies infrastructure management, making deployments efficient, repeatable, and cost-effective.
 
+- CloudFormation Stackset
+AWS **CloudFormation StackSet** is a feature that allows you to **deploy CloudFormation stacks across multiple AWS accounts and regions** from a single template.
+  - Key Points:
+    - **Centralized management**: Create, update, or delete stacks in multiple accounts/regions in one go.
+    - **Multi-account support**: Ideal for organizations using AWS Organizations.
+    - **Automation**: Useful for enforcing consistent infrastructure (e.g., IAM roles, VPCs) across environments.
+    - **Delegated administration**: You can allow other accounts to create StackSets using a shared admin account.
+
+In short, StackSets make it easy to **scale infrastructure as code** across a distributed AWS environment.
+
+![cf-stack-set.png](media/cloud-formation/cf-stack-set.png)
+
 ### CloudFormation + Application Composer
 Visualizes all resources and their relationships
 
-![cloudformation-demo.gif](media/cloudformation-demo.gif)
+![cloudformation-demo.gif](media/cloud-formation/cloudformation-demo.gif)
 
 ### CloudFormation Service Role
 
@@ -5002,10 +5013,10 @@ A **CloudFormation Service Role** is an IAM role that allows CloudFormation to m
 - Supports **least privilege principle** by restricting user access while still allowing stack operations.
 - Users must have the **`iam:PassRole`** permission to assign the role to CloudFormation.
 
-![cloudformation-service-role.png](media/cloudformation-service-role.png)
+![cloudformation-service-role.png](media/cloud-formation/cloudformation-service-role.png)
 
 ### Demo
-![cloudformation-service-role-demo.gif](media/cloudformation-service-role-demo.gif)
+![cloudformation-service-role-demo.gif](media/cloud-formation/cloudformation-service-role-demo.gif)
 ## Amazon Simple Email Service (SES)
 
 A fully managed service for secure, scalable email sending and receiving.
