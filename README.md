@@ -416,7 +416,8 @@ Default output format [None]:
 - SCP Examples - Blocklist and Allowlist strategies
 ![iam-scp-allow-deny.png](media/iam/iam-scp-allow-deny.png)
 - Demo
-![iam-organization-demo.gif](media/iam/iam-organization-demo.gif)
+
+[iam-organization-demo.gif](media/iam/iam-organization-demo.gif)
 
 **IAM Conditions:**
 - `aws:SourceIp` restrict the client IP from which the API calls are being made
@@ -644,7 +645,7 @@ IAM Identity Center – Active Directory Setup:
 ![aws-id-center-self-mgmt-ad.png](media/iam/aws-id-center-self-mgmt-ad.png)
 
 Demo:
-![aws-ad-demo.gif](media/iam/aws-ad-demo.gif)
+[aws-ad-demo.gif](media/iam/aws-ad-demo.gif)
 
 **AWS Control Tower - a service on top of the organization**
 - Easy way to set up and govern a secure and compliant multi-account- AWS environment based on best practices
@@ -733,7 +734,7 @@ echo "<h1>Hello World from $(hostname -f)</h1>" > /var/www/html/index.html
   - Try to use random public IP and register a DNS name to it
   - Use load balancer (best option)
 
-![elastic-ip-allocation.gif](media/elastic-ip-allocation.gif)
+[elastic-ip-allocation.gif](media/elastic-ip-allocation.gif)
 
 ### *EC2 placement groups*
 When you launch your EC2 instances, EC2 service attempts to place the instance in such a way that all the instances are spread out across the underlying hardware to minimize correlated failures.
@@ -763,7 +764,7 @@ To influence this, use placement group
 
 ![elastic-network-interface.png](media/elastic-network-interface.png)
 
-![eni-demo.gif](media/eni-demo.gif)
+[eni-demo.gif](media/eni-demo.gif)
 
 ### EC2 instance Hibernate:
 - Whatever in RAM is preserved
@@ -827,7 +828,7 @@ To influence this, use placement group
       - Max throughput 250 MiB/s - max IOPS 250
 - Only `gp2/gp3` , `io1/io2`  and `instance store` can be used as `root` volumes (boot volumes)
 
-![ebs-volume-demo.gif](media/ebs-volume-demo.gif)
+[ebs-volume-demo.gif](media/ebs-volume-demo.gif)
 
 - Multi-Attach (io1/io2 family) - attach the same volume to multiple EC2 instances in the same AZ:
   - both read and write at the same time
@@ -856,7 +857,7 @@ To influence this, use placement group
 ![ebs-volume-snapshots.png](media/ebs-volume-snapshots.png)
 - Snapshot Demo:
 
-![snapshot-demo.gif](media/snapshot-demo.gif)
+[snapshot-demo.gif](media/snapshot-demo.gif)
 
 **EBS Encryption**
 - Encrypted EBS volumes, means encryption of:
@@ -885,8 +886,8 @@ To influence this, use placement group
 ![ami-creation-process.png](media/ami-creation-process.png)
 - Demos
 
-![ami-demo-1.gif](media/ami-demo-1.gif)
-![ami-demo-2.gif](media/ami-demo-2.gif)
+[ami-demo-1.gif](media/ami-demo-1.gif)
+[ami-demo-2.gif](media/ami-demo-2.gif)
 
 ### EC2 Instance Store
 - In need of high performance hardware disk:
@@ -913,7 +914,7 @@ To influence this, use placement group
     - Root terminated by default
   - EFS Creation Demo:
   
-  ![efs-creation-demo.gif](media/efs-creation-demo.gif)
+[efs-creation-demo.gif](media/efs-creation-demo.gif)
   - EBS:
     - Mounting 100s of instances across AZs
     - Linux system only
@@ -979,9 +980,9 @@ To influence this, use placement group
     
   ![alb-termination-&-forwarding.png](media/alb-termination-and-forwarding.png)
   - **ALB Setup Demo**
-  ![alb-setup-demo.gif](media/alb-setup-demo.gif)
+    - [alb-setup-demo.gif](media/alb-setup-demo.gif)
   - ALB Rule Setup Demo (Continue)
-  ![alb-rule-setup-demo.gif](media/alb-rule-setup-demo.gif)
+    - [alb-rule-setup-demo.gif](media/alb-rule-setup-demo.gif)
     
   - Network LB: TCP, TLS (secure TLS), UDP - 2017. 
     - A layer 4 LB, High Performance (millions of requests per seconds)
@@ -996,8 +997,7 @@ To influence this, use placement group
       - Another ALB: NLB --> ALB, getting benefits of both
     - `Health check: TCP, HTTP, and HTTPS
     - NLB Setup Demo
-    
-    ![nlb-demo.gif](media/nlb-demo.gif)
+      - [nlb-demo.gif](media/nlb-demo.gif)
     
   - **Gateway** LB: operates at layer 3 (Network layer) - IP protocol
     - Deploy, scale and manage a fleet if 3rd party network virtual appliances i.e Firewalls, Intrusion detection & Prevention Systems, Deep packet inspection system, payload manipulation
@@ -1980,7 +1980,7 @@ Waterfall model for transitioning between storage classes:
 ![fsx-openzfs.png](media/advanced-storage/drafted-fsx-openzfs.png)
 - Demos
 
-[aws-fsx-demo.gif](media/advanced-storage/fsx-demo.md)
+[aws-fsx-demo.gif](media/advanced-storage/aws-fsx-demo.gif)
 
 ### AWS Storage Gateway
 - S3 is a proprietary storage technology (unlike EFS / NFS), so how to expose the S3 data on-premises?
