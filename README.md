@@ -1980,7 +1980,7 @@ Waterfall model for transitioning between storage classes:
 ![fsx-openzfs.png](media/advanced-storage/drafted-fsx-openzfs.png)
 - Demos
 
-[aws-fsx-demo.gif](media/advanced-storage/aws-fsx-demo.gif)
+[aws-fsx-demo.gif](media/advanced-storage/fsx-demo.md)
 
 ### AWS Storage Gateway
 - S3 is a proprietary storage technology (unlike EFS / NFS), so how to expose the S3 data on-premises?
