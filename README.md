@@ -4206,6 +4206,7 @@ A **NAT (Network Address Translation) Instance** enables **EC2 instances in priv
 - **Source/Destination Check** must be **disabled**.
 - **Route tables** must direct private subnet traffic to the NAT instance.
 - Uses a **pre-configured Amazon Linux AMI** (support ended on **Dec 31, 2020**).
+- Port forwardingÖ Directs traffic from one port/IP to another
 
 **Limitations & Considerations:**
 - **Not highly available** – Requires **Auto Scaling Group (ASG) across multiple AZs** for resilience.
