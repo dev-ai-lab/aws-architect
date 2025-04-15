@@ -885,9 +885,8 @@ To influence this, use placement group
 
 ![ami-creation-process.png](media/ami-creation-process.png)
 - Demos
-
-[ami-demo-1.gif](media/ami-demo-1.gif)
-[ami-demo-2.gif](media/ami-demo-2.gif)
+  - [ami-demo-1.gif](media/ami-demo-1.gif)
+  - [ami-demo-2.gif](media/ami-demo-2.gif)
 
 ### EC2 Instance Store
 - In need of high performance hardware disk:
@@ -1354,12 +1353,9 @@ AWS Route 53 has several routing policies to **control how users reach your webs
 ![r53-private-r-health.png](media/r53-private-r-health.png)
 
 - Demos:
-
-[create-health-check.gif](media/create-health-check.gif)
-
-[calculated-health-check-demo.gif](media/calculated-health-check-demo.gif)
-
-[health-check-unhealthy-result-dem.gif](media/health-check-unhealthy-result-dem.gif)
+  - [create-health-check.gif](media/create-health-check.gif)
+  - [calculated-health-check-demo.gif](media/calculated-health-check-demo.gif)
+  - [health-check-unhealthy-result-dem.gif](media/health-check-unhealthy-result-dem.gif)
 
 - Failover Routing Policy:
 
@@ -1495,9 +1491,8 @@ Think of **AWS S3** like an **infinite online hard drive** where you can store a
 
 [s3-versioning-demo.gif](media/s3/s3-versioning-demo.gif)
   - Demo: restore previous version or delete one
-
-[s3-restore-previous-version-demo.gif](media/s3/s3-restore-previous-version-demo.gif)
-[s3-restore-deleted-obj-demo.gif](media/s3/s3-restore-deleted-obj-demo.gif)
+    - [s3-restore-previous-version-demo.gif](media/s3/s3-restore-previous-version-demo.gif)
+    - [s3-restore-deleted-obj-demo.gif](media/s3/s3-restore-deleted-obj-demo.gif)
 
   - **Replication** → Copies data to another AWS region for disaster recovery.
     - CRR (cross region replication)
@@ -1722,9 +1717,8 @@ Waterfall model for transitioning between storage classes:
   - logs put into logging bucket (both must be in the same region)
   - never make the app bucket and the log bucket --> it creates a loop (grows exponentially)
   - Demo:
-
-[s3-logging-demo.gif](media/s3/s3-logging-demo.gif)
-[s3-logging-demo-2.gif](media/s3/s3-logging-demo-2.gif)
+    - [s3-logging-demo.gif](media/s3/s3-logging-demo.gif)
+    - [s3-logging-demo-2.gif](media/s3/s3-logging-demo-2.gif)
 
 - S3 Object retention
   - one can set retention period on the object version only (implicitly through bucket default setting or explicitly through `retain until date` parameter)
@@ -1801,9 +1795,8 @@ Waterfall model for transitioning between storage classes:
 ![drafted-cloudfront-s3-origin.png](media/cloudfront/drafted-cloudfront-s3-origin.png)
 
   - Demo with S3 bucket as origin
-
-[cloudfront-setup-demo-1.gif](media/cloudfront/cloudfront-setup-demo-1.gif)
-[cloudfront-setup-demo-2.gif](media/cloudfront/cloudfront-setup-demo-2.gif)
+    - [cloudfront-setup-demo-1.gif](media/cloudfront/cloudfront-setup-demo-1.gif)
+    - [cloudfront-setup-demo-2.gif](media/cloudfront/cloudfront-setup-demo-2.gif)
 
   - Custom Origin (HTTP)
     - ALB
@@ -1886,11 +1879,10 @@ Waterfall model for transitioning between storage classes:
 ![cloudfront-global-accelerator.png](media/cloudfront/cloudfront-global-accelerator.png)
 
   - Demos: part 1 (creation of instances) part 2 (creation of GA) part 3 (interacting)
-
-[global-accelerator-demo-p1.gif](media/cloudfront/global-accelerator-demo-p1.gif)
-[global-accelerator-demo-p2.gif](media/cloudfront/global-accelerator-demo-p2.gif)
-[global-accelerator-demo-p3.gif](media/cloudfront/global-accelerator-demo-p3.gif)
-[global-accelerator-demo-p4.gif](media/cloudfront/global-accelerator-demo-p4.gif)
+    - [global-accelerator-demo-p1.gif](media/cloudfront/global-accelerator-demo-p1.gif)
+    - [global-accelerator-demo-p2.gif](media/cloudfront/global-accelerator-demo-p2.gif)
+    - [global-accelerator-demo-p3.gif](media/cloudfront/global-accelerator-demo-p3.gif)
+    - [global-accelerator-demo-p4.gif](media/cloudfront/global-accelerator-demo-p4.gif)
 
 ## AWS advanced storage
 ### AWS snowball
@@ -2353,10 +2345,9 @@ Waterfall model for transitioning between storage classes:
 ![drafted-ecs-data-volume-efs.png](media/containers/drafted-ecs-data-volume-efs.png)
 
 - Demos: ecs creation --> task definition --> service creation --> launched tasks --> update tasks
-
-[ecs-creation-demo.gif](media/containers/ecs-creation-demo.gif)
-[ecs-task-service-demo.gif](media/containers/ecs-task-service-demo.gif)
-[ecs-interaction-service-update.gif](media/containers/ecs-interaction-service-update.gif)
+  - [ecs-creation-demo.gif](media/containers/ecs-creation-demo.gif)
+  - [ecs-task-service-demo.gif](media/containers/ecs-task-service-demo.gif)
+  - [ecs-interaction-service-update.gif](media/containers/ecs-interaction-service-update.gif)
 
 
 - ECS service auto-scaling 
@@ -2418,9 +2409,8 @@ Waterfall model for transitioning between storage classes:
 ![drafted-aws-app-runner.png](media/containers/drafted-aws-app-runner.png)
 
 - Demo: 1. app runner service creation 2. interacting with the app runner
-
-![aws-app-runner-creation.gif](media/containers/aws-app-runner-creation.gif)
-![aws-app-runner-interaction.gif](media/containers/aws-app-runner-interaction.gif)
+  1. [aws-app-runner-creation.gif](media/containers/aws-app-runner-creation.gif)
+  2. [aws-app-runner-interaction.gif](media/containers/aws-app-runner-interaction.gif)
 
 ### AWS App2Container (A2C)
 - CLI tool for migrating Java & .NET apps into docker container
@@ -2465,9 +2455,8 @@ Waterfall model for transitioning between storage classes:
     - Amazon FSx for Lustre
     - Amazon FSx for NetApp ONTAP
 - Demo:
-
-![eks-cluster-creation-demo.gif](media/containers/eks-cluster-creation-demo.gif)
-![eks-node-group-demo.gif](media/containers/eks-node-group-demo.gif)
+  - [eks-cluster-creation-demo.gif](media/containers/eks-cluster-creation-demo.gif)
+  - [eks-node-group-demo.gif](media/containers/eks-node-group-demo.gif)
 - using `eksctl` create k8s cluster on [aws](https://docs.aws.amazon.com/eks/latest/userguide/create-cluster.html). 
 
 ### Zoning concepts:
@@ -2587,8 +2576,7 @@ Waterfall model for transitioning between storage classes:
     - Can use the /tmp directory to load other files at startup 
     - Size of environment variables: 4 KB 
 - Demo: lambda creation:
-
-![lambda-creation-demo.gif](media/serverless/lambda-creation-demo.gif)
+  - [lambda-creation-demo.gif](media/serverless/lambda-creation-demo.gif)
 
 - Lambda Concurrency & Throttling:
   - concurrency limit: upto 1000 concurrent executions (1000 lambdas working in parallel)
@@ -2604,8 +2592,7 @@ Waterfall model for transitioning between storage classes:
 ![drafted-lambda-concurrency-issue-async.png](media/serverless/drafted-lambda-concurrency-issue-async.png)
 
   - Demo:
-
-![lambda-concurr-demo.gif](media/serverless/lambda-concurr-demo.gif)
+    - [lambda-concurr-demo.gif](media/serverless/lambda-concurr-demo.gif)
 - Cold Start & Provisioned Capacity:
   - Cold start: 
     - code loaded + code outside handler run (init). 
@@ -2746,8 +2733,7 @@ Waterfall model for transitioning between storage classes:
 ![img.png](media/serverless/dynamodb-table.png)
 
 - Demos:
-
-![dynamodb-create-table.gif](media/serverless/dynamodb-create-table.gif)
+  - [dynamodb-create-table.gif](media/serverless/dynamodb-create-table.gif)
 - **DAX caching:**
   - Provides an in-memory cache for reduced read latency (microseconds) with a default 5-minute TTL.
   - helps solve read congestion
@@ -3187,7 +3173,7 @@ Amazon QuickSight is a **serverless, machine learning-powered business intellige
 - Dashboards retain **filters, parameters, sorting, and controls**.
 - To share a dashboard, it must be **published**, and users with access can see the **underlying data**.
 
-![quick-sight.gif](media/aws-data-analytics/quick-sight.gif)
+[quick-sight.gif](media/aws-data-analytics/quick-sight.gif)
 
 ![aws-quicksight.png](media/aws-data-analytics/aws-quicksight.png)
 
@@ -3419,9 +3405,8 @@ fields @timestamp, @message, @logStream, @log
 ```
 ![cloudwatch-logs.png](media/monitoring/cloudwatch-logs.png)
 - Demos
-
-![cloudwatch-log-metric-demo.gif](media/monitoring/cloudwatch-log-metric-demo.gif)
-![cloudwatch-live-tailing.gif](media/monitoring/cloudwatch-live-tailing.gif)
+  - [cloudwatch-log-metric-demo.gif](media/monitoring/cloudwatch-log-metric-demo.gif)
+  - [cloudwatch-live-tailing.gif](media/monitoring/cloudwatch-live-tailing.gif)
 
 - **CloudWatch Logs for EC2**
   - No default EC2 logs in CloudWatch
@@ -3466,8 +3451,7 @@ ALARM --state-reason "testing purposes"
 ```
 
 - Demo
-
-![ec2-alarm-action.gif](media/monitoring/ec2-alarm-action.gif)
+  - [ec2-alarm-action.gif](media/monitoring/ec2-alarm-action.gif)
 ### AWS Event Bridge (formerly CloudWatch Events)
 ![event-bridge-usages.png](media/monitoring/event-bridge-usages.png)
 - Event Bridge Rules
@@ -3495,7 +3479,7 @@ ALARM --state-reason "testing purposes"
 
 - Demo: creating custom bus, collection events (from aws and external systems such as OAuth), finally setting  up rules to take action
 
-![aws-event-bridge-bus-rule-demo.gif](media/monitoring/aws-event-bridge-bus-rule-demo.gif)
+[aws-event-bridge-bus-rule-demo.gif](media/monitoring/aws-event-bridge-bus-rule-demo.gif)
 
 - **AWS CloudWatch Insights**
 
@@ -3555,8 +3539,7 @@ ALARM --state-reason "testing purposes"
 ![img.png](media/monitoring/cloud-events-retention.png)
 
 - Demos
-
-![cloudtrail-demo.gif](media/monitoring/cloudtrail-demo.gif)
+  - [cloudtrail-demo.gif](media/monitoring/cloudtrail-demo.gif)
 
 - CloudTrail scenarios:
   - Amazon EventBridge – Intercept API Calls
@@ -3603,9 +3586,8 @@ ALARM --state-reason "testing purposes"
 ![img.png](media/monitoring/cloudconfig-state-data-send.png)
 
 - Demo:
-
-![aws-cloudconfig-creation-demo.gif](media/monitoring/aws-cloudconfig-creation-demo.gif)
-![aws-cloudconfig-rules-demo.gif](media/monitoring/aws-cloudconfig-rules-demo.gif)
+  - [aws-cloudconfig-creation-demo.gif](media/monitoring/aws-cloudconfig-creation-demo.gif)
+  - [aws-cloudconfig-rules-demo.gif](media/monitoring/aws-cloudconfig-rules-demo.gif)
 
 - CloudWatch vs CloudTrail vs CloudConfig: difference in an example using ALB
   - CloudWatch:
@@ -3730,7 +3712,8 @@ Copying Snapshots across regions
 }
 ```
 **Demo**
-![kms-customer-managed-key-demo.gif](media/encryption-security/kms-customer-managed-key-demo.gif)
+
+[kms-customer-managed-key-demo.gif](media/encryption-security/kms-customer-managed-key-demo.gif)
 
 **KMS Multi-Region Keys**
 
@@ -3811,15 +3794,15 @@ Parameters Policies (for advanced parameters)
 ![ssm-parameter-policy.png](media/encryption-security/ssm-parameter-policy.png)
 
 **Demo**
-![ssm-parameters-store-demo-1.gif](media/encryption-security/ssm-parameters-store-demo-1.gif)
-
-![ssm-parameters-store-demo-2.gif](media/encryption-security/ssm-parameters-store-demo-2.gif)
+  - [ssm-parameters-store-demo-1.gif](media/encryption-security/ssm-parameters-store-demo-1.gif)
+  - [ssm-parameters-store-demo-2.gif](media/encryption-security/ssm-parameters-store-demo-2.gif)
 
 **Demo: Using allowing a lambda to make use of parameter store**
 ![ssm-parameters-store-lambda-demo-1.gif](media/encryption-security/ssm-parameters-store-lambda-demo-1.gif)
 
 With decryption
-![ssm-parameters-store-lambda-demo-2.gif](media/encryption-security/ssm-parameters-store-lambda-demo-2.gif)
+
+[ssm-parameters-store-lambda-demo-2.gif](media/encryption-security/ssm-parameters-store-lambda-demo-2.gif)
 
 ### AWS Secrets Manager
 - A **secure service** for storing and managing secrets.
@@ -3838,7 +3821,8 @@ AWS Secrets Manager – Multi-Region Secrets
 
 ![aws-secret-manager](media/encryption-security/aws-secret-manager.png)
 **Demo**
-![aws-secret-manager-demo.gif](media/encryption-security/aws-secret-manager-demo.gif)
+
+[aws-secret-manager-demo.gif](media/encryption-security/aws-secret-manager-demo.gif)
 
 ### AWS Certificate Manager (ACM)
 - Easily provision, manage, and deploy TLS Certificates
@@ -3934,7 +3918,8 @@ AWS WAF helps protect your web applications from common threats like **SQL injec
 ![waf-fixed-ip-gw-solution.png](media/encryption-security/waf-fixed-ip-gw-solution.png)
 
 Demo
-![aws-waf-demo.gif](media/encryption-security/aws-waf-demo.gif)
+
+[aws-waf-demo.gif](media/encryption-security/aws-waf-demo.gif)
 ### **AWS Shield – DDoS Protection**
 
 AWS Shield is a managed **Distributed Denial of Service (DDoS)** protection service that helps safeguard AWS applications from malicious traffic overload.
@@ -4171,10 +4156,12 @@ VPC – Subnet (IPv4)
 **Demos**
 
 VPC creation
-![vpc-creation-demo.gif](media/vpc/vpc-creation-demo.gif)
+
+[vpc-creation-demo.gif](media/vpc/vpc-creation-demo.gif)
 
 VPC Subnets Creation
-![vpc-subnet-creation-demo.gif](media/vpc/vpc-subnet-creation-demo.gif)
+
+[vpc-subnet-creation-demo.gif](media/vpc/vpc-subnet-creation-demo.gif)
 
 ### **Internet Gateway (IGW)**
 
@@ -4185,7 +4172,8 @@ An **Internet Gateway (IGW)** enables **VPC resources** (e.g., EC2 instances) to
 - **Does not provide internet access by itself**—**route tables must be configured**.
 
 Demo
-![vpc-internet-gw-creation-demo.gif](media/vpc/vpc-internet-gw-creation-demo.gif)
+
+[vpc-internet-gw-creation-demo.gif](media/vpc/vpc-internet-gw-creation-demo.gif)
 ### **Bastion Hosts**
 
 A **Bastion Host** provides **secure SSH access** to private EC2 instances.
@@ -4201,9 +4189,11 @@ This setup ensures **controlled access** while keeping private instances secure.
 
 Demo
 Bastion Creation
-![vpc-bastion-connect-demo-1.gif](media/vpc/vpc-bastion-connect-demo-1.gif)
+
+[vpc-bastion-connect-demo-1.gif](media/vpc/vpc-bastion-connect-demo-1.gif)
 Bastion Interaction
-![vpc-bastion-interact-demo-2.gif](media/vpc/vpc-bastion-interact-demo-2.gif)
+
+[vpc-bastion-interact-demo-2.gif](media/vpc/vpc-bastion-interact-demo-2.gif)
 
 ### **NAT Instance (Legacy but Exam-Relevant)**
 
@@ -4226,7 +4216,8 @@ A **NAT (Network Address Translation) Instance** enables **EC2 instances in priv
 ![vpc-nat-instance.png](media/vpc/vpc-nat-instance.png)
 
 Demo:
-![vpc-nat-instance-demo.gif](media/vpc/vpc-nat-instance-demo.gif)
+
+[vpc-nat-instance-demo.gif](media/vpc/vpc-nat-instance-demo.gif)
 
 ### **NAT Gateway**
 
@@ -4254,9 +4245,8 @@ A **fully managed, high-availability NAT service** that enables private subnet E
 ![nat-gw-vs-nat-instance.png](media/vpc/nat-gw-vs-nat-instance.png)
 
 Demo
-
-![vpc-nat-gw-creation-demo-1.gif](media/vpc/vpc-nat-gw-creation-demo-1.gif)
-![vpc-nat-gw-interaction-demo-1.gif](media/vpc/vpc-nat-gw-interaction-demo-1.gif)
+  - [vpc-nat-gw-creation-demo-1.gif](media/vpc/vpc-nat-gw-creation-demo-1.gif)
+  - [vpc-nat-gw-interaction-demo-1.gif](media/vpc/vpc-nat-gw-interaction-demo-1.gif)
 
 ### Security Groups & NACLs
 
@@ -4299,7 +4289,8 @@ NACL vs SG
 ![nacl-vs-sg.png](media/vpc/nacl-vs-sg.png)
 
 NACL & SG Demo:
-![nacl-sg-inbound-outbound-demo.gif](media/vpc/nacl-sg-inbound-outbound-demo.gif)
+
+[nacl-sg-inbound-outbound-demo.gif](media/vpc/nacl-sg-inbound-outbound-demo.gif)
 
 ### **VPC Peering**
 - **Privately connects two VPCs** over AWS’ network.
@@ -4313,9 +4304,11 @@ NACL & SG Demo:
 
 Demo
 Creating VPC peering
-![vpc-peering-demo-1.gif](media/vpc/vpc-peering-demo-1.gif)
+
+[vpc-peering-demo-1.gif](media/vpc/vpc-peering-demo-1.gif)
 Updating Routing Table:
-![vpc-peering-demo-2.gif](media/vpc/vpc-peering-demo-2.gif)
+
+[vpc-peering-demo-2.gif](media/vpc/vpc-peering-demo-2.gif)
 ### VPC sharing 
 See [here](https://docs.aws.amazon.com/vpc/latest/userguide/vpc-sharing.html)
 ### VPC Endpoints
@@ -4377,9 +4370,11 @@ Demo
 Demos
 
 Part One: creating the flow logs
-![vpc-flow-logs-demo-1.gif](media/vpc/vpc-flow-logs-demo-1.gif)
+
+[vpc-flow-logs-demo-1.gif](media/vpc/vpc-flow-logs-demo-1.gif)
 Part Two: querying the s3 logs using Athena
-![vpc-flow-logs-demo-2-athena.gif](media/vpc/vpc-flow-logs-demo-2-athena.gif)
+
+[vpc-flow-logs-demo-2-athena.gif](media/vpc/vpc-flow-logs-demo-2-athena.gif)
 
 ### Summary - VPC Setup Journey
 ![vpc-setup-complete-journey-1.png](media/vpc/vpc-setup-complete-journey-1.png)
@@ -4414,7 +4409,8 @@ Site-to-Site VPN Connections:
 ![aws-vpn-cloudhub.png](media/vpc/aws-vpn-cloudhub.png)
 
 **Demo**
-![aws-s2s-vpn-connection-demo.gif](media/vpc/aws-s2s-vpn-connection-demo.gif)
+
+[aws-s2s-vpn-connection-demo.gif](media/vpc/aws-s2s-vpn-connection-demo.gif)
 
 
 ### AWS Direct Connect (DX)
@@ -4577,7 +4573,7 @@ It simplifies network management by centralizing connectivity, often using **VPN
 
 Demo
 
-![aws-ipv6-demo.gif](media/vpc/aws-ipv6-demo.gif)
+[aws-ipv6-demo.gif](media/vpc/aws-ipv6-demo.gif)
 
 ### Egress-only Internet Gateway
 - Used for IPv6 only
@@ -4592,7 +4588,7 @@ Demo
 
 
 ### VPC demo cleanup
-![vpc-cleanup-demo.gif](media/vpc/vpc-cleanup-demo.gif)
+[vpc-cleanup-demo.gif](media/vpc/vpc-cleanup-demo.gif)
 
 ### **AWS VPC Summary**
 
@@ -4781,7 +4777,8 @@ Demo
   - **Reduced latency spikes**
 
 **Demo**
-![dms-demo.gif](media/dr-and-migration/dms-demo.gif)
+
+[dms-demo.gif](media/dr-and-migration/dms-demo.gif)
 
 **RDS & Aurora MySQL Migrations**
 - **RDS MySQL → Aurora MySQL**
@@ -4999,7 +4996,7 @@ In short, StackSets make it easy to **scale infrastructure as code** across a di
 ### CloudFormation + Application Composer
 Visualizes all resources and their relationships
 
-![cloudformation-demo.gif](media/cloud-formation/cloudformation-demo.gif)
+[cloudformation-demo.gif](media/cloud-formation/cloudformation-demo.gif)
 
 ### CloudFormation Service Role
 
@@ -5013,7 +5010,7 @@ A **CloudFormation Service Role** is an IAM role that allows CloudFormation to m
 ![cloudformation-service-role.png](media/cloud-formation/cloudformation-service-role.png)
 
 ### Demo
-![cloudformation-service-role-demo.gif](media/cloud-formation/cloudformation-service-role-demo.gif)
+[cloudformation-service-role-demo.gif](media/cloud-formation/cloudformation-service-role-demo.gif)
 ## Amazon Simple Email Service (SES)
 
 A fully managed service for secure, scalable email sending and receiving.
@@ -5215,7 +5212,8 @@ Ideal for **non-production environments**, such as development and testing, to s
 https://aws.amazon.com/solutions/implementations/instance-scheduler-on-aws/
 
 Demo
-![instance-scheduler-demo.gif](media/instance-scheduler-demo.gif)
+
+[instance-scheduler-demo.gif](media/instance-scheduler-demo.gif)
 
 ## GitOps
 GitOps is a modern operational framework that uses Git as the single source of truth for managing infrastructure and applications. 
@@ -5548,11 +5546,11 @@ vandalism, and other unexpected events, depending on the policy terms.
 ![beanstalk-deployment-modes.png](media/drafted-beanstalk-deployment-modes.png)
   - Demos:
 
-![beanstalk-creation-demo.gif](media/beanstalk-creation-demo.gif)
+[beanstalk-creation-demo.gif](media/beanstalk-creation-demo.gif)
 
-![cloudformation-beanstalk-demo.gif](media/cloudformation-beanstalk-demo.gif)
+[cloudformation-beanstalk-demo.gif](media/cloudformation-beanstalk-demo.gif)
 
-![beanstalk-cleanup.gif](media/beanstalk-cleanup.gif)
+[beanstalk-cleanup.gif](media/beanstalk-cleanup.gif)
 
 
 # Solution Architect 2
@@ -5701,7 +5699,8 @@ Framework and adopt architectural best practices
 - Let’s have a look: https://console.aws.amazon.com/wellarchitected
 
 Demo:
-![well-architected-tool-demo.gif](media/well-architected-tool-demo.gif)
+
+[well-architected-tool-demo.gif](media/well-architected-tool-demo.gif)
 
 ## AWS Trusted Advisor
 
@@ -5720,7 +5719,8 @@ AWS Trusted Advisor provides **automated recommendations** to optimize your AWS 
 - **Programmatic access** via AWS Support API
 
 Demo
-![trusted-advisor-demo.gif](media/trusted-advisor-demo.gif)
+
+[trusted-advisor-demo.gif](media/trusted-advisor-demo.gif)
 
 ## More AWS Architecture Examples
 
@@ -5732,7 +5732,7 @@ Explore more at: Use it along the journey in the role of an architect
 🔗 [AWS Architecture](https://aws.amazon.com/architecture/)  
 🔗 [AWS Solutions](https://aws.amazon.com/solutions/)
 
-![aws-architect-reference-spaces-demo.gif](media/aws-architect-reference-spaces-demo.gif)
+[aws-architect-reference-spaces-demo.gif](media/aws-architect-reference-spaces-demo.gif)
 
 ## Exams materials
 - Solution architect associate [exam](https://aws.amazon.com/certification/certified-solutions-architect-associate/): 
