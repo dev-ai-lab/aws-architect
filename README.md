@@ -1841,6 +1841,9 @@ Waterfall model for transitioning between storage classes:
 ![cloudfront-invalidate-cache.png](media/cloudfront/cloudfront-invalidate-cache.png)
 
 ## AWS global accelerator
+- It is networking service that sends user's traffic through aws global network infrastructure
+
+![aws-global-accelerator.jpg](media/global-accelerator/aws-global-accelerator.jpg)
 - a lot of latency for global users due to many hops
 - Unicast IP vs Anycast IP (all server hold the same IP). A client will be sent to the closest one
 - AWS global accelerator
@@ -1848,7 +1851,7 @@ Waterfall model for transitioning between storage classes:
   - 2 Anycast IPs are created for your application. They are global. They will send the traffic to the closest edge location 
   - work with elastic IPs, EC2, ALB, NLB, public or private
 
-![aws-global-accelerator.png](media/cloudfront/aws-global-accelerator.png)
+![aws-global-accelerator.png](media/global-accelerator/aws-global-accelerator.png)
 - consistent performance:
   - intelligent routing to lowest latency and fast regional failover
   - no issue with client cache
@@ -1877,13 +1880,13 @@ Waterfall model for transitioning between storage classes:
   - fix price and 
   - data transfer fees
 
-![cloudfront-global-accelerator.png](media/cloudfront/cloudfront-global-accelerator.png)
+![cloudfront-global-accelerator.png](media/global-accelerator/cloudfront-global-accelerator.png)
 
   - Demos: part 1 (creation of instances) part 2 (creation of GA) part 3 (interacting)
     - [global-accelerator-demo-p1.gif](media/cloudfront/global-accelerator-demo-p1.gif)
-    - [global-accelerator-demo-p2.gif](media/cloudfront/global-accelerator-demo-p2.gif)
-    - [global-accelerator-demo-p3.gif](media/cloudfront/global-accelerator-demo-p3.gif)
-    - [global-accelerator-demo-p4.gif](media/cloudfront/global-accelerator-demo-p4.gif)
+    - [global-accelerator-demo-p2.gif](media/global-accelerator/global-accelerator-demo-p2.gif)
+    - [global-accelerator-demo-p3.gif](media/global-accelerator/global-accelerator-demo-p3.gif)
+    - [global-accelerator-demo-p4.gif](media/global-accelerator/global-accelerator-demo-p4.gif)
 
 ## AWS advanced storage
 ### AWS snowball
@@ -1983,12 +1986,13 @@ Waterfall model for transitioning between storage classes:
   - backup and restore of on-premise data for cloud migration
   - tiered storage (extend storage from on-premise to the cloud)
   - or have aws as main storage and use storage gateway for on-premise cache for low latency file access
-- Types:
-  - S3 File Gateway
-  - FSx File Gateway
+- AWS storage gateway provides 3 types of storage interfaces for on-premise apps:
+  - File Gateway
+    - S3 File GW
+    - FSx File GW
   - Volume GW
   - Tap GW
-- S3 File GW
+- AWS File GW
   - most recently used data is cached in the GW
   - bucket access using IAM roles for each file GW
   - SMB protocol has integration with active directory (AD) for use auth
@@ -2100,6 +2104,11 @@ Waterfall model for transitioning between storage classes:
 - Producing message:
   - Messages sent via SDK (SendMessage API)
   - Persisted until consumed & deleted by consumer
+- Delay queues let you postpone the delivery of the new messages to a queue for several seconds
+  - this gives the consumer time 
+  - default(minimum) delay for a queue is 0 seconds and max is 15 minutes
+    ![sqs-delay-queues-diagram.png](media/messaging/sqs-delay-queues-diagram.png)
+
 
 ![aws-sqs.png](media/messaging/aws-sqs.png)
 
@@ -3433,12 +3442,12 @@ fields @timestamp, @message, @logStream, @log
   - **Composite Alarms**: Monitor multiple alarms using AND/OR conditions to reduce alarm noise.
 
 ![cloudwatch-composed-alarms.png](media/monitoring/cloudwatch-composed-alarms.png)
-- EC2 Instance Recovery
+- EC2 Instance Recovery using `alarm actions`
   - Status Check:
     - Instance status = check the EC2 VM
     - System status = check the underlying hardware
     - Attached EBS status = check attached EBS volumes
-  - Recover y: Same Private, Public, Elastic IP, metadata, placement group
+  - Recovery: Same Private, Public, Elastic IP, metadata, placement group
 
 ![ec2-instance-recovery.png](media/monitoring/ec2-instance-recovery.png)
 
