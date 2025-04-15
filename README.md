@@ -645,6 +645,7 @@ IAM Identity Center – Active Directory Setup:
 ![aws-id-center-self-mgmt-ad.png](media/iam/aws-id-center-self-mgmt-ad.png)
 
 Demo:
+
 [aws-ad-demo.gif](media/iam/aws-ad-demo.gif)
 
 **AWS Control Tower - a service on top of the organization**
@@ -4191,6 +4192,7 @@ Demo
 Bastion Creation
 
 [vpc-bastion-connect-demo-1.gif](media/vpc/vpc-bastion-connect-demo-1.gif)
+
 Bastion Interaction
 
 [vpc-bastion-interact-demo-2.gif](media/vpc/vpc-bastion-interact-demo-2.gif)
@@ -4306,6 +4308,7 @@ Demo
 Creating VPC peering
 
 [vpc-peering-demo-1.gif](media/vpc/vpc-peering-demo-1.gif)
+
 Updating Routing Table:
 
 [vpc-peering-demo-2.gif](media/vpc/vpc-peering-demo-2.gif)
@@ -4372,6 +4375,7 @@ Demos
 Part One: creating the flow logs
 
 [vpc-flow-logs-demo-1.gif](media/vpc/vpc-flow-logs-demo-1.gif)
+
 Part Two: querying the s3 logs using Athena
 
 [vpc-flow-logs-demo-2-athena.gif](media/vpc/vpc-flow-logs-demo-2-athena.gif)
