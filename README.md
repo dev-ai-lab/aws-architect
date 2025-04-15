@@ -3362,6 +3362,7 @@ Amazon Textract is an **AI/ML-powered service** that **automatically extracts te
 - **Textract**: Detects text and data in documents.
 
 ## AWS Monitoring & Audit: CloudWatch, CloudTrail & Config
+### AWS Cloud Watch
 - **Amazon CloudWatch Metrics**
   - Provides **metrics** for AWS services (e.g., **CPUUtilization, NetworkIn**).
   - Metrics belong to **namespaces** and have up to **30 dimensions** (e.g., **instance ID, environment**).
@@ -3453,7 +3454,7 @@ ALARM --state-reason "testing purposes"
 
 - Demo
   - [ec2-alarm-action.gif](media/monitoring/ec2-alarm-action.gif)
-### AWS Event Bridge (formerly CloudWatch Events)
+#### AWS Event Bridge (formerly CloudWatch Events)
 ![event-bridge-usages.png](media/monitoring/event-bridge-usages.png)
 - Event Bridge Rules
 
@@ -3558,7 +3559,7 @@ ALARM --state-reason "testing purposes"
   - Do my buckets have public access?
   - How has my ALB configuration changed?
 - **Receive SNS alerts for changes**
-- AWS Config has a managed rule named `acm-certificate-expiration-check to check for expiring certificates (configurable number of days)
+- AWS Config has a managed rule named `acm-certificate-expiration-check` to check for expiring certificates (configurable number of days)
 - **Per-region service** (can be aggregated across regions and accounts)
 - **Store configuration data in S3** (analyzed by Athena)
 - **Config Rules:**
@@ -4752,7 +4753,8 @@ Demo
 
 ### **AWS DMS – Database Migration Service**
 - **Fast, secure, self-healing** database migration to AWS.
-- **Minimal downtime** – source remains available.
+- **Minimal downtime** – source remains available (fully operational).
+- We can continuously replicate data with ha (multi-AZ)
 - Supports:
   - **Homogeneous** (e.g., Oracle → Oracle).
   - **Heterogeneous** (e.g., SQL Server → Aurora).
@@ -5785,7 +5787,9 @@ Explore more at: Use it along the journey in the role of an architect
 
 ## Mind Teasers (AWS)
 - running AWS RDS found to be unencrypted? How to fix?
-- 
+
+## Prompt Engineering Certifications
+
 # AWS AI/ML Path
 
 ![aws-ai-ml-certification-path.png](media/aws-ai-ml-certification-path.png)
