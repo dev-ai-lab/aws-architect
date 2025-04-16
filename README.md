@@ -6,7 +6,6 @@
   * [How to access AWS:](#how-to-access-aws)
     * [Install aws cli on MacOS:](#install-aws-cli-on-macos)
   * [IAM](#iam)
-    * [IAM Advanced Topics](#iam-advanced-topics)
     * [IAM Organization](#iam-organization)
     * [IAM Conditions:](#iam-conditions)
     * [IAM Roles vs Resource Based Policies - Cross account](#iam-roles-vs-resource-based-policies---cross-account)
