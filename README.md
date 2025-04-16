@@ -4515,85 +4515,7 @@ Part Two: querying the s3 logs using Athena
 ### Summary - VPC Setup Journey
 ![vpc-setup-complete-journey-1.png](media/vpc/vpc-setup-complete-journey-1.png)
 
-Sure! Here's a clean and easy-to-understand restructured version of the **AWS Site-to-Site VPN** setup:
-
 ---
-
-## 🌐 AWS Site-to-Site VPN Overview
-
-AWS Site-to-Site VPN connects your on-premises network to your AWS VPC using a secure and encrypted connection over the public internet.
-
----
-
-### 🧩 Components Involved
-
-#### **1. Virtual Private Gateway (VGW) - AWS Side**
-- Acts as a **VPN concentrator** on the AWS side.
-- Must be **created and attached** to your VPC.
-- You can **customize the ASN** (Autonomous System Number).
-
-#### **2. Customer Gateway (CGW) - Customer Side**
-- This is your on-premises **VPN device** (physical or software).
-- Must provide a **public IP address**:
-  - If CGW is **behind NAT**, use the **public IP of the NAT device** (NAT-T must be enabled).
-- Refer to AWS-tested [Customer Gateway Devices](https://docs.aws.amazon.com/vpn/latest/s2svpn/your-cgw.html#DevicesTested)
-
----
-
-### 🔌 Setting Up the Site-to-Site VPN Connection
-
-#### **1. Create and Attach the VGW**
-- Attach the VGW to your target VPC.
-
-#### **2. Configure the CGW**
-- Set up your VPN device (use tested devices when possible).
-- Ensure public IP address is reachable.
-
-#### **3. Create the VPN Connection**
-- Link the VGW and CGW.
-- Configure tunnel options (static or dynamic routing using BGP).
-
-#### **4. Route Propagation**
-- Enable **Route Propagation** for the VGW in your **route table**.
-- This allows traffic between on-premises and VPC.
-
-#### **5. Security Groups**
-- To allow **ping/ICMP** from on-premises to EC2:
-  - Add **ICMP** protocol to **inbound rules** of your EC2’s security groups.
-
----
-
-### 🔁 AWS VPN CloudHub
-
-> Use when you have **multiple sites** that need to securely communicate via AWS.
-
-- Connect **multiple CGWs** to the **same VGW**.
-- Use **BGP (dynamic routing)** to exchange routes between them.
-- Ideal for **hub-and-spoke topology** using VPN over the internet.
-
----
-
-### 📸 Visual References
-
-#### **Basic VPC + VPN Setup**
-![vpc-setup-complete-journey-2.png](media/vpc/vpc-setup-complete-journey-2.png)
-
-#### **Routing Example**
-![aws-site-to-site-vpn-routing.png](media/vpc/aws-site-to-site-vpn-routing.png)
-
-#### **CloudHub Architecture**
-![aws-vpn-cloudhub.png](media/vpc/aws-vpn-cloudhub.png)
-
----
-
-### 🧪 Demo
-_(Placeholder for your demo steps or a walkthrough)_
-
----
-
-Let me know if you want a checklist or Terraform script to go along with this!
-
-
 ### AWS Site-to-Site VPN
 AWS Site-to-Site VPN connects your on-premises network to your AWS VPC using a secure and encrypted connection over the public internet.
 
@@ -4631,9 +4553,9 @@ Components Involved:
 
 **AWS VPN CloudHub**
 - Provide secure communication between multiple sites, if you have multiple VPN connections
-- Low-cost hub-and-spoke model for primary or secondary network connectivity between different locations (VPN only)
+- Ideal for **hub-and-spoke topology** using VPN over the internet.
 - It’s a VPN connection so it goes over the public Internet
-- To set it up,connect multiple VPN connections on the same VGW, setup dynamic routing and configure route tables
+- To set it up,connect multiple VPN connections on the same VGW, setup dynamic routing (BGP) and configure route tables
 
 ![aws-vpn-cloudhub.png](media/vpc/aws-vpn-cloudhub.png)
 
@@ -4641,58 +4563,91 @@ Components Involved:
 
 [aws-s2s-vpn-connection-demo.gif](media/vpc/aws-s2s-vpn-connection-demo.gif)
 
+---
 
 ### AWS Direct Connect (DX)
 
-- **Private, dedicated connection** from a remote network to your VPC.
-- Requires a **Direct Connect** location & **Virtual Private Gateway** on your VPC.
-- Access **both public (S3) & private (EC2) resources** on the same connection.
+AWS Direct Connect provides a **dedicated, private network connection** between your on-premises infrastructure and AWS. 
+It does **not traverse the public internet**, offering **more consistent network performance**, **lower latency**, and **higher bandwidth**.
+
+---
+
+**Features**
+
+- **Private connectivity** from your data center, office, or colocation to AWS.
+- Access both **public AWS services** (like S3) and **private resources** (like EC2 in a VPC) over the same connection.
+- Requires:
+  - A **Direct Connect location**
+    - A Direct Connect location is a physical data center facility where AWS has a presence with networking equipment that allows you to establish a dedicated network connection between your infrastructure and AWS
+    - i.e Interxion FRA6 in Frankfurt
+  - A **Virtual Private Gateway** (VGW) or **Transit Gateway** attached to your VPC.
+- Supports both **IPv4 and IPv6 traffic**.
+
+---
+- Direct Connect Architecture  
+  ![aws-direct-conn-diagram.png](media/vpc/aws-direct-conn-diagram.png)
 
 **Use Cases:**
-✔ **Higher bandwidth** – Large data transfers, lower cost.  
-✔ **Consistent performance** – Ideal for real-time data.  
-✔ **Hybrid environments** – On-prem + cloud integration.  
-✔ Supports **IPv4 & IPv6**.
 
-![aws-direct-conn-diagram.png](media/vpc/aws-direct-conn-diagram.png)
+- **Large-scale data transfers** (cost-effective at higher bandwidths).
+- **Real-time data** workloads needing **consistent performance**.
+- **Hybrid cloud architectures** integrating on-premises and cloud resources.
+- **Compliance** scenarios requiring private connections (no internet exposure).
 
-**Direct Connect Gateway**
+---
 
-✔ **Connect multiple VPCs** across **different regions** (same account) using **a single Direct Connect**.
+**Direct Connect Gateway (DXGW):**
+
+- Allows you to **connect to multiple VPCs across different regions** using a **single Direct Connect connection**.
+- VPCs must be in the **same AWS account** (or use AWS Resource Access Manager for cross-account).
+- Simplifies multi-region architecture without needing multiple physical connections.
 
 ![aws-direct-connect-gw.png](media/vpc/aws-direct-connect-gw.png)
 
-**Direct Connect – Connection Types**
+---
 
-✔ **Dedicated Connections** (1, 10, 100 Gbps)
-- **Physical ethernet port** dedicated to the customer.
-- Request made first to AWS, then completed by **Direct Connect Partners**.
+**Connection Types:**
 
-✔ **Hosted Connections** (50 Mbps – 10 Gbps)
-- Provisioned via **Direct Connect Partners**.
-- **Scalable** – Capacity can be adjusted on demand.
-- **Availability:** 1, 2, 5, 10 Gbps at select partners.
-- **Setup time:** Usually **1+ month**.
+**1. Dedicated Connections**
+  - Speeds: **1 Gbps, 10 Gbps, 100 Gbps**
+  - Provisioned by requesting through **AWS** directly.
+  - AWS allocates a **dedicated Ethernet port** at a DX location.
 
-**Direct Connect – Encryption**
+**2. Hosted Connections**
+  - Speeds: **50 Mbps to 10 Gbps**
+  - Provisioned via approved **Direct Connect Partners**.
+  - **Scalable bandwidth** (can adjust capacity as needed).
+  - Availability may vary by partner and region.
+  - **Lead time**: Typically **over 1 month** to complete setup.
 
-✔ **Not encrypted**, but **private** by default.  
-✔ Use **Direct Connect + VPN** for **IPsec encryption**.  
-✔ Adds **security** but increases **complexity**.
+---
 
-
-**Direct Connect - Resiliency**
+**Encryption Considerations**
+- **Direct Connect is not encrypted** by default.
+- However, it is inherently **private** and does not use the public internet.
+- For **encryption over DX**, combine it with a **VPN connection (IPsec)**:
+  - Adds security
+  - Increases configuration complexity
 
 ![direct-connect-encryption.png](media/vpc/direct-connect-encryption.png)
 
-**Site-to-Site VPN as Backup**
+---
 
-✔ If **Direct Connect fails**, use:
-- A **backup Direct Connect** (costly) or
-- A **Site-to-Site VPN** (cheaper alternative).
+**Resiliency & Backup Options:**
+
+To ensure availability in case of a Direct Connect failure:
+
+- Option 1: **Backup Direct Connect**
+  - Secondary physical connection
+  - High cost, but best performance and availability
+
+- Option 2: **Site-to-Site VPN**
+  - Cost-effective backup over the public internet
+  - Automatically used if DX goes down (via BGP failover)
 
 ![direct-connect-backup.png](media/vpc/direct-connect-backup.png)
 
+---
 
 ### Transit Gateway
 ✔ **Connects multiple VPCs & on-premises** in a **hub-and-spoke** (star) model.  
