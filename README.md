@@ -2805,9 +2805,10 @@ AWS **Snowball**, **Snowcone**, and **Snowmobile** are all part of AWS's **Snow 
 - Lambda in VPC:
   - By default, your Lambda function is launched outside your own VPC (in an AWS-owned VPC) and have access to any public internet address or public aws API
   - Therefore, it cannot access resources in your VPC (RDS, ElastiCache, internal ELB...)
+
+![lambda-vpc-default.png](media/serverless/lambda-vpc-default.png)
   - make it VPC-enabled when you need to access a private resource in a private subnet
     - once enabled, all traffic from your function is subject to the routing rules of your VPC/subnet and interact with public resources, it will need route through a NAT GW
-![lambda-vpc-default.png](media/serverless/lambda-vpc-default.png)
 
   - we need to launch our lambda in our VPC (in private subnet): 
     - you need VPC ID, the subnet, and security group
@@ -4474,7 +4475,8 @@ See [here](https://docs.aws.amazon.com/vpc/latest/userguide/vpc-sharing.html)
 
 ![s3-access-s2s-vpn-direct-conn.png](media/vpc/s3-access-s2s-vpn-direct-conn.png)
 
-Demo
+Demos
+- [vpc-endpoint-demo-original.gif](media/vpc/vpc-endpoint-demo-original.gif)
 
 ### VPC Flow Logs
 
@@ -4513,24 +4515,117 @@ Part Two: querying the s3 logs using Athena
 ### Summary - VPC Setup Journey
 ![vpc-setup-complete-journey-1.png](media/vpc/vpc-setup-complete-journey-1.png)
 
+Sure! Here's a clean and easy-to-understand restructured version of the **AWS Site-to-Site VPN** setup:
+
+---
+
+## 🌐 AWS Site-to-Site VPN Overview
+
+AWS Site-to-Site VPN connects your on-premises network to your AWS VPC using a secure and encrypted connection over the public internet.
+
+---
+
+### 🧩 Components Involved
+
+#### **1. Virtual Private Gateway (VGW) - AWS Side**
+- Acts as a **VPN concentrator** on the AWS side.
+- Must be **created and attached** to your VPC.
+- You can **customize the ASN** (Autonomous System Number).
+
+#### **2. Customer Gateway (CGW) - Customer Side**
+- This is your on-premises **VPN device** (physical or software).
+- Must provide a **public IP address**:
+  - If CGW is **behind NAT**, use the **public IP of the NAT device** (NAT-T must be enabled).
+- Refer to AWS-tested [Customer Gateway Devices](https://docs.aws.amazon.com/vpn/latest/s2svpn/your-cgw.html#DevicesTested)
+
+---
+
+### 🔌 Setting Up the Site-to-Site VPN Connection
+
+#### **1. Create and Attach the VGW**
+- Attach the VGW to your target VPC.
+
+#### **2. Configure the CGW**
+- Set up your VPN device (use tested devices when possible).
+- Ensure public IP address is reachable.
+
+#### **3. Create the VPN Connection**
+- Link the VGW and CGW.
+- Configure tunnel options (static or dynamic routing using BGP).
+
+#### **4. Route Propagation**
+- Enable **Route Propagation** for the VGW in your **route table**.
+- This allows traffic between on-premises and VPC.
+
+#### **5. Security Groups**
+- To allow **ping/ICMP** from on-premises to EC2:
+  - Add **ICMP** protocol to **inbound rules** of your EC2’s security groups.
+
+---
+
+### 🔁 AWS VPN CloudHub
+
+> Use when you have **multiple sites** that need to securely communicate via AWS.
+
+- Connect **multiple CGWs** to the **same VGW**.
+- Use **BGP (dynamic routing)** to exchange routes between them.
+- Ideal for **hub-and-spoke topology** using VPN over the internet.
+
+---
+
+### 📸 Visual References
+
+#### **Basic VPC + VPN Setup**
+![vpc-setup-complete-journey-2.png](media/vpc/vpc-setup-complete-journey-2.png)
+
+#### **Routing Example**
+![aws-site-to-site-vpn-routing.png](media/vpc/aws-site-to-site-vpn-routing.png)
+
+#### **CloudHub Architecture**
+![aws-vpn-cloudhub.png](media/vpc/aws-vpn-cloudhub.png)
+
+---
+
+### 🧪 Demo
+_(Placeholder for your demo steps or a walkthrough)_
+
+---
+
+Let me know if you want a checklist or Terraform script to go along with this!
+
+
 ### AWS Site-to-Site VPN
+AWS Site-to-Site VPN connects your on-premises network to your AWS VPC using a secure and encrypted connection over the public internet.
+
+Components Involved:
 - Virtual Private Gateway (VGW)
   - VPN concentrator on the AWS side of the VPN connection
   - VGW is created and attached to the VPC from which you want to create the Site-to-Site VPN connection
   - Possibility to customize the ASN (Autonomous System Number)
 - Customer Gateway (CGW)
-  - Software application or physical device on customer side of the VPN connection
-  - AWS tested [devices](https://docs.aws.amazon.com/vpn/latest/s2svpn/your-cgw.html#DevicesTested):
-  
-![vpc-setup-complete-journey-2.png](media/vpc/vpc-setup-complete-journey-2.png)  
+  - This is your on-premises **VPN device** (physical or software).
+  - Must provide a **public IP address**:
+    - If CGW is **behind NAT**, use the **public IP of the NAT device** (NAT-T must be enabled).
+  - Refer to AWS-tested [Customer Gateway Devices](https://docs.aws.amazon.com/vpn/latest/s2svpn/your-cgw.html#DevicesTested)
+- Site-to-Site VPN Connection
+---
+- **🔌 Setting Up the Site-to-Site VPN Connection**
+  - **1. Create and Attach the VGW**
+    - Attach the VGW to your target VPC.
+  - **2. Configure the CGW**
+    - Set up your VPN device (use tested devices when possible).
+    - Ensure public IP address is reachable.
+  - **3. Create the VPN Connection**
+    - Link the VGW and CGW.
+    - Configure tunnel options (static or dynamic routing using BGP).
+  - **4. Route Propagation**
+    - Enable **Route Propagation** for the VGW in your **route table**.
+    - This allows traffic between on-premises and VPC.
+  - **5. Security Groups**
+    - To allow **ping/ICMP** from on-premises to EC2:
+      - Add **ICMP** protocol to **inbound rules** of your EC2’s security groups.
 
-Site-to-Site VPN Connections:
-- Customer Gateway Device (On-premises)
-  - What IP address to use?
-    - Public Internet-routable IP address for your Customer Gateway device
-    - If it’s behind a NAT device that’s enabled for NAT traversal (NAT-T), use the public IP address of the NAT device
-- Important step: enable Route Propagation for theVirtual Private Gateway in the route table that is associated with your subnets
-- If you need to ping your EC2 instances from on-premises, make sure you add the ICMP protocol on the inbound of your security groups
+![vpc-setup-complete-journey-2.png](media/vpc/vpc-setup-complete-journey-2.png)
 
 ![aws-site-to-site-vpn-routing.png](media/vpc/aws-site-to-site-vpn-routing.png)
 
