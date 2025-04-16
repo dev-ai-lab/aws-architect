@@ -90,7 +90,8 @@
     * [**Amazon Textract**](#amazon-textract)
     * [**AWS Machine Learning**](#aws-machine-learning)
   * [AWS Monitoring & Audit: CloudWatch, CloudTrail & Config](#aws-monitoring--audit-cloudwatch-cloudtrail--config)
-    * [AWS Event Bridge (formerly CloudWatch Events)](#aws-event-bridge-formerly-cloudwatch-events)
+    * [AWS Cloud Watch](#aws-cloud-watch)
+      * [AWS Event Bridge (formerly CloudWatch Events)](#aws-event-bridge-formerly-cloudwatch-events)
     * [**AWS CloudTrail**](#aws-cloudtrail)
     * [**AWS Config**](#aws-config)
   * [AWS Security & Encryption - KMS, SSM parameter store, Shield, WAF](#aws-security--encryption---kms-ssm-parameter-store-shield-waf)
@@ -220,6 +221,7 @@
     * [**Other Storage Services**](#other-storage-services)
     * [**Data Transfer**](#data-transfer)
   * [Mind Teasers (AWS)](#mind-teasers-aws)
+  * [Prompt Engineering Certifications](#prompt-engineering-certifications)
 * [AWS AI/ML Path](#aws-aiml-path)
 <!-- TOC -->
 # AWS Solution Architect
@@ -290,6 +292,9 @@ Default output format [None]:
 ```
 
 ## IAM
+- You manage access to AWS by creating policies and attaching them to **IAM identities** (users, groups, roles) or aws resources
+- Simply put: certain actions can be performed on aws services i.e S3 --> we allow a set of those actions by creating a policy and selecting those actions
+  - we then assign this policy to IAM identities or resources.
 - Root account shouldn't be used or shared
 - Users: people that can be grouped
 - Group: contains only users and not other groups
@@ -390,7 +395,7 @@ Default output format [None]:
   - Use IAM reports
 
 ### IAM Advanced Topics
-**Organization:**
+### IAM Organization
 - **Global service** for managing multiple AWS accounts.
 - **Management account** oversees the organization; others are **member accounts**.
 - **Member accounts** can belong to only one organization.
@@ -419,7 +424,7 @@ Default output format [None]:
 
 [iam-organization-demo.gif](media/iam/iam-organization-demo.gif)
 
-**IAM Conditions:**
+### **IAM Conditions:**
 - `aws:SourceIp` restrict the client IP from which the API calls are being made
   ```
   {
@@ -547,7 +552,7 @@ Default output format [None]:
 - `aws:PrincipalOrgID` can be used in any resource policies to restrict access to accounts that are member of an AWS Organization
 ![iam-principal-org-id.png](media/iam/iam-principal-org-id.png)
 
-**IAM Roles vs Resource Based Policies - Cross account:**
+### IAM Roles vs Resource Based Policies - Cross account
 - attaching a resource-based policy to a resource (example: S3 bucket policy) 
 - OR using a role as a proxy
 - When you assume a role (user, application or service), you give up your original permissions and take the permissions assigned to the role 
@@ -587,7 +592,7 @@ Default output format [None]:
 ![iam-policy-evaluation-example.png](media/iam/iam-policy-evaluation-example.png)
 
 
-**AWS IAM Identity Center (successor to AWS Single Sign-On)**
+### AWS IAM Identity Center (successor to AWS Single Sign-On)
 - Provides a single sign-on (SSO) solution for accessing:
   - All AWS accounts within AWS Organizations
   - Business cloud applications (e.g., Salesforce, Box, Microsoft 365)
@@ -622,7 +627,7 @@ AWS IAM Identity Center Fine-grained Permissions and Assignments:
 
 ![iam-id-center-fine-grained-permissions.png](media/iam/iam-id-center-fine-grained-permissions.png)
 
-**AWS Directory Services**
+### AWS Directory Services
 - AWS Managed Microsoft AD
   - Create your own AD in AWS, manage users locally, support MFA
   - Establish “trust” connections with your on-premises AD
@@ -648,7 +653,7 @@ Demo:
 
 [aws-ad-demo.gif](media/iam/aws-ad-demo.gif)
 
-**AWS Control Tower - a service on top of the organization**
+### AWS Control Tower - a service on top of the organization
 - Easy way to set up and govern a secure and compliant multi-account- AWS environment based on best practices
 - AWS Control Tower uses AWS Organizations to create accounts
 - Benefits:
@@ -1787,9 +1792,12 @@ Waterfall model for transitioning between storage classes:
   - would need an additional Lambda@Edge function to accomplish authentication via Cognito User Pools
 - CloudFront Origins:
   - S3 bucket
-    - to allow only CF to access the bucket: use Origin Access Control (OAC)
+    - to allow only CF to access the bucket:
+      - configure a origin access identity (OAI) or Origin Access Control (OAC)
+      - setup the permission in AWS S3 bucket policy so that only the OAI can read the objects
     - can use CF as an ingress (to upload to S3)
     - from the demo, pay attention how fast is the second access of the object because of cloudfront caching
+    - the file size should be under 1GB. above that use `s3 transfer accelerator` instead
 
 ![drafted-cloudfront-high-level.png](media/cloudfront/drafted-cloudfront-high-level.png)
 
@@ -2132,6 +2140,10 @@ Waterfall model for transitioning between storage classes:
 ![sqs-message-visibility-timeout.png](media/messaging/sqs-message-visibility-timeout.png)
 
 - SQS Long Polling
+  - By default the queue has short polling
+    - with short polling, SQS sends the response right away even if the query found no message.
+  - With long-polling, sqs send the response only after it collects at least one message, upto a max message specified in the request
+    - reduces API calls, and thus costs
   - **Long Polling** allows consumers to **wait** for messages if none are in the queue.
   - **Reduces API calls**, improves efficiency, and lowers latency.
   - Wait time: **1 to 20 seconds** (**20 sec recommended**).
@@ -5641,6 +5653,7 @@ AWS provides specialized **compute and networking** options for high-speed, scal
   - **Elastic Network Adapter (ENA):** Up to **100 Gbps** bandwidth.
   - **Intel 82599 VF:** Up to **10 Gbps** (legacy option).
 - **Elastic Fabric Adapter (EFA)** – Optimized networking for tightly coupled HPC workloads.
+  - A network device attached to EC2 instances that enhances performance of inter-instance communication
   - Works only on **Linux** and supports the **Message Passing Interface (MPI)**.
   - Bypasses Linux OS for **low-latency, high-speed communication** between instances.
 
