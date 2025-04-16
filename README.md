@@ -46,7 +46,11 @@
     * [CF cache invalidation](#cf-cache-invalidation)
   * [AWS global accelerator](#aws-global-accelerator)
   * [AWS advanced storage](#aws-advanced-storage)
-    * [AWS snowball](#aws-snowball)
+    * [AWS snow family](#aws-snow-family)
+    * [🔹 **AWS Snowcone**](#-aws-snowcone)
+    * [🔹 **AWS Snowball**](#-aws-snowball)
+    * [🔹 **AWS Snowmobile**](#-aws-snowmobile)
+    * [TL;DR – Quick Comparison](#tldr--quick-comparison)
     * [AWS FSx](#aws-fsx)
     * [AWS Storage Gateway](#aws-storage-gateway)
     * [Demos](#demos)
@@ -1942,40 +1946,94 @@ Waterfall model for transitioning between storage classes:
     - [global-accelerator-demo-p3.gif](media/global-accelerator/global-accelerator-demo-p3.gif)
     - [global-accelerator-demo-p4.gif](media/global-accelerator/global-accelerator-demo-p4.gif)
 
----
 ## AWS advanced storage
-### AWS snowball
-- highly-secured, portable devices to collect and process data at edge & migrate data into and out of AWS
-- help migrate up to petabytes of data
-- types:
-  - snowball edge storage-optimized (210 TB)
-  - snowball edge compute-optimized (28 TB)
+### AWS snow family
+
+AWS **Snowball**, **Snowcone**, and **Snowmobile** are all part of AWS's **Snow Family**, designed for edge computing and transferring large amounts of data into or out of AWS, especially when network bandwidth is limited or unreliable. Here's a quick breakdown of how they differ:
+
 - data transfer challenges
   - i.e 10 TB with 100 Mbps speed, takes 12 days to transfer
   - loss connection
   - high network costs
 - solution to this is snowball solution
 
+---
+
+### 🔹 **AWS Snowcone**
+- **Smallest** and most portable of the three.
+- **Size:** About the size of a tissue box (4.5 lbs).
+- **Storage:** 8 TB of usable storage (HDD or SSD).
+- **Use Cases:**
+  - Small edge locations
+  - IoT data collection
+  - Remote or rugged environments
+- **Power:** Can run on AC power or battery.
+- **Network:** USB-C and Ethernet
+- See [AWS DataSync](#aws-datasync) for special use of snowcone
+**Best for:** Lightweight edge computing and data transfer from tight or mobile locations.
+
+---
+
+### 🔹 **AWS Snowball**
+- AWS snowball is highly-secured, portable devices to collect and process data at edge & migrate data into and out of AWS
+- **Mid-sized** option — comes in two types:
+  1. **Snowball Edge Storage Optimized**
+    - 40 vCPU, 80 TB usable storage (HDD)
+    - Good for large-scale data migrations.
+  2. **Snowball Edge Compute Optimized**
+    - 42 TB usable storage + 52 vCPUs & GPU option
+    - Useful for local compute + transfer (e.g. video analysis, ML inference)
+
+- **Use Cases:**
+  - Data transfer at scale
+  - Edge computing with AWS services
+  - Disaster recovery
+
+**Best for:** Larger on-site data processing and scalable data transfer.
 
 ![aws-snowball-storage.png](media/advanced-storage/aws-snowball-storage.png)
 
-- Edge computing use case
+- Both can be rack mounted and clustered together to build larger installation (`storage clustering`)
+- Edge computing/storage use case
   - process data while being generated on the edge location i.e underground without internet, ships, truck etc
   - limited access to internet or power
   - with snowball edge we can compute, run EC2 instances or Lambda at the edge
+  - 
   - use case:
     - preprocessing data, ML, transcode media
 - Snowball into Glacier:
   - we can't import directly to S3 glacier storage, instead:
 
 ![aws-snowball-2-glacier.png](media/advanced-storage/aws-snowball-2-glacier.png)
-- Demos:
+- Snowball Demos:
 
 [aws-snowball-demo.gif](media/advanced-storage/aws-snowball-demo.gif)
+
+### 🔹 **AWS Snowmobile**
+- **Massive scale** data transfer — literally a **shipping container on a truck**.
+- **Size:** 45-foot ruggedized container.
+- **Storage:** Up to **100 PB**.
+- **Use Cases:**
+  - Huge data center migrations
+  - Genomics, video libraries, or large-scale backups
+
+**Best for:** Petabyte-scale data transfer (think exabytes over time), where network is infeasible.
+
+---
+
+### TL;DR – Quick Comparison
+
+| Feature               | Snowcone         | Snowball Edge        | Snowmobile        |
+|-----------------------|------------------|-----------------------|-------------------|
+| **Storage Capacity**  | 8 TB             | 42–80 TB              | Up to 100 PB      |
+| **Compute Power**     | Light            | Medium–High (GPU opt) | N/A               |
+| **Portability**       | Hand-carry       | Two-person carry      | Semi-truck        |
+| **Use Case Size**     | Small (Edge/IoT) | Medium–Large (Edge + Transfer) | Massive (Data Center) |
+
+---
 ### AWS FSx
 - launch 3rd party high-performance files system on AWS
 - fully managed service
-
 
 ![3rd-party-filesystem.png](media/advanced-storage/3rd-party-filesystem.png)
 
@@ -2104,7 +2162,7 @@ Waterfall model for transitioning between storage classes:
 - Replication tasks can be scheduled hourly, daily, weekly. It is not continuous
 - File permissions and metadata are preserved (NFS POSIX, SMB...)
 - One agent task can use 10 Gbps, can setup a bandwidth limit
-- Agent should be installed on the on-premise. If we don't have n/w capacity --> `AWS snowcone
+- Agent should be installed on the on-premise. If we don't have n/w capacity --> `AWS snowcone`
 
 ![drafted-aws-datasync.png](media/advanced-storage/drafted-aws-datasync.png)
 ![drafted-aws-datasync-internal.png](media/advanced-storage/drafted-aws-datasync-internal.png)
