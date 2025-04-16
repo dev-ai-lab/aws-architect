@@ -2683,6 +2683,7 @@ AWS **Snowball**, **Snowcone**, and **Snowmobile** are all part of AWS's **Snow 
   - support for many programming languages:
     - Node.js (JavaScript), python, java, C#(.NET core), Ruby, 
     - Custom Runtime API (community supported, example Rust or Golang))
+  - To reuse code in more than one aws lambda, consider using `aws lambda layer`
   - Easy monitoring through AWS CloudWatch
   - Easy to get more resources per functions (up to 10GB of RAM!). Increasing RAM will also improve CPU and network!
   - Lambda Container Image
@@ -2713,7 +2714,8 @@ AWS **Snowball**, **Snowcone**, and **Snowmobile** are all part of AWS's **Snow 
   - if we don't set limit, then:
     - at high invocations ALB fulfilled all request and consumed 1000 limit (account level)
     - all others will be throttled
-
+  - Use `ConcurrentExecutions` or `Invocation exceed the expected threshold` CloudWatch alarms to monitor
+  - 
 ![drafted-lambda-concurrency-issue.png](media/serverless/drafted-lambda-concurrency-issue.png)
 ![drafted-lambda-concurrency-issue-async.png](media/serverless/drafted-lambda-concurrency-issue-async.png)
 
@@ -2801,9 +2803,10 @@ AWS **Snowball**, **Snowcone**, and **Snowmobile** are all part of AWS's **Snow 
       - File system access or access to the body of HTTP requests
 
 - Lambda in VPC:
-  - By default, your Lambda function is launched outside your own VPC (in an AWS-owned VPC)
+  - By default, your Lambda function is launched outside your own VPC (in an AWS-owned VPC) and have access to any public internet address or public aws API
   - Therefore, it cannot access resources in your VPC (RDS, ElastiCache, internal ELB...)
-  - VPC-enabled lambda
+  - make it VPC-enabled when you need to access a private resource in a private subnet
+    - once enabled, all traffic from your function is subject to the routing rules of your VPC/subnet and interact with public resources, it will need route through a NAT GW
 ![lambda-vpc-default.png](media/serverless/lambda-vpc-default.png)
 
   - we need to launch our lambda in our VPC (in private subnet): 
