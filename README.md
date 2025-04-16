@@ -300,6 +300,28 @@ Default output format [None]:
 - You manage access to AWS by creating policies and attaching them to **IAM identities** (users, groups, roles) or aws resources
 - Simply put: certain actions can be performed on aws services i.e S3 --> we allow a set of those actions by creating a policy and selecting those actions
   - we then assign this policy to IAM identities or resources.
+- **Terms definitions**:
+  - Policy: a policy is an object in AWS, that when associated with an identity or resource, defines their permissions
+  - Resource-based policy: it is a json policy document that one attaches to a resource such as S3 bucket 
+    - It gives specific principal permission to perform certain actions on that resource given a set of conditions
+    - the principal can be in the same account as the resource or in another account (cross-account access)
+    - cross-account access is possible only with `Resource-based policy`
+  - Trust policy: defines which principal entities (accounts, users, roles, and federated users) can assume a role. An IAM role is both an identity and a resource
+    - we attach both a trust policy and indentity-based policy to an IAM role.
+  ```
+  {
+      "Version": "2012-10-17",
+      "Statement": [
+          {
+              "Effect": "Allow",
+              "Principal": {
+                  "Service": "lambda.amazonaws.com"
+              },
+              "Action": "sts:AssumeRole"
+          }
+      ]
+  }
+  ```
 - Root account shouldn't be used or shared
 - Users: people that can be grouped
 - Group: contains only users and not other groups
@@ -1787,10 +1809,13 @@ Waterfall model for transitioning between storage classes:
 - Works well with other AWS services
 
 ## AWS CloudFront
-- CDN (Content Delivery Network)
-- improves read performance by caching content at the edge (all around the year)
-- aws has [216 point](https://aws.amazon.com/cloudfront/features/?nc=sn&loc=2&whats-new-cloudfront.sort-by=item.additionalFields.postDateTime&whats-new-cloudfront.sort-order=desc) of presence ( edge locations)
-- DDoS protection (worldwide shutdown) by Shielld and AWS app firewall
+- A fast CDN (Content Delivery Network) that securely delivers data, videos, apps and APIs to customers globally with low latency, high transfer speeds
+  - AWS Point of Presence (POP or Edge Location):
+    - 400+ PS (400+ Edge locations & 10+ Regional Cache) in 90+ cities across 40+ countries
+  - improves read performance by caching content at the edge (all around the year) to deliver popular contents quickly
+  - aws has [216 point](https://aws.amazon.com/cloudfront/features/?nc=sn&loc=2&whats-new-cloudfront.sort-by=item.additionalFields.postDateTime&whats-new-cloudfront.sort-order=desc) of presence ( edge locations)
+  - CloudFront also has regional edge caches that bring more of your content closer to your viewers even when the content is not popular enough to stay at POP
+- DDoS protection (worldwide shutdown) by Shield and AWS app firewall
 - Integration with Cognito User Pool:
   - Can't directly integration with cognito
   - would need an additional Lambda@Edge function to accomplish authentication via Cognito User Pools
