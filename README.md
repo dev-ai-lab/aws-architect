@@ -1942,6 +1942,7 @@ Waterfall model for transitioning between storage classes:
     - [global-accelerator-demo-p3.gif](media/global-accelerator/global-accelerator-demo-p3.gif)
     - [global-accelerator-demo-p4.gif](media/global-accelerator/global-accelerator-demo-p4.gif)
 
+---
 ## AWS advanced storage
 ### AWS snowball
 - highly-secured, portable devices to collect and process data at edge & migrate data into and out of AWS
@@ -4526,6 +4527,7 @@ Site-to-Site VPN Connections:
 
 
 **Direct Connect - Resiliency**
+
 ![direct-connect-encryption.png](media/vpc/direct-connect-encryption.png)
 
 **Site-to-Site VPN as Backup**
