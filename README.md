@@ -7,6 +7,12 @@
     * [Install aws cli on MacOS:](#install-aws-cli-on-macos)
   * [IAM](#iam)
     * [IAM Advanced Topics](#iam-advanced-topics)
+    * [IAM Organization](#iam-organization)
+    * [IAM Conditions:](#iam-conditions)
+    * [IAM Roles vs Resource Based Policies - Cross account](#iam-roles-vs-resource-based-policies---cross-account)
+    * [AWS IAM Identity Center (successor to AWS Single Sign-On)](#aws-iam-identity-center-successor-to-aws-single-sign-on)
+    * [AWS Directory Services](#aws-directory-services)
+    * [AWS Control Tower - a service on top of the organization](#aws-control-tower---a-service-on-top-of-the-organization)
   * [EC2 Service (Elastic Compute Cloud) - Infras as a service](#ec2-service-elastic-compute-cloud---infras-as-a-service)
     * [EC2 Capabilities](#ec2-capabilities)
     * [EC2 Purchasing Options](#ec2-purchasing-options)
@@ -424,7 +430,7 @@ Default output format [None]:
 
 [iam-organization-demo.gif](media/iam/iam-organization-demo.gif)
 
-### **IAM Conditions:**
+### IAM Conditions:
 - `aws:SourceIp` restrict the client IP from which the API calls are being made
   ```
   {
