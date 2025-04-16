@@ -73,6 +73,7 @@
   * [Crossplane](#crossplane)
     * [Examples:](#examples)
   * [AWS Serverless overview](#aws-serverless-overview)
+    * [AWS Lambda](#aws-lambda)
   * [AWS No SQL](#aws-no-sql)
     * [DynamoDB - NoSQL](#dynamodb---nosql)
   * [AWS API Management](#aws-api-management)
