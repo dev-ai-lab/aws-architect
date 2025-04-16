@@ -1993,12 +1993,11 @@ AWS **Snowball**, **Snowcone**, and **Snowmobile** are all part of AWS's **Snow 
 
 ![aws-snowball-storage.png](media/advanced-storage/aws-snowball-storage.png)
 
-- Both can be rack mounted and clustered together to build larger installation (`storage clustering`)
+- Both can be rack mounted and clustered together to build larger installation (`storage clustering`). Other snow family doesn't support storage clustering.
 - Edge computing/storage use case
   - process data while being generated on the edge location i.e underground without internet, ships, truck etc
   - limited access to internet or power
   - with snowball edge we can compute, run EC2 instances or Lambda at the edge
-  - 
   - use case:
     - preprocessing data, ML, transcode media
 - Snowball into Glacier:
@@ -2654,6 +2653,7 @@ AWS **Snowball**, **Snowcone**, and **Snowmobile** are all part of AWS's **Snow 
 
 ![img.png](media/serverless/lambda-use-case-2.png)
 
+### AWS Lambda
 - EC2 vs Lambda
   - EC2:
     - Virtual Servers in the Cloud
@@ -2687,8 +2687,6 @@ AWS **Snowball**, **Snowcone**, and **Snowmobile** are all part of AWS's **Snow 
   - Lambda Container Image
     - The container image must implement the Lambda Runtime API
     - ECS / Fargate is preferred for running arbitrary Docker images
-- Demo:
-
 
 - AWS Lambda Limits to Know - per region
   - Execution:
