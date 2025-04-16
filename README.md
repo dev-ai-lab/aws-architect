@@ -400,7 +400,6 @@ Default output format [None]:
   - Use access keys
   - Use IAM reports
 
-### IAM Advanced Topics
 ### IAM Organization
 - **Global service** for managing multiple AWS accounts.
 - **Management account** oversees the organization; others are **member accounts**.
