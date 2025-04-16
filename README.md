@@ -39,6 +39,11 @@
     * [**Key Features of AWS S3**](#key-features-of-aws-s3)
     * [**Why Use S3?**](#why-use-s3)
   * [AWS CloudFront](#aws-cloudfront)
+    * [**CloudFront Origins:**](#cloudfront-origins)
+    * [CF vs S3 Cross Region Replication:](#cf-vs-s3-cross-region-replication)
+    * [CF Geo restriction:](#cf-geo-restriction)
+    * [CF pricing:](#cf-pricing)
+    * [CF cache invalidation](#cf-cache-invalidation)
   * [AWS global accelerator](#aws-global-accelerator)
   * [AWS advanced storage](#aws-advanced-storage)
     * [AWS snowball](#aws-snowball)
@@ -1819,14 +1824,14 @@ Waterfall model for transitioning between storage classes:
 - Integration with Cognito User Pool:
   - Can't directly integration with cognito
   - would need an additional Lambda@Edge function to accomplish authentication via Cognito User Pools
-- CloudFront Origins:
-  - S3 bucket
-    - to allow only CF to access the bucket:
-      - configure a origin access identity (OAI) or Origin Access Control (OAC)
-      - setup the permission in AWS S3 bucket policy so that only the OAI can read the objects
-    - can use CF as an ingress (to upload to S3)
-    - from the demo, pay attention how fast is the second access of the object because of cloudfront caching
-    - the file size should be under 1GB. above that use `s3 transfer accelerator` instead
+### **CloudFront Origins:**
+1. S3 bucket
+  - to allow only CF to access the bucket:
+    - configure a origin access identity (OAI) or Origin Access Control (OAC)
+    - setup the permission in AWS S3 bucket policy so that only the OAI can read the objects
+  - can use CF as an ingress (to upload to S3)
+  - from the demo, pay attention how fast is the second access of the object because of cloudfront caching
+  - the file size should be under 1GB. above that use `s3 transfer accelerator` instead
 
 ![drafted-cloudfront-high-level.png](media/cloudfront/drafted-cloudfront-high-level.png)
 
@@ -1836,7 +1841,7 @@ Waterfall model for transitioning between storage classes:
     - [cloudfront-setup-demo-1.gif](media/cloudfront/cloudfront-setup-demo-1.gif)
     - [cloudfront-setup-demo-2.gif](media/cloudfront/cloudfront-setup-demo-2.gif)
 
-  - Custom Origin (HTTP)
+2. Custom Origin (HTTP)
     - ALB
     - EC2 instance
     - S3 website (static website)
@@ -1845,24 +1850,36 @@ Waterfall model for transitioning between storage classes:
 ![drafted-cloudfront-alb-ec2-origin.png](media/cloudfront/drafted-cloudfront-alb-ec2-origin.png)
   - Public IPs of [Edge locations](http://d7uri8nf7uskq.cloudfront.net/tools/list-cloudfront-ips)
 
-- CF vs S3 Cross Region Replication:
-  - CloudFront
-    - global edge n/w
-    - is a CDN
-    - files cached for a TTL 
-    - great for static content that must be available everywhere
-  - S3 CRR
-    - must be setup explicitly for each region
-    - read only
-    - great for dynamic content that needs to be available at low latency in few regions
-- CF Geo restriction:
-  - can restrict who can access your distribution
-    - Allowlist: countries allowed
-    - Blocklist: countries not allowed
+- A single CF can serve different types of requests from `multiple origins` i.e serve static content from S3 and dynamic from LB
+- Use **origin group** with primary and secondary origin for `ha` and `failover`
+
+![cf-origin-groups-overview.png](media/cloudfront/cf-origin-groups-overview.png)
+
+- **Field-level encryption** allows users to securely upload sensitive information.
+  - the sensitive info encrypted at the edge
+  - to setup, specify the set of fields in POST requests that should be encrypted and the public key to encrypt
+  - can encrypt upto 10 data fields in a request
+
+![field-level-encryption.png](media/cloudfront/field-level-encryption.png)
+### CF vs S3 Cross Region Replication:
+- CloudFront
+  - global edge n/w
+  - is a CDN
+  - files cached for a TTL 
+  - great for static content that must be available everywhere
+- S3 CRR
+  - must be setup explicitly for each region
+  - read only
+  - great for dynamic content that needs to be available at low latency in few regions
+
+### CF Geo restriction:
+- can restrict who can access your distribution
+  - Allowlist: countries allowed
+  - Blocklist: countries not allowed
 
 [cloudfront-geo-restrictions.gif](media/cloudfront/cloudfront-geo-restrictions.gif)
 
-- CF pricing:
+### CF pricing:
   - based on geographical location the price of data out per edge differs
   - to do cost reduction, reduce the number of edge locations
   - 3 price classes
@@ -1870,7 +1887,7 @@ Waterfall model for transitioning between storage classes:
     - price class 200
     - price class 100
 
-- CF cache invalidation
+### CF cache invalidation
   - if TTL not expired and backend changes, it still show old version
   - invalidation of cache bypasses the TTL
   - invalidate all (*) or part (/images/*)
