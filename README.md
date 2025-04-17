@@ -4563,7 +4563,7 @@ Components Involved:
 
 [aws-s2s-vpn-connection-demo.gif](media/vpc/aws-s2s-vpn-connection-demo.gif)
 
-**Question**: want to speed s2s VPN connect, check [Transit Gateway](#aws-transit-gateway) with ECMP
+**Question**: want to speed s2s VPN connect, check [Transit Gateway](#transit-gateway-site-to-site-vpn-ecmp) with ECMP
 
 ---
 
