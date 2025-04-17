@@ -2408,10 +2408,12 @@ AWS **Snowball**, **Snowcone**, and **Snowmobile** are all part of AWS's **Snow 
   - Demo
 
 [adfirehose-s3-kds-demo.gif](media/messaging/adfirehose-s3-kds-demo.gif)
-- SQS vs SNS vs Kinesis
+**SQS vs SNS vs Kinesis**
 
 ![sqs-sns-kinesis-comparison.png](media/messaging/sqs-sns-kinesis-comparison.png)
 
+**Kinesis Data Analytics**
+Refer to [Flink](#amazon-managed-service-for-apache-flink)
 ### Amazon MQ
 - SQS & SNS are AWS proprietary protocols
 - traditional apps might use open source protocols on-premise such as MQTT, AMQP, STOMP, Openwire, WSS
