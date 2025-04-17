@@ -4648,23 +4648,27 @@ To ensure availability in case of a Direct Connect failure:
 ![direct-connect-backup.png](media/vpc/direct-connect-backup.png)
 
 ---
+**Question**: want to speed s2s VPN connect, check [Transit Gateway](#aws-transit-gateway) with ECMP 
+### AWS Transit Gateway
 
-### Transit Gateway
-✔ **Connects multiple VPCs & on-premises** in a **hub-and-spoke** (star) model.  
-✔ It is **Regional resource** but can work **cross-regional**.  
-✔ **Cross-account sharing** via **Resource Access Manager (RAM)**.  
-✔ **Peering** between Transit Gateways across regions.  
-✔ **Route tables** control VPC communication (which VPC should communicate with which).  
-✔ **Works with** Direct Connect Gateway & VPN.  
-✔ **Supports IP Multicast** (unique to Transit Gateway). The only AWS service that support this.
+AWS Transit Gateway enables you to **connect multiple VPCs and on-premises networks** using a **hub-and-spoke (star) architecture**.
+
+**Key Features:**
+- **Regional service**, but supports **cross-region peering**.
+- Allows **cross-account sharing** via **AWS Resource Access Manager (RAM)**.
+- **Custom route tables** control how VPCs and networks communicate.
+- Integrates with **Direct Connect Gateway** and **VPN** for hybrid connectivity.
+- Supports **IP Multicast** – the **only AWS service** that does.
+---
 
 ![complicated-nw-topology.png](media/vpc/complicated-nw-topology.png)
+- basically: VPC peering + direct connect + VPN connection --> Transit Gateway
 
-**Transit Gateway: Site-to-Site VPN ECMP**
+### Transit Gateway: Site-to-Site VPN ECMP
 - ECMP = Equal-cost multi-path routing
 - Routing strategy to allow to forward a packet over multiple best path
 - Use case: 
-  - create multiple Site- to-Site VPN connections to increase the bandwidth of your connection to AWS
+  - create multiple Site-to-Site VPN connections to **increase** the bandwidth of your connection to AWS
 
 ![aws-transit-gw-with-ecmp.png](media/vpc/aws-transit-gw-with-ecmp.png)
 
