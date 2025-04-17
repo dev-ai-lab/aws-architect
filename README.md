@@ -4563,6 +4563,8 @@ Components Involved:
 
 [aws-s2s-vpn-connection-demo.gif](media/vpc/aws-s2s-vpn-connection-demo.gif)
 
+**Question**: want to speed s2s VPN connect, check [Transit Gateway](#aws-transit-gateway) with ECMP
+
 ---
 
 ### AWS Direct Connect (DX)
@@ -4648,7 +4650,6 @@ To ensure availability in case of a Direct Connect failure:
 ![direct-connect-backup.png](media/vpc/direct-connect-backup.png)
 
 ---
-**Question**: want to speed s2s VPN connect, check [Transit Gateway](#aws-transit-gateway) with ECMP 
 ### AWS Transit Gateway
 
 AWS Transit Gateway enables you to **connect multiple VPCs and on-premises networks** using a **hub-and-spoke (star) architecture**.
