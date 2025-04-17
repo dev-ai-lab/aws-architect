@@ -845,9 +845,9 @@ To influence this, use placement group
     - cost-effective, low latency, boot volume/virtual desktop
     - 1 GB - 16TB
     - gp3: baseline 3000 IOPS (upto 16000), throughput of 125 MiB/s (upto 1000 MiB/s) independently
-    - gp2: upto 3000 IOPS, size and IOPS are linked, IOPS upto 16000 MiB/s, 3 IOPS per GB
+    - gp2: burst upto 3000 IOPS for an extended duration, size and IOPS are linked, IOPS upto 16000 MiB/s, 3 IOPS per GB
   - io1/io2: highest performance `SSD`, Provisioned IOPS (PIOPS) SSD
-    - critical business applications with sustained IOPS performance
+    - critical business applications with sustained IOPS performance, i/o intensive workloads
     - application that needs more than 16000 IOPS
       - i.e Databases (sensitive to storage perf and consistency)
     - io1(4 GiB - 16 TiB):
@@ -2867,8 +2867,11 @@ AWS **Snowball**, **Snowcone**, and **Snowmobile** are all part of AWS's **Snow 
 - **DAX caching:**
   - Provides an in-memory cache for reduced read latency (microseconds) with a default 5-minute TTL.
   - helps solve read congestion
-  - fully compatible with DynamoDB API (not app code change).
+  - fully compatible with DynamoDB API (no app code change/refactoring).
+    - doesn't require developers to manage cache invalidation, data population or cluster management
   - less read capacity is used which saves costs
+  - delivers upto 10x performance improvement - from milliseconds to microseconds - even at millions of requests per seconds
+  - 
 
 ![dynamodb-acc-dax.png](media/serverless/dynamodb-acc-dax.png)
 - Why not ElastiCache
@@ -4902,6 +4905,7 @@ Demo
 
 **Warm Standby**
 - **Full system** runs at **minimal capacity** in the cloud.
+- It is a scaled-down fully functional environment running in parallel
 - **Scales up** to full production during a disaster.
 
 ![dr-warm-standby.png](media/dr-and-migration/dr-warm-standby.png)
