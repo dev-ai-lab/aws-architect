@@ -4913,6 +4913,7 @@ Demo
 ![dr-hot-site-multi-site.png](media/dr-and-migration/dr-hot-site-multi-site.png)
 
 **All AWS Multi Region**
+
 ![all-cloud-multi-region.png](media/dr-and-migration/all-cloud-multi-region.png)
 
 **Disaster RecoveryTips**
