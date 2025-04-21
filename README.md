@@ -2301,6 +2301,19 @@ AWS **Snowball**, **Snowcone**, and **Snowmobile** are all part of AWS's **Snow 
   - FIFO demo
 
 [aws-sqs-fifo-demo.gif](media/messaging/aws-sqs-fifo-demo.gif)
+- Queue types in SQS:
+  - Standard
+  - FIFO
+  - dead-letter-queue
+  - delay queues
+  - Temporary queues:
+    - concept of a temporary queue usually refers to a short-lived, on-demand queue that is:
+      - Created dynamically 
+      - Used for a short period 
+      - Deleted after use
+    - This pattern is often used in request-reply architectures or asynchronous RPC-style communication, especially when clients need a unique queue for responses.
+
+![temporary-queues-in-sqs.png](media/messaging/temporary-queues-in-sqs.png)
 ### AWS SNS
 - What if we want to send one message to many receivers? 
   - AWS SNS
