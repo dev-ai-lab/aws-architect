@@ -1076,6 +1076,8 @@ To influence this, use placement group
   - In ALB, it is enabled by default. It can be disabled at `target group` level. No charges for inter AZs traffic (which costs normally)
   - Change it in `target group` under `attributes` section.
   - In NLB, GLB, it is disabled by default. If activated, it costs for inter AZs traffic. Can be changed in LB attributes section directly
+
+![cross-zone-load-balances.png](media/cross-zone-load-balances.png)
 - SSL/TLS:
   - SSL certificate allows traffic between your client and LB to be encrypted in transit (in-flight encryption)
   - SSL refers to Secure Sockets Layer, used to encrypt connections
