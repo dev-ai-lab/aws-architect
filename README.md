@@ -993,25 +993,25 @@ To influence this, use placement group
   - EC2 accepts incoming traffic only from SG that is assigned to LB on port 80
   - While LB accepts HTTP and HTTPS from everyone on port 80
   
-- Types:
-  - Classic (Old) - 2009
-  - Application LB: HTTP, HTTPS, Websocket - 2016: Layer 7 only LB 
-    - LB to multiple HTTP apps across machines (target groups)
-    - LB to multiple applications on the same machine (i.e containers)
-    - It has only static DNS name and not static IP. Only NLB has static IP
-    - supports redirect from HTTP to HTTPS
-    - Routing:
-      - routing based on path (content-based routing) (example.com/user & example.com/post routed to two different target groups)
-      - routing based on hostname (one.example.com & other.example.com two routs routed to two different target groups)
-      - Routing based on query string, headers
-    - ALB are great fit for microservices and container-based application (docker, AWS ECS)
+### ELB Types:
+- **Classic:** (Old) - 2009
+- **Application LB:** HTTP, HTTPS, Websocket - 2016: Layer 7 only LB 
+  - LB to multiple HTTP apps across machines (target groups)
+  - LB to multiple applications on the same machine (i.e containers)
+  - It has only static DNS name and not static IP. Only NLB has static IP
+  - supports redirect from HTTP to HTTPS
+  - Routing:
+    - routing based on path (content-based routing) (example.com/user & example.com/post routed to two different target groups)
+    - routing based on hostname (one.example.com & other.example.com two routs routed to two different target groups)
+    - Routing based on query string, headers
+  - ALB are great fit for microservices and container-based application (docker, AWS ECS)
     
   ![type-application-load-balancer.png](media/type-application-load-balancer.png)
-    - Target groups of ALB
-      - EC2 instances (can be managed by auto-scaling group) - HTTP
-      - ECS tasks - HTTP
-      - Lambda functions - HTTP request is translated into a JSON event
-      - IP addresses (private IPs)
+  - Target groups of ALB
+    - EC2 instances (can be managed by auto-scaling group) - HTTP
+    - ECS tasks - HTTP
+    - Lambda functions - HTTP request is translated into a JSON event
+    - IP addresses (private IPs)
     - ALB can route to multiple target groups
     
     ![alb-multiple-targets.png](media/alb-multiple-targets.png)
@@ -1019,41 +1019,41 @@ To influence this, use placement group
     - It has a fixed hostname (XXX.region.elb.amazonaws.com)
     - Application servers don't see the IP of the client directly (the true IP is inserted into the header `X-Forwarded-For`), as well as the port (`X-Forwarded-Port`) and protocol (`X-Forwarded-Proto`)
     
-  ![alb-termination-&-forwarding.png](media/alb-termination-and-forwarding.png)
-  - **ALB Setup Demo**
+    ![alb-termination-&-forwarding.png](media/alb-termination-and-forwarding.png)
+    - **ALB Setup Demo**
     - [alb-setup-demo.gif](media/alb-setup-demo.gif)
-  - ALB Rule Setup Demo (Continue)
+    - ALB Rule Setup Demo (Continue)
     - [alb-rule-setup-demo.gif](media/alb-rule-setup-demo.gif)
     
-  - Network LB: TCP, TLS (secure TLS), UDP - 2017. 
-    - A layer 4 LB, High Performance (millions of requests per seconds)
-    - Forwards TCP & UDP traffic to the instances
-    - Ultra-low latency
-    - It has one static IP per AZ (can use an elastic IP for this purpose) - whitelisting specific IPs
-    - Not included in free tier
-    - Use case: app needs to be access through specific IPs, --> then use NLB
-    - Target group:
-      - EC2 instances
-      - Private IPs (own or EC2)
-      - Another ALB: NLB --> ALB, getting benefits of both
-    - `Health check: TCP, HTTP, and HTTPS
-    - NLB Setup Demo
-      - [nlb-demo.gif](media/nlb-demo.gif)
+- **Network LB:** TCP, TLS (secure TLS), UDP - 2017. 
+  - A layer 4 LB, High Performance (millions of requests per seconds)
+  - Forwards TCP & UDP traffic to the instances
+  - Ultra-low latency
+  - It has one static IP per AZ (can use an elastic IP for this purpose) - whitelisting specific IPs
+  - Not included in free tier
+  - Use case: app needs to be access through specific IPs, --> then use NLB
+  - Target group:
+    - EC2 instances
+    - Private IPs (own or EC2)
+    - Another ALB: NLB --> ALB, getting benefits of both
+  - `Health check: TCP, HTTP, and HTTPS
+  - NLB Setup Demo
+    - [nlb-demo.gif](media/nlb-demo.gif)
     
-  - **Gateway** LB: operates at layer 3 (Network layer) - IP protocol
-    - Deploy, scale and manage a fleet if 3rd party network virtual appliances i.e Firewalls, Intrusion detection & Prevention Systems, Deep packet inspection system, payload manipulation
-    - Layer 3 LB (IP layer)
-    - Functions:
-      - transparent network gateway: single entry/exit for all traffic
-      - Load balancer: across virtual appliances
-    - Target group:
-      - EC2 instances
-      - Ip addresses (must be private IPs) of both own and aws resources
-    - Uses `GENEVE` protocol on port `6081
+- **Gateway LB:** operates at layer 3 (Network layer) - IP protocol
+  - Deploy, scale and manage a fleet if 3rd party network virtual appliances i.e Firewalls, Intrusion detection & Prevention Systems, Deep packet inspection system, payload manipulation
+  - Layer 3 LB (IP layer)
+  - Functions:
+    - transparent network gateway: single entry/exit for all traffic
+    - Load balancer: across virtual appliances
+  - Target group:
+    - EC2 instances
+    - Ip addresses (must be private IPs) of both own and aws resources
+  - Uses `GENEVE` protocol on port `6081
     
-    ![gateway-load-balancer.png](media/gateway-load-balancer.png)
+  ![gateway-load-balancer.png](media/gateway-load-balancer.png)
 - LB can be setup as private or public
-- **Sticky Sessions**:
+- **Sticky Sessions:**
   - stickiness: same client redirected to the same instance behind LB
   - How it works: cookie is sent as part of client request that has expiration date
   - Usecase: make sure the use doesn't lose his session data (such as user's login data)
@@ -1367,46 +1367,57 @@ AWS Route 53 has several routing policies to **control how users reach your webs
 
 [route-53-latency-r-policy.gif](media/route-53-latency-r-policy.gif)
 
-- Route 53 Health check
-  - only for public resources
-  - health check --> automated DNS failover. There are three types of health checks
-  - this health check: route 53 checks ALB, ALB check EC2
-  1. Monitor Endpoint: about 15 health-checkers from `Route 53 will check the endpoint health
-    - healthy/unhealthy threshold - 3 (default)
-    - interval 30s
-    - supported http, https, tcp
-    - if > 18% checkers report healthy, Route 53 consider it healthy
-    - health ok if status 2xx or 3xx status codes
-    - configure router/firewalls to allow incoming requests from Route 53 health checkers
-      - see ips [here](https://ip-ranges.amazonaws.com/ip-ranges.json) and search `ROUTE53_HEALTHCHECKS`
-      - not route 53 health checkers are outside the VPC
-  2. Calculated health checks
-    - combine the results of multiple health checks into a single health check
-    - you can use OR, AND or NOT
-    - can monitor upto 256 child health checks
-    - specify how many of health checks need to pass to make the parent pass
-  
+---
+
+**Route 53 Health Checks**
+
+Used to enable **automated DNS failover** — but **only for public resources** (except when using CloudWatch alarms). There are **three types**:
+
+**1. Endpoint Health Checks**
+- Route 53 uses ~15 global health checkers to monitor a **public endpoint** (e.g., ALB, which checks EC2).
+- **Default settings:**
+  - Interval: 30 seconds
+  - Healthy/Unhealthy threshold: 3
+  - Protocols: HTTP, HTTPS, TCP
+  - Healthy if: status code is **2xx or 3xx**
+  - Considered healthy if >18% of checkers report healthy
+- Make sure your **firewalls/routers allow incoming checks** from [Route 53 health checker IPs](https://ip-ranges.amazonaws.com/ip-ranges.json) (`ROUTE53_HEALTHCHECKS`)
+- **Important:** Health checkers are **outside the VPC**.
+
+---
+
+**2. Calculated Health Checks**
+- Combines results of **multiple health checks** (up to 256).
+- Use logical rules like **AND, OR, NOT**.
+- Useful for creating complex failover logic.
+
+---
+
+**3. Health Checks Using CloudWatch Alarms**
+- For **private resources** (inside a VPC).
+- Since Route 53 checkers **can’t access private endpoints**, use a **CloudWatch alarm** as a proxy.
+- Steps:
+  - Create a CloudWatch **metric & alarm**
+  - Create a Route 53 health check that monitors the **alarm state**
+
 ![route-53-calculated-health.png](media/route-53-calculated-health.png)
-  3. Health check the monitors CloudWatch alarm
-    - to check private resources (not public)
-    - route 53 health checkers are outside the VPC and they can't access private endpoints (resources in private subnets)
-    - solution: create CloudWatch Metric & associate a cloudwatch alarm, then create a health check that checks the alarm itself
-  
+
 ![r53-private-r-health.png](media/r53-private-r-health.png)
 
+---
 - Demos:
   - [create-health-check.gif](media/create-health-check.gif)
   - [calculated-health-check-demo.gif](media/calculated-health-check-demo.gif)
   - [health-check-unhealthy-result-dem.gif](media/health-check-unhealthy-result-dem.gif)
 
-- Failover Routing Policy:
+**Failover Routing Policy**
 
 ![r3-rourting-polic-failover.png](media/r3-rourting-polic-failover.png)
   - Demo:
   
 [r53-routing-polic-failover-demo.gif](media/r53-routing-polic-failover-demo.gif)
 
-- Geolocation Routing Policy: 
+**Geolocation Routing Policy:**
   - Routing is basd on user's location i.e eu user routed to eu region
   - Use case: website localization, restrictive content distribution, load balancing
   - should have a default record for a location that is not specified
@@ -1414,9 +1425,11 @@ AWS Route 53 has several routing policies to **control how users reach your webs
 
 [r53-routing-polic-geolocation-demo.gif](media/r53-routing-polic-geolocation-demo.gif)
 
-- Geoproximity Routing Policy:
+**Geoproximity Routing Policy:**
   - routing based on location `and` resources
   - using `bias` values we shift the traffic accordingly
+    - to expand the size of geographic region from which Route53 route traffic to a resource, specify a bias value of int 1 - 99
+    - to shrink the size set a value -1 to -99
   - resources can be:
     - AWS resources (specify using AWS region)
     - non-AWS resources (specify latitude & longitude)
@@ -1425,14 +1438,15 @@ AWS Route 53 has several routing policies to **control how users reach your webs
     1. us-west-1 (Bias = 0) <--  & us-east-1 (Bias = 0) `vs` 
     2. us-west-1 (Bias = 0) & us-east-1 (Bias = 50)
     - in `2` more users will go through us-east-1 because of the weightage.
-- IP-based Routing Policy:
+
+**IP-based Routing Policy:**
   - Based on users' IP
   - using CIDRs i.e users who have specific CIDR (specific ISP) routed to specific instance
   - use cases: optimize performance, reduce network costs
 
 ![r53-ip-based-routing-polic.png](media/r53-ip-based-routing-polic.png)
 
-- Multi-value Routing Policy:
+**Multi-value Routing Policy:**
   - When routing traffic to multiple resources
   - Upto max 8 `healthy records are returned for each MV query
   - It can be associated with Health check (Simple routing multiple value is different as it can not be associated with health check)
@@ -1441,7 +1455,7 @@ AWS Route 53 has several routing policies to **control how users reach your webs
   - Demo:
 
 
-- Domain Registrar vs DNS service:
+**Domain Registrar vs DNS service:**
   - Domain Registrar != DNS Service
   - But most Registrars usually comes with some DNS features
   - Route 53 is a registrar which provides DNS services along side. 
@@ -1540,6 +1554,8 @@ Think of **AWS S3** like an **infinite online hard drive** where you can store a
     - CRR (cross region replication)
     - SRR (same region replication)
   - Or use sync command to copy between S3 source and S3 destination
+    - `aws s3 sync s3://source-bucket-name s3://destination-bucket-name`
+
 ![s3-replicaiton.png](media/s3/s3-replicaiton.png)
     - Demo:
 
@@ -1554,7 +1570,7 @@ Think of **AWS S3** like an **infinite online hard drive** where you can store a
 [s3-static-website-demo.gif](media/s3/s3-static-website-demo.gif)
 
 - Event Notifications & Integrations
-  - Triggers AWS services like **Lambda**, **SNS**, or **SQS** when files are added or changed.
+  - Triggers AWS services like **Lambda**, **SNS**, or **SQS** (only standard queue and not FIFO) when files are added or changed.
 
 ![s3-event-notification.png](media/s3/s3-event-notification.png)
   - Demo
@@ -1586,6 +1602,7 @@ Think of **AWS S3** like an **infinite online hard drive** where you can store a
       - Glacier Instant retrieval: milliseconds retrieval, min 90 days
       - Glacier flexible retrieval: expedited (1 to 5 minutes), standard (3 to 5 hours), bulk (5 to 12 hours). Min storage 90 days
       - Glacier deep archive: long term storage. standard (12 hours), bulk (48 hours). Min storage 180 days
+        - 75% less expensive than S3 glacier
    - For archive objects move them to Glacier or Glacier Deep Archive
    - Move b/w classes automated using life cycle rules
      - we can set expiration actions (to delete files at a specific time later)
@@ -1781,10 +1798,10 @@ Waterfall model for transitioning between storage classes:
   - no one can delete, even the admin
   - at bucket level
 - S3 Object Lock:
-  - versioning must be enabled
-  - for WORM for a retention period of time
-  - lock at object level and not at bucket level 
   - blocks an object deletion for a specific amount of time
+  - for WORM for a retention period of time
+  - versioning must be enabled
+  - lock at object level and not at bucket level 
   - Retention mode - Compliance: no one can delete including the admin
   - Retention Mode - Governance: most users can't delete except a few admin user with permission (IAM). retention period can be changed
 - Legal Hold: protect the object indefinitely, independent of retention period
@@ -2104,7 +2121,7 @@ AWS **Snowball**, **Snowcone**, and **Snowmobile** are all part of AWS's **Snow 
     - S3 File GW
     - FSx File GW
   - Volume GW
-  - Tap GW
+  - Tape GW
 - AWS File GW
   - most recently used data is cached in the GW
   - bucket access using IAM roles for each file GW
@@ -2124,8 +2141,11 @@ AWS **Snowball**, **Snowcone**, and **Snowmobile** are all part of AWS's **Snow 
 ![drafted-aws-volume-gw.png](media/advanced-storage/drafted-aws-volume-gw.png)
 
 - Tape GW
+  - Allows replacing physical tapes on-premise with virtual tapes in AWS without changing existing backup workflows
+  - Tape gateway encrypt data between the gateway and the AWS for secure data transfer and compresses data while transitioning tapes between S3 and S3 glacier or S3 glacier deep archive
 
 ![drafted-aws-tape-gw.png](media/advanced-storage/drafted-aws-tape-gw.png)
+![tape-gateway.jpg](media/advanced-storage/tape-gateway.jpg)
 
 - Storage Gateway - Hardware Appliance
   - in all the above scenarios, one has to install the GW on-premise
@@ -2345,6 +2365,25 @@ AWS **Snowball**, **Snowcone**, and **Snowmobile** are all part of AWS's **Snow 
 - SNS demos:
 
 [sns-demo.gif](media/messaging/sns-demo.gif)
+
+### AWS EventBridge
+Amazon EventBridge is a serverless event bus service that makes it easy to connect applications using events.
+- Receives events from AWS services, custom apps, or SaaS providers. 
+- Routes events to targets like Lambda, Step Functions, SQS, SNS, and more. 
+- Decouples services, enabling scalable and loosely-coupled architectures.
+- Key features:
+  - Schema discovery: Automatically detects the structure of incoming events. 
+  - Event filtering: Only forward events that match specific patterns. 
+  - Integrates with 200+ AWS services. 
+  - Supports custom event buses for app-specific workflows.
+- common use cases:
+  - Automate workflows (e.g., run a Lambda when an EC2 instance starts). 
+  - Connect microservices with real-time event-driven communication. 
+  - React to SaaS events (e.g., Zendesk ticket created
+- For comparison, SNS doesn't support third party destinations
+
+![event-bridge-notification.jpg](media/messaging/event-bridge-notification.jpg)
+
 ### AWS Kinesis
 - collect and store streaming data in **real-time**
 
@@ -2845,6 +2884,20 @@ Refer to [Flink](#amazon-managed-service-for-apache-flink)
 
 ![rds-event-notification.png](media/serverless/rds-event-notification.png)
 
+**Lambda db communication:**
+
+**AWS Lambda to RDS using IAM authentication** allows your Lambda function to connect securely to an **Amazon RDS database** (e.g., MySQL or PostgreSQL) **without hardcoding passwords**.
+
+- How It Works:
+  1. **Enable IAM DB authentication** on your RDS instance.
+  2. **Create an IAM role** with permission to connect to RDS (`rds-db:connect`).
+  3. **Attach the IAM role** to your Lambda function.
+  4. In Lambda, generate a **temporary auth token** using the **`generate-db-auth-token`** AWS CLI/SDK.
+  5. Use that token as the database password in the connection.
+
+---
+This method improves security by using **short-lived tokens** instead of static DB credentials.
+
 ## AWS No SQL
 ### DynamoDB - NoSQL
 - **Fully managed & available:**
@@ -2882,7 +2935,9 @@ Refer to [Flink](#amazon-managed-service-for-apache-flink)
 
 ![dynamodb-dax-elasticache.png](media/serverless/dynamodb-dax-elasticache.png)
 - DynamoDB - Stream Processing
-  - ordered stream of item-level modification(create, update, delete)
+  - DynamoDB Stream is an ordered flow of information about changes (create, update, delete) to items in DDB table
+  - when an item changed DDB writes a stream record with the primary key attribute of the item
+  - It can chained with lambda down the line
   - use cases:
     - react in real time (welcome emails to users)
     - real-time usage analytics
@@ -2941,6 +2996,7 @@ Refer to [Flink](#amazon-managed-service-for-apache-flink)
     - Logs import errors in CloudWatch Logs
 
 ![img.png](media/serverless/drafted-dynamodb-s3-int.png)
+
 ## AWS API Management
 - Example: Building a Serverless API (aws api gateway + lambda + dynamoDB)
 - 
@@ -4034,6 +4090,10 @@ AWS WAF helps protect your web applications from common threats like **SQL injec
 - **IP Sets:**
   - Supports up to **10,000 IP addresses** per set.
   - Use multiple rules for larger IP lists.
+- Geo match statement:
+  - list of countries you want to block
+- IP Set statement:
+  - list IPs that you want to allow through
 - **Filtering Options:**
   - Inspect **HTTP headers, HTTP body, or URI strings**.
   - Apply **size constraints** and **geo-match rules** (e.g., block specific countries).
