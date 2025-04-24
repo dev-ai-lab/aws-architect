@@ -892,6 +892,7 @@ To influence this, use placement group
 ---
 
 [ebs-volume-demo.gif](media/ebs-volume-demo.gif)
+
 **EBS Snapshots**
 - Backup of an EBS at anytime
 - Recommended to first detach
