@@ -25,6 +25,7 @@
     * [AWS EFS - Elastic File System](#aws-efs---elastic-file-system)
     * [High availability and scalability](#high-availability-and-scalability)
   * [ELB - AWS managed Load Balancer](#elb---aws-managed-load-balancer)
+    * [ELB Types:](#elb-types)
   * [Auto Scaling Group (ASG)](#auto-scaling-group-asg)
   * [AWS RDS, Aurora, ElastiCache](#aws-rds-aurora-elasticache)
   * [AWS Route 53](#aws-route-53)
@@ -60,6 +61,7 @@
   * [AWS Integration and Messaging - decoupling applications: SQS, SNS, Kinesis, Active MQ](#aws-integration-and-messaging---decoupling-applications-sqs-sns-kinesis-active-mq)
     * [AWS SQS – Standard Queue](#aws-sqs--standard-queue)
     * [AWS SNS](#aws-sns)
+    * [AWS EventBridge](#aws-eventbridge)
     * [AWS Kinesis](#aws-kinesis)
     * [Amazon MQ](#amazon-mq)
   * [AWS containers: ECS, Fargate, ECR](#aws-containers-ecs-fargate-ecr)
@@ -86,6 +88,9 @@
     * [AWS Redshift](#aws-redshift)
     * [**Amazon OpenSearch Service Summary**](#amazon-opensearch-service-summary)
     * [**Amazon EMR**](#amazon-emr)
+      * [✅ How it helps in a multi-department setup:](#-how-it-helps-in-a-multi-department-setup)
+      * [🛠️ How it's implemented:](#-how-its-implemented)
+      * [🧠 Bonus:](#-bonus)
     * [**Amazon QuickSight**](#amazon-quicksight)
     * [**Amazon Glue**](#amazon-glue)
     * [**Amazon Lake Formation**](#amazon-lake-formation)
@@ -138,7 +143,8 @@
     * [Summary - VPC Setup Journey](#summary---vpc-setup-journey)
     * [AWS Site-to-Site VPN](#aws-site-to-site-vpn)
     * [AWS Direct Connect (DX)](#aws-direct-connect-dx)
-    * [Transit Gateway](#transit-gateway)
+    * [AWS Transit Gateway](#aws-transit-gateway)
+    * [Transit Gateway: Site-to-Site VPN ECMP](#transit-gateway-site-to-site-vpn-ecmp)
     * [Resource Access Manager (RAM)](#resource-access-manager-ram)
     * [Shared Services VPC](#shared-services-vpc)
     * [Transit VPC](#transit-vpc)
@@ -745,27 +751,59 @@ echo "<h1>Hello World from $(hostname -f)</h1>" > /var/www/html/index.html
   - put `ReplaceUnhealthy` in standby or 
   - put instance into standby state
 ### EC2 Purchasing Options
-- On demand instances: short workload, pay by second
-- Reserved (1 & 3 years)
-  - Reserved
-  - Convertible reserved
-- Savings plans: commitment to an amount of usage, long workload
-- Spot instances: short workload, can lose instances. 
-  - Most cost-efficient in aws.
-  - Upto 90%  discount
-  - Suitable for applications that has flexible start and end times
-- Dedicated Hosts: book entire physical server. Used for server bound software licenses (per-socket, per-core, pe-VM)
-  - strong regulation (compliance)
-  - complex licensing
-  - the most expensive option
-  - allow visibility into physical cores & network socket
-- Dedicated Instances: no other customers will share your hardware
-- Capacity Reservation: reserve a capacity in specific AZ
-- Reference for pricing: lectures 44 to 47
-- Spot Fleet: selects the spot instance pools
-  - By default, it maintains a target capacity by launching replacement instances after the spot instances in the fleet are terminated
-  - a spot instance is an unused EC2 that is available for less than the on-demand price.
-  - spot fleet uses `lowestPrice strategy.
+
+1. **On-Demand Instances**:
+  - **Description**: These are the most flexible EC2 instances. You pay for compute capacity by the second or hour, with no long-term commitment or upfront payments.
+  - **Use Case**: Ideal for short-term, unpredictable workloads or applications that cannot be interrupted.
+
+2. **Reserved Instances**:
+  - **Description**: Reserved Instances provide a significant discount (up to 75%) compared to On-Demand pricing in exchange for committing to a specific instance type and region for a one or three-year term.
+  - **Types**:
+    - **Standard Reserved Instances**: Fixed instance type and region.
+    - **Convertible Reserved Instances**: Can be exchanged for other instance types, but still within a specific region.
+    - **Scheduled Reserved Instances**: Reserved for specific time windows.
+  - **Use Case**: Best for predictable, steady-state usage.
+
+3. **Spot Instances**:
+  - **Description**: These are unused EC2 capacity available at a reduced price. Spot Instances can be interrupted by AWS with little notice, typically when the demand for EC2 capacity increases.
+  - **Use Case**: Suitable for flexible, fault-tolerant applications, like big data processing or batch jobs, that can handle interruptions.
+
+4. **Spot Fleet**:
+  - **Description**: Spot Fleet is a collection of Spot Instances (and optionally On-Demand Instances) that is managed as a single entity. You can use Spot Fleet to automatically request, manage, and scale Spot Instances across multiple instance types and Availability Zones, based on your target capacity.
+  - **Use Case**: Ideal for large-scale, stateless, distributed workloads (like batch processing or simulations) that can tolerate interruptions and require flexible scaling across multiple instance types and zones.
+
+5. **Savings Plans**:
+  - **Description**: A flexible pricing model offering lower prices in exchange for committing to a consistent amount of usage (measured in $/hr) over a one- or three-year term.
+  - **Types**:
+    - **Compute Savings Plans**: Flexibility to switch between instance types, operating systems, and regions.
+    - **EC2 Instance Savings Plans**: Commitment to specific EC2 instance families and regions.
+  - **Use Case**: Ideal for businesses with predictable compute needs that want the flexibility to change instance types, regions, and OS over time.
+
+6. **Dedicated Hosts**:
+  - **Description**: Physical servers dedicated to your use. You can launch EC2 instances on these hosts and have full control over how instances are placed on the server.
+  - **Use Case**: Ideal for workloads that require compliance, licensing, or need a specific physical server.
+
+7. **Dedicated Instances**:
+  - **Description**: EC2 instances that run on hardware dedicated to a single customer. Unlike Dedicated Hosts, they don’t give you control over instance placement.
+  - **Use Case**: Suitable for workloads that require isolation but do not need the full control of Dedicated Hosts.
+
+8. **Elastic GPUs**:
+  - **Description**: These are graphics processing units that you can attach to your EC2 instances to support graphic-intensive applications such as machine learning, video rendering, etc.
+  - **Use Case**: Ideal for applications needing additional GPU capacity for graphics or compute-intensive workloads.
+
+9. **Elastic Inference**:
+  - **Description**: Allows you to attach low-cost GPU-powered inference acceleration to your EC2 instances, saving on overall costs while running machine learning inference workloads.
+  - **Use Case**: Cost-effective for running ML models in production environments.
+
+10. **Capacity Reservation**:
+  - **Description**: Capacity Reservations allow you to reserve capacity for EC2 instances in a specific Availability Zone. Unlike Reserved Instances, which offer a discount in exchange for a commitment, Capacity Reservations ensure that you have the necessary compute capacity available when you need it. The instances are billed at On-Demand rates.
+  - **Use Case**: Ideal for workloads that require guaranteed compute capacity in a specific region or Availability Zone, especially for applications that cannot be interrupted, such as critical applications or large-scale migrations.
+
+---
+
+**Spot Fleet**
+- **Description**: Spot Fleet is a service that allows you to manage and request a fleet of Spot Instances (and optionally On-Demand Instances) to meet your compute requirements. Spot Fleet provides automated scaling, instance diversification, and fault tolerance to handle instance interruptions.
+- **Use Case**: Perfect for large-scale, stateless, batch-processing workloads or any distributed application that can handle interruptions. It allows you to optimize cost and reliability by distributing the fleet across multiple instance types and regions.
 
 - IPv4 costs: Configure IPAM for getting usage insights
 
@@ -3378,6 +3416,34 @@ Amazon **EMR (Elastic MapReduce)** is a **big data processing service** that hel
 
 Clusters can be **long-running** or **transient (temporary)** depending on the workload.
 
+- If a company has **many departments sharing EMR clusters**, using **EMR Runtime Roles** is the **best practice** to ensure **secure, isolated, least-privilege access** for each team.
+
+---
+
+#### ✅ How it helps in a multi-department setup:
+
+| Scenario                             | Benefit of EMR Runtime Roles                                  |
+|--------------------------------------|---------------------------------------------------------------|
+| Dept A runs Spark, needs S3 bucket A | Assign a role **only** with access to `s3://dept-a-data/*`    |
+| Dept B runs Hive, needs DynamoDB B   | Use a **different runtime role** for access to DynamoDB B     |
+| Shared EMR cluster across teams      | **Same cluster**, but **different roles per job/user/team**   |
+| Fine-grained data access             | Prevents accidental or unauthorized cross-team access         |
+
+---
+
+#### 🛠️ How it's implemented:
+1. Create **separate IAM roles** per team or job type (e.g., `EMRRuntimeRole-TeamA`, `EMRRuntimeRole-TeamB`).
+2. Attach policies scoped to their specific data/resources.
+3. When submitting jobs (via **EMR Studio**, **CLI**, or **SDK**), **specify the runtime role**.
+4. EMR automatically assumes that role **just for that job**.
+
+---
+
+#### 🧠 Bonus:
+- This pattern supports **multi-tenancy**, **auditability**, and **cost tracking**.
+- Works well with **EMR Serverless** and **EMR on EKS**, too.
+
+Want a quick template to create such a runtime role?
 ### **Amazon QuickSight**
 
 Amazon QuickSight is a **serverless, machine learning-powered business intelligence (BI) service** used to create **interactive dashboards** and gain business insights. It is **fast, automatically scalable, and embeddable**, with **per-session pricing**.
