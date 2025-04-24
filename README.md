@@ -400,6 +400,8 @@ Default output format [None]:
 ![Create Policy](media/create-policy.png)
 
   - Password Policy: Set min length, char requirements, password expiration
+    - A password policy for the entire aws users:
+      - set a password policy for the entire aws account
 
 ![password policy](media/setup-pwd-policy.png)
 
@@ -840,45 +842,56 @@ To influence this, use placement group
   - Provisioned capacity:
     - billed for all provisioned capacity
     - can be increased overtime
-- EBS volume types:
-  - gp2/gp3: general purpose `SSD`
-    - cost-effective, low latency, boot volume/virtual desktop
-    - 1 GB - 16TB
-    - gp3: baseline 3000 IOPS (upto 16000), throughput of 125 MiB/s (upto 1000 MiB/s) independently
-    - gp2: burst upto 3000 IOPS for an extended duration, size and IOPS are linked, IOPS upto 16000 MiB/s, 3 IOPS per GB
-  - io1/io2: highest performance `SSD`, Provisioned IOPS (PIOPS) SSD
-    - critical business applications with sustained IOPS performance, i/o intensive workloads
-    - application that needs more than 16000 IOPS
-      - i.e Databases (sensitive to storage perf and consistency)
-    - io1(4 GiB - 16 TiB):
-      - Max PIOPS: 64000 for Nitro EC2 instances & 32000 for other
-      - PIOPS increase independent of storage size
-    - io3 Block Express (4 GiB - 64 TiB):
-      - sub-millisecond latency
-      - max PIOPS: 256,000 with an `IOPS:GiB` ratio of `1,000:1`
-    - Supports EBS multi-attach
-  - st1 & sc1:
-    - st1 & st2 can't be a root volume or boot volume
-    - Low cost HDDs
-    - 125 GiB to 16 TiB
-    - st1: throughput optimized HDD
-      - Big Data, Data warehouse, Log processing
-      - Max throughput of 500 MiB/s, max IOPS 500
-    - sc1: Cold HDD
-      - archived data (infrequently accessed)
-      - where the lowest cost is a factor
-      - Max throughput 250 MiB/s - max IOPS 250
-- Only `gp2/gp3` , `io1/io2`  and `instance store` can be used as `root` volumes (boot volumes)
+---
+
+ 🚀 **SSD-backed Volumes** (Performance + Boot Volumes)
+
+| Type     | Purpose                     | Key Features / Use Cases                                        |
+|----------|-----------------------------|------------------------------------------------------------------|
+| **gp2**  | General Purpose SSD (legacy) | - 3 IOPS/GB, burst up to 3,000 IOPS<br>- IOPS tied to volume size |
+| **gp3**  | General Purpose SSD (newer)  | - Baseline 3,000 IOPS (up to 16,000)<br>- 125–1,000 MiB/s throughput, IOPS and size decoupled |
+| **Use case** | Boot volumes, virtual desktops, cost-effective general workloads |
+
+---
+
+⚡ **PIOPS SSD (High-Performance)**
+
+| Type     | Purpose                         | Key Features                                                    |
+|----------|----------------------------------|------------------------------------------------------------------|
+| **io1**  | Provisioned IOPS SSD             | - Max 64,000 IOPS (Nitro), 32,000 (others)<br>- 4 GiB – 16 TiB |
+| **io2**  | More durable PIOPS SSD           | - Same IOPS as io1 but better durability & SLA |
+| **io2 Block Express** | Ultra-high perf io2 variant  | - Up to 256,000 IOPS<br>- 1,000:1 IOPS:GiB ratio<br>- Sub-ms latency<br>- Up to 64 TiB |
+| **Multi-Attach Support** | io1/io2 (same AZ) | - Attach to up to 16 EC2s for HA<br>- Requires **cluster-aware** file system |
+| **Use case** | Databases, enterprise apps, I/O intensive workloads needing >16K IOPS |
+
+---
+
+🧊 **HDD-backed Volumes** (Throughput + Cost Savings)
+
+| Type     | Purpose                  | Key Features / Use Cases                                           |
+|----------|---------------------------|---------------------------------------------------------------------|
+| **st1**  | Throughput Optimized HDD | - Up to 500 MiB/s throughput<br>- Max IOPS ~500<br>- Use for Big Data, log processing |
+| **sc1**  | Cold HDD                 | - Up to 250 MiB/s<br>- Max IOPS ~250<br>- Cheapest; for archival, infrequent access |
+| **Limitations** | Both can't be boot volumes |
+
+---
+
+🧩 **Root Volume Support**
+- Only **gp2**, **gp3**, **io1**, **io2**, and **Instance Store** can be used as **root/boot volumes**.
+
+---
+
+🧠 **Easy Mnemonics**
+
+  - **G**eneral = **gp2/gp3**
+  - **I/O intense = io1/io2**
+  - **T**hroughput = **st1**
+  - **C**heap = **sc1**
+  - **Bootable = SSDs only** (plus instance store)
+
+---
 
 [ebs-volume-demo.gif](media/ebs-volume-demo.gif)
-
-- Multi-Attach (io1/io2 family) - attach the same volume to multiple EC2 instances in the same AZ:
-  - both read and write at the same time
-  - Use case:
-    - higher application availability
-  - Upto 16 instances at a time only
-  - Use a file system that is cluster aware
-
 **EBS Snapshots**
 - Backup of an EBS at anytime
 - Recommended to first detach
@@ -1909,7 +1922,7 @@ Waterfall model for transitioning between storage classes:
   - 3 price classes
     - Price class all
     - price class 200
-    - price class 100
+    - price class 100: USA, Canada, Europe, & Israel
 
 ### CF cache invalidation
   - if TTL not expired and backend changes, it still show old version
@@ -1950,6 +1963,7 @@ Waterfall model for transitioning between storage classes:
     - improve performance for a wide range of apps over TCP and UDP
     - no cache
       - proxying packets at the edge to applications running in one or more AWS regions
+      - real-time API such as shipping tracking systems which shouldn't have caching and be real-time
     - It uses endpoint weights to determine proportion of traffic that is directed to the endpoint
     - Blue-green deployment
     - good fit for non-HTTP use cases, such as gaming (UDP), IoT (MQTT), or Voice over IP
