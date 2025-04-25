@@ -671,6 +671,10 @@ AWS IAM Identity Center Fine-grained Permissions and Assignments:
 
 ![iam-id-center-fine-grained-permissions.png](media/iam/iam-id-center-fine-grained-permissions.png)
 
+**IAM Roles Anywhere** is a feature in AWS that enables you to securely grant access to AWS resources from **outside** AWS (e.g., on-premises servers, or other cloud environments) using **IAM roles**. It works with **IAM Identity Center** to allow users and applications to assume IAM roles by leveraging **X.509 certificates** for authentication, instead of relying solely on traditional AWS credentials.
+
+In the context of **IAM Identity Center**, it helps extend centralized identity and access management to external environments, offering seamless, secure access to AWS resources regardless of the user's or application's location.
+
 ### AWS Directory Services
 - AWS Managed Microsoft AD
   - Create your own AD in AWS, manage users locally, support MFA
@@ -1044,112 +1048,116 @@ To influence this, use placement group
 - Security consideration
   - EC2 accepts incoming traffic only from SG that is assigned to LB on port 80
   - While LB accepts HTTP and HTTPS from everyone on port 80
-  
-### ELB Types:
-- **Classic:** (Old) - 2009
-- **Application LB:** HTTP, HTTPS, Websocket - 2016: Layer 7 only LB 
-  - LB to multiple HTTP apps across machines (target groups)
-  - LB to multiple applications on the same machine (i.e containers)
-  - It has only static DNS name and not static IP. Only NLB has static IP
-  - supports redirect from HTTP to HTTPS
-  - Routing:
-    - routing based on path (content-based routing) (example.com/user & example.com/post routed to two different target groups)
-    - routing based on hostname (one.example.com & other.example.com two routs routed to two different target groups)
-    - Routing based on query string, headers
-  - ALB are great fit for microservices and container-based application (docker, AWS ECS)
+- ELB Types: Classic, Application LB, Network LB, Gateway LB
+### **Classic:** (Old) - 2009
+### **Application LB:** HTTP, HTTPS, Websocket - 2016: Layer 7 only LB 
+- LB to multiple HTTP apps across machines (target groups)
+- LB to multiple applications on the same machine (i.e containers)
+- It has only static DNS name and not static IP. Only NLB has static IP
+- supports redirect from HTTP to HTTPS
+- Routing:
+  - routing based on path (content-based routing) (example.com/user & example.com/post routed to two different target groups)
+  - routing based on hostname (one.example.com & other.example.com two routs routed to two different target groups)
+  - Routing based on query string, headers
+- ALB are great fit for microservices and container-based application (docker, AWS ECS)
     
   ![type-application-load-balancer.png](media/type-application-load-balancer.png)
-  - Target groups of ALB
-    - EC2 instances (can be managed by auto-scaling group) - HTTP
-    - ECS tasks - HTTP
-    - Lambda functions - HTTP request is translated into a JSON event
-    - IP addresses (private IPs)
-    - ALB can route to multiple target groups
+- ALB and Subnets
+  - EC2 instances (target group) are in private subnet (?)
+  - add public subnets on the same AZ as the private ones to ALB
+
+![alb-private-public-subnets.webp](media/alb-private-public-subnets.webp)
+- Target groups of ALB
+  - EC2 instances (can be managed by auto-scaling group) - HTTP
+  - ECS tasks - HTTP
+  - Lambda functions - HTTP request is translated into a JSON event
+  - IP addresses (private IPs)
+  - ALB can route to multiple target groups
     
-    ![alb-multiple-targets.png](media/alb-multiple-targets.png)
-    - Health check are at the target group level
-    - It has a fixed hostname (XXX.region.elb.amazonaws.com)
-    - Application servers don't see the IP of the client directly (the true IP is inserted into the header `X-Forwarded-For`), as well as the port (`X-Forwarded-Port`) and protocol (`X-Forwarded-Proto`)
+  ![alb-multiple-targets.png](media/alb-multiple-targets.png)
+- Health check are at the target group level
+- It has a fixed hostname (XXX.region.elb.amazonaws.com)
+- Application servers don't see the IP of the client directly (the true IP is inserted into the header `X-Forwarded-For`), as well as the port (`X-Forwarded-Port`) and protocol (`X-Forwarded-Proto`)
     
-    ![alb-termination-&-forwarding.png](media/alb-termination-and-forwarding.png)
-    - **ALB Setup Demo**
-    - [alb-setup-demo.gif](media/alb-setup-demo.gif)
-    - ALB Rule Setup Demo (Continue)
-    - [alb-rule-setup-demo.gif](media/alb-rule-setup-demo.gif)
+  ![alb-termination-&-forwarding.png](media/alb-termination-and-forwarding.png)
+- **ALB Setup Demo**
+  - [alb-setup-demo.gif](media/alb-setup-demo.gif)
+- ALB Rule Setup Demo (Continue)
+  - [alb-rule-setup-demo.gif](media/alb-rule-setup-demo.gif)
     
-- **Network LB:** TCP, TLS (secure TLS), UDP - 2017. 
-  - A layer 4 LB, High Performance (millions of requests per seconds)
-  - Forwards TCP & UDP traffic to the instances
-  - Ultra-low latency
-  - It has one static IP per AZ (can use an elastic IP for this purpose) - whitelisting specific IPs
-  - Not included in free tier
-  - Use case: app needs to be access through specific IPs, --> then use NLB
-  - Target group:
-    - EC2 instances
-    - Private IPs (own or EC2)
-    - Another ALB: NLB --> ALB, getting benefits of both
-  - `Health check: TCP, HTTP, and HTTPS
-  - NLB Setup Demo
-    - [nlb-demo.gif](media/nlb-demo.gif)
+### **Network LB:** TCP, TLS (secure TLS), UDP - 2017. 
+- A layer 4 LB, High Performance (millions of requests per seconds)
+- Forwards TCP & UDP traffic to the instances
+- Ultra-low latency
+- It has one static IP per AZ (can use an elastic IP for this purpose) - whitelisting specific IPs
+- Not included in free tier
+- Use case: app needs to be access through specific IPs, --> then use NLB
+- Target group:
+  - EC2 instances
+  - Private IPs (own or EC2)
+  - Another ALB: NLB --> ALB, getting benefits of both
+- `Health check`: TCP, HTTP, and HTTPS
+- NLB Setup Demo
+  - [nlb-demo.gif](media/nlb-demo.gif)
     
-- **Gateway LB:** operates at layer 3 (Network layer) - IP protocol
-  - Deploy, scale and manage a fleet if 3rd party network virtual appliances i.e Firewalls, Intrusion detection & Prevention Systems, Deep packet inspection system, payload manipulation
-  - Layer 3 LB (IP layer)
-  - Functions:
-    - transparent network gateway: single entry/exit for all traffic
-    - Load balancer: across virtual appliances
-  - Target group:
-    - EC2 instances
-    - Ip addresses (must be private IPs) of both own and aws resources
-  - Uses `GENEVE` protocol on port `6081
+### **Gateway LB:** operates at layer 3 (Network layer) - IP protocol
+- Deploy, scale and manage a fleet if 3rd party network virtual appliances i.e Firewalls, Intrusion detection & Prevention Systems, Deep packet inspection system, payload manipulation
+- Layer 3 LB (IP layer)
+- Functions:
+  - transparent network gateway: single entry/exit for all traffic
+  - Load balancer: across virtual appliances
+- Target group:
+  - EC2 instances
+  - Ip addresses (must be private IPs) of both own and aws resources
+- Uses `GENEVE` protocol on port `6081
     
   ![gateway-load-balancer.png](media/gateway-load-balancer.png)
 - LB can be setup as private or public
-- **Sticky Sessions:**
-  - stickiness: same client redirected to the same instance behind LB
-  - How it works: cookie is sent as part of client request that has expiration date
-  - Usecase: make sure the use doesn't lose his session data (such as user's login data)
-  - may bring imbalance
-  - Types:
-    - application-based
-      - Custom cookie
-        - generated by the target
-        - can include any custom attribute
-        - Can't have AWSALB, AWSALBAPP or AWSALBTG
-      - application cookie
-        - generated by load balancer
-        - name is AWSALBAPP
-    - duration-based:
-      - generated by LB
-      - name is AWSALB for ALB, AWSELB for CLB
-  - Sticky Session Demo on ALB
-    - [sticky-session-demo-alb.gif](media/sticky-session-demo-alb.gif)
-- Cross-Zone LB:
+### **Sticky Sessions:**
+- stickiness: same client redirected to the same instance behind LB
+- How it works: cookie is sent as part of client request that has expiration date
+- Usecase: make sure the use doesn't lose his session data (such as user's login data)
+- may bring imbalance
+- Types:
+  - application-based
+    - Custom cookie
+      - generated by the target
+      - can include any custom attribute
+      - Can't have AWSALB, AWSALBAPP or AWSALBTG
+    - application cookie
+      - generated by load balancer
+      - name is AWSALBAPP
+  - duration-based:
+    - generated by LB
+    - name is AWSALB for ALB, AWSELB for CLB
+- Sticky Session Demo on ALB
+  - [sticky-session-demo-alb.gif](media/sticky-session-demo-alb.gif)
+### Cross-Zone LB:
   - In ALB, it is enabled by default. It can be disabled at `target group` level. No charges for inter AZs traffic (which costs normally)
   - Change it in `target group` under `attributes` section.
   - In NLB, GLB, it is disabled by default. If activated, it costs for inter AZs traffic. Can be changed in LB attributes section directly
 
 ![cross-zone-load-balances.png](media/cross-zone-load-balances.png)
-- SSL/TLS:
-  - SSL certificate allows traffic between your client and LB to be encrypted in transit (in-flight encryption)
-  - SSL refers to Secure Sockets Layer, used to encrypt connections
-  - TLS refers to Transport Layer Security, the newer version of SSL
-  - TLS certificates are mainly used, though people still refers to  it as SSL
-  - SSL certs are issued by Certificate Authority (CA) i.e Comodo, GoDaddy etc
-  - Has expiration date
+### SSL/TLS:
+- SSL certificate allows traffic between your client and LB to be encrypted in transit (in-flight encryption)
+- SSL refers to Secure Sockets Layer, used to encrypt connections
+- TLS refers to Transport Layer Security, the newer version of SSL
+- TLS certificates are mainly used, though people still refers to  it as SSL
+- SSL certs are issued by Certificate Authority (CA) i.e Comodo, GoDaddy etc
+- Has expiration date
 
 ![SSL-termination.png](media/SSL-termination.png)
-  - SSL SNI:
-    - Problem: Loading multiple SSL certs onto one server (to serve multiple websites)
-    - Server will find the correct cert or return the default
-    - Only works with ALB & NLB, CloudFront
+- SSL SNI:
+  - Problem: Loading multiple SSL certs onto one server (to serve multiple websites)
+  - Server will find the correct cert or return the default
+  - Only works with ALB & NLB, CloudFront
   
   ![server-name-indication.png](media/server-name-indication.png)
     
-  - SSL Setup Demo:
-    - [ssl-alb-nlb-setup.gif](media/ssl-alb-nlb-setup.gif)
+- SSL Setup Demo:
+  - [ssl-alb-nlb-setup.gif](media/ssl-alb-nlb-setup.gif)
 
-- Connection draining:
+### Connection draining:
   - in CLB, called Connection draining
   - in ALB, NLB called De-registering Delay
   - it is time to complete "in-flight requests' while the instance is de-registering or is unhealthy
@@ -1927,7 +1935,7 @@ Waterfall model for transitioning between storage classes:
   - Public IPs of [Edge locations](http://d7uri8nf7uskq.cloudfront.net/tools/list-cloudfront-ips)
 
 - A single CF can serve different types of requests from `multiple origins` i.e serve static content from S3 and dynamic from LB
-- Use **origin group** with primary and secondary origin for `ha` and `failover`
+- Create origins in CF first. Then use these origins to create **origin group**. Set primary and secondary origin for `ha` and `failover`
 
 ![cf-origin-groups-overview.png](media/cloudfront/cf-origin-groups-overview.png)
 
@@ -1982,6 +1990,8 @@ Waterfall model for transitioning between storage classes:
   - work with elastic IPs, EC2, ALB, NLB, public or private
 
 ![aws-global-accelerator.png](media/global-accelerator/aws-global-accelerator.png)
+
+![global-accelerator.webp](media/global-accelerator/global-accelerator.webp)
 - consistent performance:
   - intelligent routing to lowest latency and fast regional failover
   - no issue with client cache
@@ -1991,6 +2001,7 @@ Waterfall model for transitioning between storage classes:
 - security:
   - only two IPs needed to be whitelisted
   - DDoS protection
+
 - GA vs CloudFront:
   - They both make use of AWS global n/w and edge locations around the world
   - both integrates with AWS shield for DDoS protection
@@ -2673,27 +2684,108 @@ Refer to [Flink](#amazon-managed-service-for-apache-flink)
 
 ![aws-eks-multi-az.png](media/containers/aws-eks-multi-az.png)
   - each worker node is an EC2 instance
-- AWS EKS node types:
-  - Managed Node Groups
-    - Creates and manages Nodes (EC2 instances) for you
-    - Nodes are part of an ASG managed by EKS 
-    - Supports On-Demand or Spot Instances
-  - Self-Managed Nodes
-    - Nodes created by you and registered to the EKS cluster and managed by an ASG
-    - You can use prebuilt AMI - Amazon EKS Optimized AMI
-    - Supports On-Demand or Spot Instances
-  - AWS Fargate
-    - No maintenance required; no nodes managed
-- Amazon EKS – Data Volumes
-  - Support for...
-    - Amazon EBS
-    - Amazon EFS (works with Fargate) 
-    - Amazon FSx for Lustre
-    - Amazon FSx for NetApp ONTAP
+
+---
+### **AWS EKS Node Types**
+
+When running workloads in Amazon EKS (Elastic Kubernetes Service), you need to provide the compute resources—**nodes**—on which your containers will run. AWS offers three main ways to set up nodes in your EKS cluster, depending on how much control and maintenance responsibility you want.
+
+---
+
+#### 1. **Managed Node Groups**
+
+**Overview:**
+- AWS manages the lifecycle of EC2 instances (nodes) on your behalf.
+- You define a group (node group), and AWS handles provisioning, scaling, and updating the nodes using an Auto Scaling Group (ASG).
+
+**Key Features:**
+- **Fully integrated with EKS:** Node provisioning and management are simplified using the AWS Console, CLI, or APIs.
+- **Auto-scaling supported:** AWS automatically adjusts the number of nodes based on your scaling policies.
+- **EKS-optimized AMI:** Automatically uses an Amazon EKS-optimized AMI, which includes the necessary Kubernetes components.
+- **Update support:** Allows rolling updates to nodes without disrupting workloads.
+
+**Instance Types:**
+- Can use **On-Demand Instances** (pay for what you use) or **Spot Instances** (cheaper but can be interrupted by AWS).
+
+**Best For:**
+- Users who want a balance of flexibility and convenience without managing the infrastructure in detail.
+
+---
+
+#### 2. **Self-Managed Nodes**
+
+**Overview:**
+- You manually create EC2 instances and register them to your EKS cluster.
+- You are responsible for configuring and maintaining the lifecycle of the nodes, often via your own Auto Scaling Group.
+
+**Key Features:**
+- **Greater customization:** You can use any AMI (including custom ones) or the official Amazon EKS-Optimized AMI.
+- **Full control:** Gives you the ability to tweak every aspect of the instance configuration, including networking, security, and software packages.
+- **Manual updates & scaling:** Unlike Managed Node Groups, you handle node upgrades, patching, and autoscaling yourself.
+
+**Instance Types:**
+- Also supports both **On-Demand** and **Spot Instances**.
+
+**Best For:**
+- Advanced users who need custom node configurations or want more control over node management.
+- Use cases that require special security hardening, GPU support, or custom AMIs.
+
+---
+
+#### 3. **AWS Fargate**
+
+**Overview:**
+- A **serverless** compute engine for containers.
+- You don’t manage any EC2 instances. AWS handles the provisioning and scaling of the infrastructure.
+
+**Key Features:**
+- **No node management:** Ideal for those who want to avoid dealing with servers, patches, or scaling infrastructure.
+- **Per-pod billing:** You pay for the vCPU and memory requested by individual pods, not for full EC2 instances.
+- **Isolation and security:** Each pod runs in its own VM-isolated environment, improving security.
+
+**Limitations:**
+- Not all Kubernetes features are supported (e.g., daemonsets, privileged containers).
+- Limited support for custom networking and storage configurations.
+
+**Best For:**
+- Small or simple workloads.
+- Teams prioritizing ease of use and minimal infrastructure overhead.
+- CI/CD jobs, microservices, or event-driven workloads.
+
+---
+
+#### Summary Table
+
+| Feature                  | Managed Node Groups         | Self-Managed Nodes         | AWS Fargate                  |
+|--------------------------|-----------------------------|-----------------------------|------------------------------|
+| Management Level         | AWS-managed                 | User-managed                | Fully serverless             |
+| AMI                     | EKS-optimized (auto)        | EKS-optimized or custom     | Not applicable               |
+| Scaling                 | ASG (managed by AWS)        | Manual or custom ASG        | Handled by AWS               |
+| Instance Types          | EC2 (On-Demand, Spot)       | EC2 (On-Demand, Spot)       | N/A                          |
+| Control & Flexibility   | Medium                      | High                        | Low                          |
+| Use Case Fit            | General purpose             | Custom workloads            | Lightweight, simple apps     |
+
+---
+
+### Amazon EKS – Data Volumes
+- Support for...
+  - Amazon EBS
+  - Amazon EFS (works with Fargate) 
+  - Amazon FSx for Lustre
+  - Amazon FSx for NetApp ONTAP
+
 - Demo:
   - [eks-cluster-creation-demo.gif](media/containers/eks-cluster-creation-demo.gif)
   - [eks-node-group-demo.gif](media/containers/eks-node-group-demo.gif)
 - using `eksctl` create k8s cluster on [aws](https://docs.aws.amazon.com/eks/latest/userguide/create-cluster.html). 
+
+### EKS and IAM Integration
+- There are two types of accounts in k8s:
+  - user account: for humans (i.e kubectl access)
+  - service account: for pods (identity)
+- Service account: in EKS, service account is an identity that the pods use to authenticate to k8s API and with IRSA to aws services
+- IRSA (IAM Roles for Service Accounts) is a k8s feature
+- First create IAM roles separately for each service running on EKS and then assign the roles to each k8s service account
 
 ### Zoning concepts:
 - outer, middle, inner zones
@@ -4587,7 +4679,7 @@ NACL & SG Demo:
 [nacl-sg-inbound-outbound-demo.gif](media/vpc/nacl-sg-inbound-outbound-demo.gif)
 
 ### **VPC Peering**
-- **Privately connects two VPCs** over AWS’ network.
+- **Privately connects two VPCs** over AWS’ network using private IPv4 or IPv6
 - **Acts as a single network**, but **CIDRs must not overlap**.
 - **Not transitive**—each VPC needs a **direct peering connection**.
 - **Route tables must be updated** in both VPCs for communication.
