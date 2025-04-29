@@ -1015,6 +1015,14 @@ To influence this, use placement group
 ![instance-store.png](media/instance-store.png)
 
 ### AWS EFS - Elastic File System
+**EFS (Elastic File System)** is a scalable, cloud-based file storage service provided by **Amazon Web Services (AWS)**. It allows multiple **EC2 instances** to access a **shared file system** over the **NFS (Network File System)** protocol, making it ideal for use cases that require shared data access, like web servers or big data applications.
+
+**Key features:**
+- **Fully managed and scalable** (automatically grows/shrinks as needed)
+- **Accessible from multiple instances** across Availability Zones
+- **Pay-as-you-go** pricing
+- **Supports encryption** and lifecycle management
+
 ![elastic-file-system-efs.png](media/elastic-file-system-efs.png)
 
 - EFS vs EBS vs Instance Store
