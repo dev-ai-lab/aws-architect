@@ -2485,6 +2485,18 @@ Amazon EventBridge is a serverless event bus service that makes it easy to conne
 
 ![event-bridge-notification.jpg](media/messaging/event-bridge-notification.jpg)
 
+### EventBridge Scheduler
+**Amazon EventBridge Scheduler** is a fully managed service that lets you **schedule tasks or events** to run at specific times or intervals, without managing any infrastructure.
+
+**Key features:**
+- **One-time or recurring schedules**
+- **Triggers AWS services** (like Lambda, Step Functions, or ECS)
+- **Granular time control** (down to the minute)
+- **Supports time zones and daylight saving adjustments**
+- **Reliability and retry mechanisms** built-in
+
+It's ideal for automating periodic workflows or timed operations in AWS.
+
 ### AWS Kinesis
 - collect and store streaming data in **real-time**
 
@@ -2571,6 +2583,7 @@ Refer to [Flink](#amazon-managed-service-for-apache-flink)
 - docker: see `bank docu service`
 
 ### AWS Elastic Container Service (ECS)
+- A container image is packaged code and dependencies
 - launching docker container on AWS means launch `ECS tasks` on ECS clusters
 - aws's own container platform
 - EC2 launch type
