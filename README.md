@@ -69,6 +69,7 @@
     * [AWS SQS – Standard Queue](#aws-sqs--standard-queue)
     * [AWS SNS](#aws-sns)
     * [AWS EventBridge](#aws-eventbridge)
+    * [EventBridge Scheduler](#eventbridge-scheduler)
     * [AWS Kinesis](#aws-kinesis)
     * [Amazon MQ](#amazon-mq)
   * [AWS containers: ECS, Fargate, ECR](#aws-containers-ecs-fargate-ecr)
