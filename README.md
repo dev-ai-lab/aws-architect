@@ -11,6 +11,11 @@
     * [IAM Roles vs Resource Based Policies - Cross account](#iam-roles-vs-resource-based-policies---cross-account)
     * [AWS IAM Identity Center (successor to AWS Single Sign-On)](#aws-iam-identity-center-successor-to-aws-single-sign-on)
     * [AWS Directory Services](#aws-directory-services)
+      * [**1. AWS Managed Microsoft AD**](#1-aws-managed-microsoft-ad)
+  * [![aws-id-center-active-dir.png](media/iam/aws-id-center-active-dir.png)](#)
+      * [**2. AD Connector**](#2-ad-connector)
+      * [Simple AD](#simple-ad)
+      * [Demo:](#demo)
     * [AWS Control Tower - a service on top of the organization](#aws-control-tower---a-service-on-top-of-the-organization)
   * [EC2 Service (Elastic Compute Cloud) - Infras as a service](#ec2-service-elastic-compute-cloud---infras-as-a-service)
     * [EC2 Capabilities](#ec2-capabilities)
@@ -44,7 +49,20 @@
     * [Routing Policies (Control How Traffic is Directed)](#routing-policies-control-how-traffic-is-directed)
     * [**Why Use Route 53?**](#why-use-route-53)
   * [AWS S3 (Simple Storage Service)](#aws-s3-simple-storage-service)
-    * [**Key Features of AWS S3**](#key-features-of-aws-s3)
+    * [Buckets & Objects (Folders & Files)](#buckets--objects-folders--files)
+    * [Scalability & Durability](#scalability--durability)
+    * [Security & Access Control](#security--access-control)
+    * [Data Versioning & Backup](#data-versioning--backup)
+    * [Static Website Hosting](#static-website-hosting)
+    * [Event Notifications & Integrations](#event-notifications--integrations)
+    * [Storage Classes (Cost Optimization)](#storage-classes-cost-optimization)
+    * [Requester Pays](#requester-pays)
+    * [S3 - Baseline Performance](#s3---baseline-performance)
+    * [S3 batch operations:- bulk operation on s3 objects in a single request- batch modification batch transfer, batch encryption, invoke lambda function to perform custom action on each object- use S3 inventory to get object list and use athena to query and filter objects](#s3-batch-operations--bulk-operation-on-s3-objects-in-a-single-request--batch-modification-batch-transfer-batch-encryption-invoke-lambda-function-to-perform-custom-action-on-each-object--use-s3-inventory-to-get-object-list-and-use-athena-to-query-and-filter-objects)
+    * [S3 Storage Lens:](#s3-storage-lens)
+    * [S3 Object Encryption:](#s3-object-encryption)
+    * [S3 CORS (Cross Origin Resource Sharing (CORS):](#s3-cors-cross-origin-resource-sharing-cors)
+    * [MFA Delete:](#mfa-delete)
     * [**Why Use S3?**](#why-use-s3)
   * [AWS CloudFront](#aws-cloudfront)
     * [**CloudFront Origins:**](#cloudfront-origins)
@@ -91,8 +109,13 @@
     * [Examples:](#examples)
   * [AWS Serverless overview](#aws-serverless-overview)
     * [AWS Lambda](#aws-lambda)
-  * [AWS No SQL](#aws-no-sql)
-    * [DynamoDB - NoSQL](#dynamodb---nosql)
+  * [AWS No SQL - DynamoDB](#aws-no-sql---dynamodb)
+    * [DAX caching](#dax-caching)
+    * [DynamoDB Streams Processing](#dynamodb-streams-processing)
+    * [DynamoDB Global Tables](#dynamodb-global-tables)
+    * [DynamoDB TTL](#dynamodb-ttl)
+    * [DynamoDB - backups for DR](#dynamodb---backups-for-dr)
+    * [DynamoDB - Integration with S3](#dynamodb---integration-with-s3)
   * [AWS API Management](#aws-api-management)
   * [AWS Step Functions](#aws-step-functions)
   * [AWS Cognito:](#aws-cognito)
@@ -191,7 +214,7 @@
     * [Benefits of CloudFormation](#benefits-of-cloudformation)
     * [CloudFormation + Application Composer](#cloudformation--application-composer)
     * [CloudFormation Service Role](#cloudformation-service-role)
-    * [Demo](#demo)
+    * [Demo](#demo-1)
   * [Amazon Simple Email Service (SES)](#amazon-simple-email-service-ses)
     * [**Key Features:**](#key-features)
   * [Amazon Pinpoint](#amazon-pinpoint)
@@ -691,28 +714,44 @@ AWS IAM Identity Center Fine-grained Permissions and Assignments:
 In the context of **IAM Identity Center**, it helps extend centralized identity and access management to external environments, offering seamless, secure access to AWS resources regardless of the user's or application's location.
 
 ### AWS Directory Services
-- AWS Managed Microsoft AD
-  - Create your own AD in AWS, manage users locally, support MFA
-  - Establish “trust” connections with your on-premises AD
-- AD Connector
-  - Directory Gateway (proxy) to redirect to on-premises AD, supports MFA
-  - Users are managed on the on-premises AD
-- Simple AD
-  - AD-compatible managed directory on AWS
-  - Cannot be joined with on-premises AD
 
 ![aws-directory-service.png](media/iam/aws-directory-service.png)
 
-IAM Identity Center – Active Directory Setup:
-- Connect to an AWS Managed Microsoft AD (Directory Service)
-  - Integration is out of the box
+#### **1. AWS Managed Microsoft AD**
+- **Effort**: Higher upfront setup, but offers deep integration and long-term flexibility.
+- **Use case**: Ideal if you want a fully managed AD in AWS with support for trust relationships.
+- **Setup steps**:
+  - Deploy AWS Managed Microsoft AD in your VPC.
+  - Configure a two-way trust with your on-premises AD.
+  - IAM Identity Center can natively integrate with the managed AD—no extra proxy or directory required.
+- **User management**: You can either manage users in AWS AD or use on-prem users via trust.
+- Supports MFA, group sync, and attribute mappings.
+- More effort initially (trusts, networking, DNS, etc.), but better for scalability and centralized control.
+
 ![aws-id-center-active-dir.png](media/iam/aws-id-center-active-dir.png)
-- Connect to a Self-Managed Directory
-  - Create Two-way Trust Relationship using AWS Managed Microsoft AD
-  - Create an AD Connector
+---
+
+#### **2. AD Connector**
+- Directory Gateway (proxy) to redirect to on-premises AD
+- Users are managed on the on-premises AD
+- **Effort**: Lower effort and faster setup, but with fewer features.
+- **Use case**: Best for scenarios where you want to reuse your on-prem AD users directly without replicating or extending AD into AWS.
+- **Setup steps**:
+  - Deploy an AD Connector in your VPC.
+  - Point it to your on-premises AD (requires VPN or Direct Connect).
+  - IAM Identity Center connects through the AD Connector as a proxy to authenticate users.
+- All user management stays on-prem, with no user duplication.
+- Supports MFA, but limited to authentication use cases—no group sync or advanced policies from AWS side.
+- Easiest to set up, but less flexibility in advanced identity features.
+
 ![aws-id-center-self-mgmt-ad.png](media/iam/aws-id-center-self-mgmt-ad.png)
 
-Demo:
+---
+#### Simple AD
+  - AD-compatible managed directory on AWS
+  - Cannot be joined with on-premises AD
+
+#### Demo:
 
 [aws-ad-demo.gif](media/iam/aws-ad-demo.gif)
 
@@ -748,6 +787,8 @@ EC2 or elastic computing 2 is infrastructure as a service
 - A comparison of different instance types [see](https://instances.vantage.sh/).
 - For demo purposes, we will use t2.micro
 - Fundamental part of cloud
+- `Detailed monitoring`:
+  - When launching, enable this under monitoring to get 1-minute metrics instead of 5-minutes metrics in basic monitoring.
 - User Data:
   - executed with root privilege 
   - executed during the boot cycle when you first launch an instance
@@ -1571,75 +1612,73 @@ Think of **AWS S3** like an **infinite online hard drive** where you can store a
   - software delivery
   - static website
 
-### **Key Features of AWS S3**
-
-- Buckets & Objects (Folders & Files)
-  - Bucket → Like a folder that holds files (objects). Each S3 account can have multiple buckets.
-    - must have a globally unique name (across all regions all accounts)
-    - It is defined at the region level only
-    - name:
-      - no uppercase, no underscore
-      - 3 - 63 characters log
-      - not an IP
-  - Object → The actual file (data) stored in a bucket, along with metadata.
-    - objects have a key - `prefix + object name`
-    - the key is the full path i.e _s3://my-bucket/`my_file.txt`_
-    - max object size is 5TB. if greater then use `multi-part upload`a
-    - Metadata
-      - text key/value paris
-    - Tags
-    - version ID
+### Buckets & Objects (Folders & Files)
+- Bucket → Like a folder that holds files (objects). Each S3 account can have multiple buckets.
+  - must have a globally unique name (across all regions all accounts)
+  - It is defined at the region level only
+  - name:
+    - no uppercase, no underscore
+    - 3 - 63 characters log
+    - not an IP
+- Object → The actual file (data) stored in a bucket, along with metadata.
+  - objects have a key - `prefix + object name`
+  - the key is the full path i.e _s3://my-bucket/`my_file.txt`_
+  - max object size is 5TB. if greater then use `multi-part upload`a
+  - Metadata
+    - text key/value paris
+  - Tags
+  - version ID
 - It offers strong read-after-write consistency automatically without changes to performance or availabilities
 
 - Demo:
 
 [s3-creation-demo.gif](media/s3/s3-creation-demo.gif)
-- Scalability & Durability
-  - Scalable → No storage limits. You can store **terabytes or even petabytes** of data.
-  - Durable → Data is stored **across multiple locations** (99.999999999% durability).
+### Scalability & Durability
+- Scalable → No storage limits. You can store **terabytes or even petabytes** of data.
+- Durable → Data is stored **across multiple locations** (99.999999999% durability).
 
-- Security & Access Control
-  - **Encryption** → Data is protected using encryption (both at rest & in transit).
-  - **Access Control** → You can set permissions using:
-    - **IAM Policies** → Who can access your S3 data. User-based control.
-    - **Bucket Policies** → Rules for the entire bucket. Resource based control. the most common one.
-      - IAM principal access an s3 object if the user's IAM permissions ALLOW it OR the resource policy ALLOWS it AND there is no explicit DENY
-      ```
-      {
-          "Version": "2012-10-17",
-          "Statement": [
-            {
-              "Sid": "PublicReadGetObject",
-              "Effect": "Allow",
-              "Principal": "*", // the account or user to apply policy to
-              "Action": ["s3:GetObject"],
-              "Resource": ["arn:aws:s3:::my-bucket-name/*"]
-            }
-          ]
-      }
-      ```
+### Security & Access Control
+- **Encryption** → Data is protected using encryption (both at rest & in transit).
+- **Access Control** → You can set permissions using:
+  - **IAM Policies** → Who can access your S3 data. User-based control.
+  - **Bucket Policies** → Rules for the entire bucket. Resource based control. the most common one.
+    - IAM principal access an s3 object if the user's IAM permissions ALLOW it OR the resource policy ALLOWS it AND there is no explicit DENY
+    ```
+    {
+        "Version": "2012-10-17",
+        "Statement": [
+          {
+            "Sid": "PublicReadGetObject",
+            "Effect": "Allow",
+            "Principal": "*", // the account or user to apply policy to
+            "Action": ["s3:GetObject"],
+            "Resource": ["arn:aws:s3:::my-bucket-name/*"]
+          }
+        ]
+    }
+    ```
     
-    - **Access Control Lists (ACLs)** → Control specific users' access. Resource based control.
+  - **Access Control Lists (ACLs)** → Control specific users' access. Resource based control.
 
 ![s3-security-access.png](media/s3/s3-security-access.png)
   - Demo:
 
 [s3-grant-pub-access-demo.gif](media/s3/s3-grant-pub-access-demo.gif)
 
-- Data Versioning & Backup
-  - **Versioning** → Keeps old versions of files. If you overwrite or delete a file, you can restore previous versions.
-  - Demo: activating versioning
+### Data Versioning & Backup
+- **Versioning** → Keeps old versions of files. If you overwrite or delete a file, you can restore previous versions.
+- Demo: activating versioning
 
 [s3-versioning-demo.gif](media/s3/s3-versioning-demo.gif)
-  - Demo: restore previous version or delete one
-    - [s3-restore-previous-version-demo.gif](media/s3/s3-restore-previous-version-demo.gif)
-    - [s3-restore-deleted-obj-demo.gif](media/s3/s3-restore-deleted-obj-demo.gif)
+- Demo: restore previous version or delete one
+  - [s3-restore-previous-version-demo.gif](media/s3/s3-restore-previous-version-demo.gif)
+  - [s3-restore-deleted-obj-demo.gif](media/s3/s3-restore-deleted-obj-demo.gif)
 
-  - **Replication** → Copies data to another AWS region for disaster recovery.
-    - CRR (cross region replication)
-    - SRR (same region replication)
-  - Or use sync command to copy between S3 source and S3 destination
-    - `aws s3 sync s3://source-bucket-name s3://destination-bucket-name`
+- **Replication** → Copies data to another AWS region for disaster recovery.
+  - CRR (cross region replication)
+  - SRR (same region replication)
+- Or use sync command to copy between S3 source and S3 destination
+  - `aws s3 sync s3://source-bucket-name s3://destination-bucket-name`
 
 ![s3-replicaiton.png](media/s3/s3-replicaiton.png)
     - Demo:
@@ -1647,47 +1686,47 @@ Think of **AWS S3** like an **infinite online hard drive** where you can store a
 [s3-replication-crr.gif](media/s3/s3-replication-crr.gif)
 
 
-- Static Website Hosting
-  - You can host **a simple website** directly from S3 without a web server.
-  - html and images
-  - **NOTE**: in order for the setup to work, public access bucket policy should be activated (see `Security & Access Control)
+### Static Website Hosting
+- You can host **a simple website** directly from S3 without a web server.
+- html and images
+- **NOTE**: in order for the setup to work, public access bucket policy should be activated (see `Security & Access Control)
 
 [s3-static-website-demo.gif](media/s3/s3-static-website-demo.gif)
 
-- Event Notifications & Integrations
-  - Triggers AWS services like **Lambda**, **SNS**, or **SQS** (only standard queue and not FIFO) when files are added or changed.
+### Event Notifications & Integrations
+- Triggers AWS services like **Lambda**, **SNS**, or **SQS** (only standard queue and not FIFO) when files are added or changed.
 
 ![s3-event-notification.png](media/s3/s3-event-notification.png)
   - Demo
 
 [s3-sqs-event-notif-demo.gif](media/s3/s3-sqs-event-notif-demo.gif)
 
-- Storage [Classes](https://aws.amazon.com/s3/storage-classes/) (Cost Optimization)
-  - Durability: 99.9999999999 (11 9's), same for all storage classes
-  - Availability: 99.99% (means 53 minutes in a year not available)
-  - AWS offers different **storage classes** based on access frequency and cost:
-    - **S3 Standard** → 
-      - For frequent access, higher cost.
-      - low latency & high throughput
-      - use cases: Big data analytics, mobile and gaming apps, content distribution
-      - 99.99% availability
-    - **S3 Standard Infrequent Access (IA)** → For data you don’t use often, lower cost.
-      - for data accessed less frequently but requires rapid access (in milliseconds latency)
-      - 99.9% availability
-      - use cases: DR, backups
-    - **S3 Intelligent-Tiering** → Automatically moves files between Standard and IA to optimize cost.
-    - **S3 One-Zone Infrequent Access (IA)** →
-      - 11 9's durability in a single AZ
-      - 99.5% availability
-      - use cases: storing secondary backup copies of on-premise data
-      - with expiration deletion option
-      - The minimum storage duration is 30 days before you transition objects from S3 standard to S3 One Zone-IA
-      - it costs 20% less than S3 Standard-IA
-    - **S3 Glacier** → For long-term archiving, very cheap but slow retrieval.
-      - Glacier Instant retrieval: milliseconds retrieval, min 90 days
-      - Glacier flexible retrieval: expedited (1 to 5 minutes), standard (3 to 5 hours), bulk (5 to 12 hours). Min storage 90 days
-      - Glacier deep archive: long term storage. standard (12 hours), bulk (48 hours). Min storage 180 days
-        - 75% less expensive than S3 glacier
+### Storage [Classes](https://aws.amazon.com/s3/storage-classes/) (Cost Optimization)
+- Durability: 99.9999999999 (11 9's), same for all storage classes
+- Availability: 99.99% (means 53 minutes in a year not available)
+- AWS offers different **storage classes** based on access frequency and cost:
+  - **S3 Standard** → 
+    - For frequent access, higher cost.
+    - low latency & high throughput
+    - use cases: Big data analytics, mobile and gaming apps, content distribution
+    - 99.99% availability
+  - **S3 Standard Infrequent Access (IA)** → For data you don’t use often, lower cost.
+    - for data accessed less frequently but requires rapid access (in milliseconds latency)
+    - 99.9% availability
+    - use cases: DR, backups
+  - **S3 Intelligent-Tiering** → Automatically moves files between Standard and IA to optimize cost.
+  - **S3 One-Zone Infrequent Access (IA)** →
+    - 11 9's durability in a single AZ
+    - 99.5% availability
+    - use cases: storing secondary backup copies of on-premise data
+    - with expiration deletion option
+    - The minimum storage duration is 30 days before you transition objects from S3 standard to S3 One Zone-IA
+    - it costs 20% less than S3 Standard-IA
+  - **S3 Glacier** → For long-term archiving, very cheap but slow retrieval.
+    - Glacier Instant retrieval: milliseconds retrieval, min 90 days
+    - Glacier flexible retrieval: expedited (1 to 5 minutes), standard (3 to 5 hours), bulk (5 to 12 hours). Min storage 90 days
+    - Glacier deep archive: long term storage. standard (12 hours), bulk (48 hours). Min storage 180 days
+      - 75% less expensive than S3 glacier
    - For archive objects move them to Glacier or Glacier Deep Archive
    - Move b/w classes automated using life cycle rules
      - we can set expiration actions (to delete files at a specific time later)
@@ -1700,72 +1739,75 @@ Waterfall model for transitioning between storage classes:
 
 [s3-storage-classes-demo.gif](media/s3/s3-storage-classes-demo.gif)
 
-- Requester Pays
-  - Storage cost + Network cost --> Paid by the owner
-  - Storage cost paid by the owner & Network cost paid by requester (downloader)
-    - The requester must be authenticated in AWS
+### Requester Pays
+- Storage cost + Network cost --> Paid by the owner
+- Storage cost paid by the owner & Network cost paid by requester (downloader)
+  - The requester must be authenticated in AWS
 
-- S3 - Baseline Performance
-  - auto scale to high requests rates, latency 100-200ms
-  - 3500 PUT/COPY/POST/DELETE & 5500 GET/HEAD requests per second per prefix (path at the tail of object)
-  - Optimization
-    - multi-part uploads recommended for file > 100 MB (from 500MB it is must). it helps parallelize uploads
-    - S3 transfer acceleration:
-      - increase transfer speed by transferring the file to and AWS edge location which will forward the data to the target region
-      - edge location is compatible with multi-part upload
+### S3 - Baseline Performance
+- auto scale to high requests rates, latency 100-200ms
+- 3500 PUT/COPY/POST/DELETE & 5500 GET/HEAD requests per second per prefix (path at the tail of object)
+- Optimization
+  - multi-part uploads recommended for file > 100 MB (from 500MB it is must). it helps parallelize uploads
+  - S3 transfer acceleration:
+    - increase transfer speed by transferring the file to and AWS edge location which will forward the data to the target region
+    - edge location is compatible with multi-part upload
 
-    - S3 Byte-Range Fetches
-      - parallelize GETs by requesting specific byte ranges
-      - better resilience in case of failure
-      - speeds up the download (parts downloaded in parallel)
-      - can be useful for partial data request such as file header for some info
+  - S3 Byte-Range Fetches
+    - parallelize GETs by requesting specific byte ranges
+    - better resilience in case of failure
+    - speeds up the download (parts downloaded in parallel)
+    - can be useful for partial data request such as file header for some info
 
 ![s3-transfer-edge-loc.png](media/s3/s3-transfer-edge-loc.png)
 
-- S3 batch operations:
-  - bulk operation on s3 objects in a single request
-  - batch modification batch transfer, batch encryption, invoke lambda function to perform custom action on each object
-  - use S3 inventory to get object list and use athena to query and filter objects
+### S3 batch operations:- bulk operation on s3 objects in a single request- batch modification batch transfer, batch encryption, invoke lambda function to perform custom action on each object- use S3 inventory to get object list and use athena to query and filter objects
 
 ![s3-batch-operation.png](media/s3/s3-batch-operation.png)
 
-- S3 Storage Lens:
-  - analyze, optimize storage across all AWS orgs
-  - discover anomalies, identify cost efficiency, apply data protection best practices
-  - Metrics
-    - summary metrics such as size of buckets
-    - cost optimization metrics i.e incomplete parts etc
-    - data protection metrics: versioning etc to follow data protection practices
-    - access management metrics: ownership etc
-    - event metrics
-    - performance metrics
-    - activity metrics
-    - http status code metrics i.e 200, 404 etc
-  - free metrics vs paid metrics
+### S3 Storage Lens:
+- analyze, optimize storage across all AWS orgs
+- discover anomalies, identify cost efficiency, apply data protection best practices
+- Metrics
+  - summary metrics such as size of buckets
+  - cost optimization metrics i.e incomplete parts etc
+  - data protection metrics: versioning etc to follow data protection practices
+  - access management metrics: ownership etc
+  - event metrics
+  - performance metrics
+  - activity metrics
+  - http status code metrics i.e 200, 404 etc
+- free metrics vs paid metrics
 
 ![drafted-s3-storage-lens.png](media/s3/drafted-s3-storage-lens.png)
-- S3 Object Encryption:
-  - Amazon S3 object encryption is a security feature that protects data stored in Amazon Simple Storage Service (S3) by encrypting objects at rest. It ensures data confidentiality and compliance with security standards. S3 supports multiple encryption methods:
-  - **Server-Side Encryption (SSE)**
-    - **SSE-S3**: AWS manages encryption keys automatically. Active by default
-      - AES-256, must set header to `"x-amz-server-side-encryption":"AES256`
-    - **SSE-KMS**: Uses AWS Key Management Service (KMS) for key management and access control.
-      - advantage: user control + audit key usage in CloudTrail
-      - must set header to `"x-amz-servier-side-encryption":"aws:kms"`
-      - to access one should have access to object as well to the KMS key used to encrypt
-      - another variant is DSSE-KMS
-      - limitation:
-        - when you upload it calls GenerateDataKey KMS API & when downloading it calls decrypt
-        - KMS quota limit per second (5500, 10000, 30000 req/s based on region)
-    - **SSE-C**: Customers provide and manage their own encryption keys.
-      - keys managed outside the AWS
-      - done from CLI only and not on the console
-      - HTTPS must be used and must have key in the header of client's request
-  - **Client-Side Encryption**
-    - Data is encrypted before being uploaded, with key management handled by the client.
-  - Encryption helps protect sensitive data, meet regulatory requirements, and enhance security in cloud storage.
+### S3 Object Encryption:
+- Amazon S3 object encryption is a security feature that protects data stored in Amazon Simple Storage Service (S3) by encrypting objects at rest. It ensures data confidentiality and compliance with security standards. S3 supports multiple encryption methods:
+- **Server-Side Encryption (SSE)**
+  - **SSE-S3**: AWS manages encryption keys automatically. Active by default
+    - AES-256, must set header to `"x-amz-server-side-encryption":"AES256`
+  - **SSE-KMS**: Uses AWS Key Management Service (KMS) for key management and access control.
+    - advantage: user control + audit key usage in CloudTrail
+    - must set header to `"x-amz-servier-side-encryption":"aws:kms"`
+    - to access one should have access to object as well to the KMS key used to encrypt
+    - another variant is DSSE-KMS
+    - limitation:
+      - when you upload it calls GenerateDataKey KMS API & when downloading it calls decrypt
+      - KMS quota limit per second (5500, 10000, 30000 req/s based on region)
+  - **SSE-C**: Customers provide and manage their own encryption keys.
+    - keys managed outside the AWS
+    - done from CLI only and not on the console
+    - HTTPS must be used and must have key in the header of client's request
+- **Client-Side Encryption**
+  - Encrypted before sending it to S3
+  - two options for key used for encryption
+    - customer master key (CMK) stored in aws key management
+    - master key stored within the client application
+  - Data is encrypted before being uploaded, with key management handled by the client.
+- Encryption helps protect sensitive data, meet regulatory requirements, and enhance security in cloud storage.
 
 ![s3-encryption.png](media/s3/s3-encryption.png)
+
+![s3-encryption-2.webp](media/s3/s3-encryption-2.webp)
   - Force encryption in transit: `aws:SecureTransport`
 
 ![drafted-s3-aws-secure-transport.png](media/s3/drafted-s3-aws-secure-transport.png)
@@ -1809,7 +1851,7 @@ Waterfall model for transitioning between storage classes:
 
 ```
 
-- S3 CORS (Cross Origin Resource Sharing (CORS):
+### S3 CORS (Cross Origin Resource Sharing (CORS):
   - origin: http(s)://www.example.com (implied port 443 for https or 80 to http)
   - browser based mechanism to allow requests to other origins while visiting the main origin
   - same origin requests: http://example.com/path1 & http://example.com/path2
@@ -1829,7 +1871,7 @@ Waterfall model for transitioning between storage classes:
 
 [s3-cors-demo-2.gif](media/s3/s3-cors-demo-2.gif)
 
-- MFA Delete:
+### MFA Delete:
   - versioning must be active 
   - permanently delete an object
   - suspend versioning. Versioning can't be disabled once enabled, it can only be suspended
@@ -2161,6 +2203,8 @@ AWS **Snowball**, **Snowcone**, and **Snowmobile** are all part of AWS's **Snow 
   - seamless integration with S3
     - can read S3 as a file system (through FSx)
     - can write the output of computation back to S3 (through FSx)
+
+![fsx-lustre-s3-setup.webp](media/advanced-storage/fsx-lustre-s3-setup.webp)
 - FSx File System Deployment Options
   - Scratch File System
     - temporary storage
@@ -3094,8 +3138,7 @@ When running workloads in Amazon EKS (Elastic Kubernetes Service), you need to p
 ---
 This method improves security by using **short-lived tokens** instead of static DB credentials.
 
-## AWS No SQL
-### DynamoDB - NoSQL
+## AWS No SQL - DynamoDB
 - **Fully managed & available:**
   - NoSQL database with multi-AZ replication and integrated IAM security.
 - **High scalability & performance:**
@@ -3115,14 +3158,14 @@ This method improves security by using **short-lived tokens** instead of static 
 
 - Demos:
   - [dynamodb-create-table.gif](media/serverless/dynamodb-create-table.gif)
-- **DAX caching:**
-  - Provides an in-memory cache for reduced read latency (microseconds) with a default 5-minute TTL.
-  - helps solve read congestion
-  - fully compatible with DynamoDB API (no app code change/refactoring).
-    - doesn't require developers to manage cache invalidation, data population or cluster management
-  - less read capacity is used which saves costs
-  - delivers upto 10x performance improvement - from milliseconds to microseconds - even at millions of requests per seconds
-  - 
+
+### DAX caching
+- Provides an in-memory cache for reduced read latency (microseconds) with a default 5-minute TTL.
+- helps solve read congestion
+- fully compatible with DynamoDB API (no app code change/refactoring).
+  - doesn't require developers to manage cache invalidation, data population or cluster management
+- less read capacity is used which saves costs
+- delivers upto 10x performance improvement - from milliseconds to microseconds - even at millions of requests per seconds
 
 ![dynamodb-acc-dax.png](media/serverless/dynamodb-acc-dax.png)
 - Why not ElastiCache
@@ -3130,44 +3173,85 @@ This method improves security by using **short-lived tokens** instead of static 
   - in ElastiCache one can store huge aggregated result
 
 ![dynamodb-dax-elasticache.png](media/serverless/dynamodb-dax-elasticache.png)
-- DynamoDB - Stream Processing
-  - DynamoDB Stream is an ordered flow of information about changes (create, update, delete) to items in DDB table
-  - when an item changed DDB writes a stream record with the primary key attribute of the item
-  - It can chained with lambda down the line
-  - use cases:
-    - react in real time (welcome emails to users)
-    - real-time usage analytics
-    - insert into derivative tables
-    - implement cross-region replication
-    - invoke lambda on changes
-  - Two stream processing types on DynamoDB:
-    - DynamoDB streams
-      - 24 hours retention
-      - limited # consumers
-      - process using lambda triggers or dynamodb stream kinesis adapters
-    - Kinesis Data Stream (new): send all streams to it
-      - 1 year retention
-      - high # consumers
-      - process using lambda, kinesis data analytics, Kinesis Data Firehose, Glue, Streaming ETL
+
+### DynamoDB Streams Processing
+DynamoDB Streams is a feature of Amazon DynamoDB that captures a time-ordered sequence of item-level changes (inserts, updates, and deletes) made to a table.
+- Events from **DynamoDB Streams** are stored in a **highly available, managed stream** maintained by AWS, **separate from the table itself**. You don’t access them like a traditional database table—instead, AWS stores them in an **internal stream buffer** that you can read from using:
+
+- **AWS Lambda** (most common use via triggers)
+- **Kinesis adapter** (for advanced stream processing)
+- **DynamoDB Streams API** (low-level, for custom consumers)
+
+**Storage specifics**
+- **Retention**: Stream records are stored for **24 hours**.
+- **Ordering**: Events are stored in **time order** per partition key.
+- **Access**: You don’t see or manage the underlying storage—AWS handles that entirely.
+
+So, the events are **not stored in DynamoDB itself**, but in a **separate, managed stream** associated with your table.
+
+
+In the context of **DynamoDB**, when we talk about **creating triggers**, it **specifically refers to using a Lambda function** that automatically runs in response to changes in the table via **DynamoDB Streams**.
+
+So yes, **"triggers" in DynamoDB are essentially Lambda functions** that are associated with a stream on a table.
+
+**Steps to create a trigger**
+1. **Enable DynamoDB Streams** on your table.
+2. Go to the **AWS Lambda Console**.
+3. Create a **new Lambda function** (or use an existing one).
+4. Under **"Function triggers"**, choose **DynamoDB** as the source.
+5. Select your table and the stream ARN, and configure the batch size and permissions.
+
+Once set up, the Lambda function is automatically **triggered** whenever the table is modified (insert, update, delete), and from there, you can integrate with SNS or any other service.
+
+
+To integrate **Amazon SNS** with **DynamoDB Streams**, you use a **Lambda function as a trigger**. In DynamoDB, a *trigger* refers to a **Lambda function** that automatically runs when changes (inserts, updates, deletes) occur in the table, captured via **DynamoDB Streams**.
+
+**How it works**
+1. **Enable DynamoDB Streams** on your table to capture data changes.
+2. **Create a Lambda function** and configure it as a **trigger** for the stream.
+3. In the Lambda function, process the incoming stream events and **publish messages to an SNS topic**.
+4. **Subscribe other services** (e.g., email, SQS, other Lambdas) to the SNS topic to receive notifications.
+
+**Example use case**
+A new order is inserted into a DynamoDB table → DynamoDB Stream captures the event → triggers a Lambda → Lambda sends an alert via SNS to notify a support team.
+
+---
+
+This setup is **serverless**, real-time, and great for building reactive, event-driven architectures.
+
+- use cases:
+  - react in real time (welcome emails to users)
+  - real-time usage analytics
+  - insert into derivative tables
+  - implement cross-region replication
+
+- Two stream processing types on DynamoDB:
+  - DynamoDB streams
+    - 24 hours retention
+    - limited # consumers
+    - process using lambda triggers or dynamodb stream kinesis adapters
+  - Kinesis Data Stream (new): send all streams to it
+    - 1 year retention
+    - high # consumers
+    - process using lambda, kinesis data analytics, Kinesis Data Firehose, Glue, Streaming ETL
 
 ![drafted-dynamodb-stream.png](media/serverless/drafted-dynamodb-stream.png)
 
-- DynamoDB Global Tables
-  - Make a DynamoDB table accessible with low latency in multiple-regions
-  - Active-Active replication (2-ways)
-  - Applications can READ and WRITE to the table in any region
-  - Must enable DynamoDB Streams as a pre-requisite: 
-    - DynamoDB streams enable DB to get changelog and use that to replicate data across replica tables in other aws regions
+### DynamoDB Global Tables
+- Make a DynamoDB table accessible with low latency in multiple-regions
+- Active-Active replication (2-ways)
+- Applications can READ and WRITE to the table in any region
+- Must enable DynamoDB Streams as a pre-requisite: 
+  - DynamoDB streams enable DB to get changelog and use that to replicate data across replica tables in other aws regions
 
 ![dynamodb-global-table.png](media/serverless/dynamodb-global-table.png)
-
-- DynamoDB TTL
-  - automatically delete an item after an expiry timestamp
-  - Use cases: reduce stored data by keeping only current items, adhere to regulatory obligations, web session handling...
+### DynamoDB TTL
+- automatically delete an item after an expiry timestamp
+- Use cases: reduce stored data by keeping only current items, adhere to regulatory obligations, web session handling...
 
 ![img.png](media/serverless/dynamodb-ttl.png)
 
-- DynamoDB - backups for DR
+### DynamoDB - backups for DR
   - **Continuous Backups using point-in-time recovery (PITR)**
     - Can be enabled for up to 35 days
     - Allows recovery to any point within the backup window
@@ -3178,18 +3262,18 @@ This method improves security by using **short-lived tokens** instead of static 
     - Can be managed in AWS Backup (supports cross-region copies & life cycle options)
     - Restores data by creating a new table
 
-- DynamoDB - Integration with S3
-  - Export table to S3 (Requires PITR) & query using retina on S3
-    - Supports export for any point in the last 35 days
-    - No impact on table read capacity
-    - Enables data analysis and auditing
-    - Supports ETL before re-importing to DynamoDB
-    - Exports in DynamoDB JSON or ION format
-  - Import from S3
-    - Supports CSV, DynamoDB JSON, or ION formats
-    - Doesn’t consume write capacity
-    - Creates a new table
-    - Logs import errors in CloudWatch Logs
+### DynamoDB - Integration with S3
+- Export table to S3 (Requires PITR) & query using retina on S3
+  - Supports export for any point in the last 35 days
+  - No impact on table read capacity
+  - Enables data analysis and auditing
+  - Supports ETL before re-importing to DynamoDB
+  - Exports in DynamoDB JSON or ION format
+- Import from S3
+  - Supports CSV, DynamoDB JSON, or ION formats
+  - Doesn’t consume write capacity
+  - Creates a new table
+  - Logs import errors in CloudWatch Logs
 
 ![img.png](media/serverless/drafted-dynamodb-s3-int.png)
 
@@ -4932,6 +5016,7 @@ To ensure availability in case of a Direct Connect failure:
   - Secondary physical connection
   - High cost, but best performance and availability
 
+![direct-connect-backup-connection.webp](media/vpc/direct-connect-backup-connection.webp)
 - Option 2: **Site-to-Site VPN**
   - Cost-effective backup over the public internet
   - Automatically used if DX goes down (via BGP failover)
@@ -5383,7 +5468,7 @@ Here’s a more readable and concise version while keeping all key details:
 ### **AWS Application Migration Service (MGN)**
 - The **successor to CloudEndure Migration**, replacing **AWS Server Migration Service (SMS)**.
 - Provides a **lift-and-shift (rehost) migration** approach to move applications to AWS.
-- Converts physical, virtual, and cloud-based servers to run **natively on AWS**.
+- Converts physical, virtual, and cloud-based servers to run **natively on AWS**. i.e convert on-premise VMs to AWS natives by installing replication agents in VMs
 - Supports **multiple platforms, operating systems, and databases**.
 - Ensures **minimal downtime** and **lower costs** during migration.
 
@@ -5601,7 +5686,24 @@ Defines scheduled times for automated tasks on instances.
 - Cost Explorer – Forecast Usage
 
 ### AWS Compute Optimizer
-To look at instance type recommendation
+**AWS Compute Optimizer** is a service that uses **machine learning** to analyze your AWS resource usage and recommends **optimal compute resources** to improve **performance and reduce cost**.
+
+**Key features:**
+- Supports **EC2 instances**, **Auto Scaling groups**, **EBS volumes**, and **Lambda functions**
+- Provides **right-sizing recommendations**
+- Helps identify **underutilized or overprovisioned resources**
+- Easy integration with **Cost Explorer**
+
+It helps you make data-driven decisions to optimize your cloud environment.
+
+Here's a quick example:
+
+Let's say you're running an **EC2 instance** of type **m5.4xlarge**, but AWS Compute Optimizer analyzes the CPU, memory, and network usage over time and finds it's only using about **15%** of its capacity.
+
+It might recommend switching to a **m5.2xlarge** or even **m5.xlarge**, which would **cut your costs by 50–75%** while still meeting your performance needs.
+
+These recommendations often come with **estimated savings** and **confidence scores**, so you can make informed decisions.
+
 ### AWS Cost Anomaly Detection
 Uses ML to monitor cost and usage, detecting unusual spikes or trends **without manual thresholds**.
 
