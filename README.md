@@ -48,7 +48,6 @@
     * [Route 53 Demos](#route-53-demos)
     * [Routing Policies (Control How Traffic is Directed)](#routing-policies-control-how-traffic-is-directed)
     * [**Why Use Route 53?**](#why-use-route-53)
-  * [AWS S3 (Simple Storage Service)](#aws-s3-simple-storage-service)
     * [Buckets & Objects (Folders & Files)](#buckets--objects-folders--files)
     * [Scalability & Durability](#scalability--durability)
     * [Security & Access Control](#security--access-control)
@@ -58,11 +57,14 @@
     * [Storage Classes (Cost Optimization)](#storage-classes-cost-optimization)
     * [Requester Pays](#requester-pays)
     * [S3 - Baseline Performance](#s3---baseline-performance)
-    * [S3 batch operations:- bulk operation on s3 objects in a single request- batch modification batch transfer, batch encryption, invoke lambda function to perform custom action on each object- use S3 inventory to get object list and use athena to query and filter objects](#s3-batch-operations--bulk-operation-on-s3-objects-in-a-single-request--batch-modification-batch-transfer-batch-encryption-invoke-lambda-function-to-perform-custom-action-on-each-object--use-s3-inventory-to-get-object-list-and-use-athena-to-query-and-filter-objects)
+    * [S3 batch operations](#s3-batch-operations)
     * [S3 Storage Lens:](#s3-storage-lens)
     * [S3 Object Encryption:](#s3-object-encryption)
     * [S3 CORS (Cross Origin Resource Sharing (CORS):](#s3-cors-cross-origin-resource-sharing-cors)
     * [MFA Delete:](#mfa-delete)
+    * [S3 Access Logs, Object Retention, S3 pre-signed urls](#s3-access-logs-object-retention-s3-pre-signed-urls)
+    * [S3 Lock](#s3-lock)
+    * [S3 - Access Point](#s3---access-point)
     * [**Why Use S3?**](#why-use-s3)
   * [AWS CloudFront](#aws-cloudfront)
     * [**CloudFront Origins:**](#cloudfront-origins)
@@ -1598,7 +1600,7 @@ Used to enable **automated DNS failover** — but **only for public resources** 
 - **Easy to Use** – Simple console interface.  
 - **Global DNS Management** – Perfect for businesses serving users worldwide.
 
-## AWS S3 (Simple Storage Service)
+##AWS S3 (Simple Storage Service)
 Think of **AWS S3** like an **infinite online hard drive** where you can store and retrieve any kind of file (documents, images, videos, backups, etc.) anytime from anywhere in the world.
 
 - Use cases:
@@ -1761,7 +1763,10 @@ Waterfall model for transitioning between storage classes:
 
 ![s3-transfer-edge-loc.png](media/s3/s3-transfer-edge-loc.png)
 
-### S3 batch operations:- bulk operation on s3 objects in a single request- batch modification batch transfer, batch encryption, invoke lambda function to perform custom action on each object- use S3 inventory to get object list and use athena to query and filter objects
+### S3 batch operations
+- bulk operation on s3 objects in a single request
+- batch modification batch transfer, batch encryption, invoke lambda function to perform custom action on each object
+- use S3 inventory to get object list and use athena to query and filter objects
 
 ![s3-batch-operation.png](media/s3/s3-batch-operation.png)
 
@@ -1872,32 +1877,33 @@ Waterfall model for transitioning between storage classes:
 [s3-cors-demo-2.gif](media/s3/s3-cors-demo-2.gif)
 
 ### MFA Delete:
-  - versioning must be active 
-  - permanently delete an object
-  - suspend versioning. Versioning can't be disabled once enabled, it can only be suspended
-  - MFA can be activated only through CLI by using root credentials
-  - how?
-    - to use MFA, root must set up MFA device already
-    - create access key for the root (used for creating aws CLI profile)
-    - use root CLI profile and activate the MFA
+- versioning must be active 
+- permanently delete an object
+- suspend versioning. Versioning can't be disabled once enabled, it can only be suspended
+- MFA can be activated only through CLI by using root credentials
+- how?
+  - to use MFA, root must set up MFA device already
+  - create access key for the root (used for creating aws CLI profile)
+  - use root CLI profile and activate the MFA
   
-    ```
-    # generate root access keys
-    aws configure --profile root-mfa-bucket-delete-demo
-    aws s3 ls --profile root-mfa-bucket-delete-demo
+  ```
+  # generate root access keys
+  aws configure --profile root-mfa-bucket-delete-demo
+  aws s3 ls --profile root-mfa-bucket-delete-demo
     
-    # enable mfa delete
-    aws s3api put-bucket-versioning --bucket mfa-demo-bucket-2025 --versioning-configuration Status=Enabled,MFADelete=Enabled --mfa "arn:aws:iam::727646513157:mfa/Authapp 280449" --profile root-mfa-bucket-delete-demo
+  # enable mfa delete
+  aws s3api put-bucket-versioning --bucket mfa-demo-bucket-2025 --versioning-configuration Status=Enabled,MFADelete=Enabled --mfa "arn:aws:iam::727646513157:mfa/Authapp 280449" --profile root-mfa-bucket-delete-demo
     
-    # disable mfa delete
-    aws s3api put-bucket-versioning --bucket mfa-demo-bucket-2025 --versioning-configuration Status=Enabled,MFADelete=Disabled --mfa "arn:aws:iam::727646513157:mfa/Authapp 279226" --profile root-mfa-bucket-delete-demo
+  # disable mfa delete
+  aws s3api put-bucket-versioning --bucket mfa-demo-bucket-2025 --versioning-configuration Status=Enabled,MFADelete=Disabled --mfa "arn:aws:iam::727646513157:mfa/Authapp 279226" --profile root-mfa-bucket-delete-demo
     
-    # delete the root credentials in the IAM console!!!
-    ```
+  # delete the root credentials in the IAM console!!!
+  ```
   - Demos:
 
 [s3-mfa-activation-cli.gif](media/s3/s3-mfa-activation-cli.gif)
 
+### S3 Access Logs, Object Retention, S3 pre-signed urls
 - S3 Access Logs:
   - log all accesses to the S3 by any user
   - logs put into logging bucket (both must be in the same region)
@@ -1919,6 +1925,7 @@ Waterfall model for transitioning between storage classes:
 
 [s3-pre-signed-url-demo.gif](media/s3/s3-pre-signed-url-demo.gif)
 
+### S3 Lock
 - S3 Glacier Vault Lock:
   - Adopt a WORM (write once, read many) model
   - need a Vault Lock Policy
@@ -1935,25 +1942,25 @@ Waterfall model for transitioning between storage classes:
   - can be place using IAM permission `s3:PutObjectLegalHold`
   - for legal investigation period
 
-- S3 - Access Point
-  - to delegate access security management from S3 bucket level to access points maintained outside.
-  - subsequently we will have simple bucket policy
-  - access point has:
-    - own DNS name (internet origin or VPC origin)
-    - access point policy (similar to bucket policy) - manage security at scale
+### S3 - Access Point
+- to delegate access security management from S3 bucket level to access points maintained outside.
+- subsequently we will have simple bucket policy
+- access point has:
+  - own DNS name (internet origin or VPC origin)
+  - access point policy (similar to bucket policy) - manage security at scale
 
 ![drafted-s3-access-point.png](media/s3/drafted-s3-access-point.png)
 
-  - S3 access point VPC origin
-    - there would be 3 policies as shown
-    - VPC Endpoint must allow access to S3 access point as well as the corresponding S3 bucket.
+- S3 access point VPC origin
+  - there would be 3 policies as shown
+  - VPC Endpoint must allow access to S3 access point as well as the corresponding S3 bucket.
 
 ![drafted-s3-access-point-vpc-origin.png](media/s3/drafted-s3-access-point-vpc-origin.png)
 
-  - S3 lambda Objects
-    - AWS functions to change the object before it is retrieved by the caller
-    - this avoids duplicating objects. we keep on bucket and adjust objects on-fly
-    - we create s3 access point, s3 lambda object access point as shown
+- S3 lambda Objects
+  - AWS functions to change the object before it is retrieved by the caller
+  - this avoids duplicating objects. we keep on bucket and adjust objects on-fly
+  - we create s3 access point, s3 lambda object access point as shown
 
 ![drafted-s3-access-point-lambda-object.png](media/s3/drafted-s3-access-point-lambda-object.png)
 ### **Why Use S3?**
