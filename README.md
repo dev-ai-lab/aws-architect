@@ -12,7 +12,6 @@
     * [AWS IAM Identity Center (successor to AWS Single Sign-On)](#aws-iam-identity-center-successor-to-aws-single-sign-on)
     * [AWS Directory Services](#aws-directory-services)
       * [**1. AWS Managed Microsoft AD**](#1-aws-managed-microsoft-ad)
-  * [![aws-id-center-active-dir.png](media/iam/aws-id-center-active-dir.png)](#)
       * [**2. AD Connector**](#2-ad-connector)
       * [Simple AD](#simple-ad)
       * [Demo:](#demo)
@@ -731,7 +730,7 @@ In the context of **IAM Identity Center**, it helps extend centralized identity 
 - More effort initially (trusts, networking, DNS, etc.), but better for scalability and centralized control.
 
 ![aws-id-center-active-dir.png](media/iam/aws-id-center-active-dir.png)
----
+
 
 #### **2. AD Connector**
 - Directory Gateway (proxy) to redirect to on-premises AD
