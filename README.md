@@ -165,6 +165,7 @@
     * [AWS Guardrail](#aws-guardrail)
     * [**Amazon GuardDuty**](#amazon-guardduty)
     * [**Amazon Inspector**](#amazon-inspector)
+    * [AWS Security Lake](#aws-security-lake)
     * [**AWS Macie**](#aws-macie)
   * [Amazon VPC](#amazon-vpc)
     * [Public vs. Private IP (IPv4)](#public-vs-private-ip-ipv4)
