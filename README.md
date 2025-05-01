@@ -106,6 +106,7 @@
       * [Summary Table](#summary-table)
     * [Amazon EKS – Data Volumes](#amazon-eks--data-volumes)
     * [EKS and IAM Integration](#eks-and-iam-integration)
+    * [EKS networking](#eks-networking)
     * [Zoning concepts:](#zoning-concepts)
   * [Crossplane](#crossplane)
     * [Examples:](#examples)
@@ -1001,7 +1002,7 @@ To influence this, use placement group
     - 75% cheaper
     - takes 24 to 72 hours to restored
   - Recycle Bin for EBS snapshots
-    - to recover after deletion
+    - to recover after deletion (accidental deletions)
     - retention period of (1 day to 1 year)
   - Fast snapshot restore (FSR)
     - costs a lot more
@@ -1253,6 +1254,8 @@ To influence this, use placement group
       - when a CloudWatch alarm is triggered (i.e CPU > 70%), then add 2 units
   - Scheduled Scaling
     - i.e increase the min capacity to 10 at 5pm on Fridays
+
+![asg-scheduled-scaling.webp](media/asg-scheduled-scaling.webp)
   - Predictive Scaling: continuously forecast load and schedule scaling ahead. ML driven
     - Analyze historical data --> generate forecast --> schedule scaling actions
 - Good Metrics:
@@ -1736,6 +1739,14 @@ Think of **AWS S3** like an **infinite online hard drive** where you can store a
 Waterfall model for transitioning between storage classes:
 ![s3-storage-class-move.png](media/s3/drafted-s3-storage-class-move.png)
 
+| Storage Class              | Allows Direct Upload/Copy? | Notes |
+|---------------------------|----------------------------|-------|
+| **S3 Standard**           | ✅ Yes                     | Default class; high availability and durability. |
+| **S3 Intelligent-Tiering**| ✅ Yes                     | Great for unpredictable access patterns. |
+| **S3 Standard-IA**        | ✅ Yes                     | Lower cost for infrequent access, but retrieval fee applies. |
+| **S3 One Zone-IA**        | ✅ Yes                     | Same as Standard-IA, but data is stored in a single AZ. |
+| **S3 Glacier Instant Retrieval** | ✅ Yes             | Allows direct copy/upload; optimized for archive with low-latency access. |
+
 [s3-storage-classes-demo.gif](media/s3/s3-storage-classes-demo.gif)
 
 ### Requester Pays
@@ -1986,6 +1997,7 @@ All these components—**Multi-Region Access Points, Cross-Region Replication, A
 
 They are **not isolated features**—they’re designed to be used **together in modern, production-grade AWS architectures**.
 
+![s3-vpc-endpoint.webp](media/s3/s3-vpc-endpoint.webp)
 ### S3 lambda Objects
 - AWS functions to change the object before it is retrieved by the caller
 - this avoids duplicating objects. we keep on bucket and adjust objects on-fly
@@ -2228,6 +2240,7 @@ AWS **Snowball**, **Snowcone**, and **Snowmobile** are all part of AWS's **Snow 
   - scale up 10s GB/s
   - storage options: SSD(latency sensitive apps), HDD (cheap)
 - FSx for Lustre
+  - provides fully managed shared storage with scalability, performance of Lustre file system
   - parallel distributed file system for large scale computing
   - word Lustre derived from linux and cluster
   - used for ML, HPC (high performance computing)
@@ -2902,6 +2915,32 @@ When running workloads in Amazon EKS (Elastic Kubernetes Service), you need to p
 - Service account: in EKS, service account is an identity that the pods use to authenticate to k8s API and with IRSA to aws services
 - IRSA (IAM Roles for Service Accounts) is a k8s feature
 - First create IAM roles separately for each service running on EKS and then assign the roles to each k8s service account
+
+### EKS networking
+
+**Amazon VPC CNI (Container Network Interface)** is a **network plugin for Amazon EKS (Elastic Kubernetes Service)** that enables Kubernetes pods to **natively integrate with AWS VPC networking**.
+
+---
+
+**What it does:**
+- Assigns **VPC IP addresses** directly to **Kubernetes pods**, so they appear as **first-class citizens in your VPC**.
+- Enables **high-performance pod-to-pod and pod-to-service communication** using the AWS VPC network.
+- Supports **security groups**, **routing**, and **network policies** at the pod level.
+
+---
+
+**AWS Resource Category:**
+- The Amazon VPC CNI is part of the **Amazon EKS ecosystem**, specifically tied to:
+  - **Amazon EKS** (Elastic Kubernetes Service)
+  - **Amazon EC2 / VPC** (since it leverages ENIs and VPC networking)
+
+---
+
+**Key Benefits:**
+- No need for overlay networks like Calico or Flannel.
+- Seamless integration with **AWS networking and security** features.
+- Simplifies compliance and monitoring by using **standard AWS tools**.
+
 
 ### Zoning concepts:
 - outer, middle, inner zones
@@ -4616,6 +4655,15 @@ Amazon Inspector is an **automated security assessment** service for **EC2 insta
 Amazon Inspector helps **proactively detect and mitigate security risks** across AWS workloads.
 ![aws-inspector.png](media/encryption-security/aws-inspector.png)
 
+### AWS Security Lake
+**AWS Security Lake** is a **centralized security data lake** service that **automatically collects, normalizes, and stores security logs** from AWS services, on-prem systems, and third-party sources.
+
+- **Aggregates data** like VPC Flow Logs, CloudTrail, GuardDuty, and custom sources.
+- Stores data in **Amazon S3 using the Open Cybersecurity Schema Framework (OCSF)**.
+- Makes it easy to analyze data with tools like **Amazon Athena**, **SageMaker**, or third-party SIEMs.
+- Helps with **threat detection**, **incident investigation**, and **compliance reporting**.
+
+It reduces the complexity of managing multiple security data sources and provides a **unified, scalable platform** for security analytics.
 
 ### **AWS Macie**
 
@@ -4877,6 +4925,9 @@ See [here](https://docs.aws.amazon.com/vpc/latest/userguide/vpc-sharing.html)
   - **Free**
 
 ![img.png](media/vpc/vpc-endpoint-types.png)
+  - Service Provider Model
+
+![vpc-endpiont-service-provider-model.webp](media/vpc/vpc-endpiont-service-provider-model.webp)
 - Gateway or Interface Endpoint for S3
   - in the exam gateway type is always preferred because it is free
   - Interface is preferred only for access from on-premises (VPN/Direct Connect), another VPC, or a different region 
@@ -5073,6 +5124,13 @@ AWS Transit Gateway enables you to **connect multiple VPCs and on-premises netwo
 
 ![complicated-nw-topology.png](media/vpc/complicated-nw-topology.png)
 - basically: VPC peering + direct connect + VPN connection --> Transit Gateway
+
+🔹 **How TGW and RAM Work Together**
+
+- You **create a Transit Gateway** in one AWS account (often called the **network hub account**).
+- Then, using **AWS RAM**, you **share the Transit Gateway** with other AWS accounts or organizational units.
+- These **other accounts** can then **attach their VPCs** to the shared Transit Gateway—even though the TGW was not created in their account.
+- This avoids the need to deploy separate TGWs in each account and simplifies **centralized network management**.
 
 ### Transit Gateway: Site-to-Site VPN ECMP
 - ECMP = Equal-cost multi-path routing
@@ -6400,7 +6458,20 @@ Explore more at: Use it along the journey in the role of an architect
 
 ## Mind Teasers (AWS)
 - running AWS RDS found to be unencrypted? How to fix?
-
+- Operational overhead MSK (Kafka) vs Kinesis data streams?
+- Data ingestion
+  - for real-time data analytics --> Kinesis data streams
+  - for batch analytics --> RedShift 
+- Data visualization
+  - for real-time data analytics --> Grafana, Kibana
+  - for batch analytics --> RedShift --> QuickSight
+- Batch analytics vs real-time data analytics using Redshift vs Kinesis
+- Transition from s3 standard to s3 standard IA after a minimum of `30 days`
+- For video sharing application how to improve upload and download
+  - Use cloudfront (CDN) for improving download by caching content closer to the users
+  - Use `S3 Transfer Acceleration` to reduce upload latency by using optimized EDGE locations to accelerate the data transfer to S3
+- A customo error static page in case Route53 DNS fails
+  - Have a route 53 alias for AWS CloudFront and specify the ALB as the origin. Create a custom error page for the distribution 
 ## Prompt Engineering Certifications
 
 # AWS AI/ML Path
