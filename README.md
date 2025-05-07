@@ -993,21 +993,17 @@ To influence this, use placement group
 [ebs-volume-demo.gif](media/ebs-volume-demo.gif)
 
 **EBS Snapshots**
-- Backup of an EBS at anytime
-- Recommended to first detach
-- Can copy across AZ or Regions
--  AWS typically initializes the volume lazily. This means that the first time you read a block of data from the new volume, the block must be fetched from Amazon S3 (where snapshots are stored)
-- Features:
-  - EBS snapshot archive: 
-    - Move this archive tier. 
-    - 75% cheaper
-    - takes 24 to 72 hours to restored
-  - Recycle Bin for EBS snapshots
-    - to recover after deletion (accidental deletions)
-    - retention period of (1 day to 1 year)
-  - Fast snapshot restore (FSR)
-    - costs a lot more
-    - FSR eliminates above lazy latency by pre-warming the volume so that all blocks are immediately available upon creation. This ensures the restored volume performs at full speed right from the start.
+
+EBS Snapshots are backups of your EBS volumes that you can take at any time. It's best to detach the volume before creating a snapshot to ensure data consistency. Snapshots can be copied across Availability Zones or Regions.
+
+By default, when restoring from a snapshot, AWS uses lazy loading—data is pulled from Amazon S3 the first time it's accessed, which can cause delays.
+
+**Key Features:**
+
+- **Snapshot Archive**: Cheaper storage tier (about 75% less), but takes 24–72 hours to restore.
+- **Recycle Bin**: Lets you recover deleted snapshots within a retention period of 1 day to 1 year.
+- **Fast Snapshot Restore (FSR)**: Removes the lazy loading delay by preloading data, giving full performance immediately. This feature costs more.
+
 
 ![ebs-volume-snapshots.png](media/ebs-volume-snapshots.png)
 - Snapshot Demo:
@@ -1520,6 +1516,8 @@ Used to enable **automated DNS failover** — but **only for public resources** 
 - Use logical rules like **AND, OR, NOT**.
 - Useful for creating complex failover logic.
 
+![route-53-calculated-health.png](media/route-53-calculated-health.png)
+
 ---
 
 **3. Health Checks Using CloudWatch Alarms**
@@ -1529,10 +1527,8 @@ Used to enable **automated DNS failover** — but **only for public resources** 
   - Create a CloudWatch **metric & alarm**
   - Create a Route 53 health check that monitors the **alarm state**
 
-![route-53-calculated-health.png](media/route-53-calculated-health.png)
 
 ![r53-private-r-health.png](media/r53-private-r-health.png)
-
 ---
 - Demos:
   - [create-health-check.gif](media/create-health-check.gif)
@@ -1601,7 +1597,7 @@ Used to enable **automated DNS failover** — but **only for public resources** 
 - **Easy to Use** – Simple console interface.  
 - **Global DNS Management** – Perfect for businesses serving users worldwide.
 
-##AWS S3 (Simple Storage Service)
+## AWS S3 (Simple Storage Service)
 Think of **AWS S3** like an **infinite online hard drive** where you can store and retrieve any kind of file (documents, images, videos, backups, etc.) anytime from anywhere in the world.
 
 - Use cases:
