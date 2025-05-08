@@ -1948,39 +1948,39 @@ Waterfall model for transitioning between storage classes:
   - for legal investigation period
 
 ### S3 - Access Point
+An S3 Access Point is a customized access path to an S3 bucket, designed to simplify managing access at scale
+1. **Multi-Region Access Points + Cross-Region Replication**
+   - **Goal:** Improve **performance, resilience, and availability** for global applications.
+   - **How it works:**
+     - Multi-Region Access Points provide a **single global endpoint**.
+     - They route requests to the **optimal bucket region** based on **proximity and network health**.
+     - Cross-Region Replication (CRR) ensures **data consistency** across regions.
 
-✅ 1. **Multi-Region Access Points + Cross-Region Replication**
-- **Goal:** Improve **performance, resilience, and availability** for global applications.
-- **How it works:**
-  - Multi-Region Access Points provide a **single global endpoint**.
-  - They route requests to the **optimal bucket region** based on **proximity and network health**.
-  - Cross-Region Replication (CRR) ensures **data consistency** across regions.
+These features work together to optimize **latency** and provide **automatic failover**, making them perfect for global, user-facing apps.
 
-🧩 These features work together to optimize **latency** and provide **automatic failover**, making them perfect for global, user-facing apps.
-
- ✅ 2. **S3 Access Points (Including VPC-Only Access Points)**
-- **Goal:** **Simplify access control** and **enforce security boundaries**.
-- to delegate access security management from S3 bucket level to access points maintained outside.
-- **How it works:**
-  - Instead of using complex, monolithic **bucket policies**, you can define smaller, **scoped access point policies**.
-  - Access points can be **public-facing** or **VPC-only** (for private, secure access).
-  - Each access point has its own **DNS endpoint** and policy.
+2. **S3 Access Points (Including VPC-Only Access Points)**
+   - **Goal:** **Simplify access control** and **enforce security boundaries**.
+   - to delegate access security management from S3 bucket level to access points maintained outside.
+   - **How it works:**
+     - Instead of using complex, monolithic **bucket policies**, you can define smaller, **scoped access point policies**.
+     - Access points can be **public-facing** or **VPC-only** (for private, secure access).
+     - Each access point has its own **DNS endpoint** and policy.
 
 ![drafted-s3-access-point.png](media/s3/drafted-s3-access-point.png)
-🧩 This is **highly complementary** to the multi-region setup:  
+This is **highly complementary** to the multi-region setup:  
 Multi-Region Access Points use individual access points as the **regional targets**, so using access points for **security and routing** is a best practice in this architecture.
 
-✅ 3. **VPC Endpoint Policies and Access Point Permissions**
-- **Goal:** Enforce secure, **private access to S3** from within your VPC.
-- **How it works:**
-  - When using **VPC-only access points**, access flows through a **VPC Gateway Endpoint**.
-  - The **VPC endpoint policy** must grant access to:
-    - The **S3 access point**, and
-    - The **underlying S3 bucket** (unless you're using identity-based policies exclusively).
-- there would be 3 policies as shown
+3. **VPC Endpoint Policies and Access Point Permissions**
+   - **Goal:** Enforce secure, **private access to S3** from within your VPC.
+   - **How it works:**
+     - When using **VPC-only access points**, access flows through a **VPC Gateway Endpoint**.
+     - The **VPC endpoint policy** must grant access to:
+       - The **S3 access point**, and
+       - The **underlying S3 bucket** (unless you're using identity-based policies exclusively).
+   - there would be 3 policies as shown
 
 ![drafted-s3-access-point-vpc-origin.png](media/s3/drafted-s3-access-point-vpc-origin.png)
-🧩 This ties directly into the **VPC-origin access point setup**, which is often used when building **secure, private architectures** with no public S3 access.
+This ties directly into the **VPC-origin access point setup**, which is often used when building **secure, private architectures** with no public S3 access.
 
 ---
 
