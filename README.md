@@ -46,7 +46,6 @@
     * [Key Features of AWS Route 53](#key-features-of-aws-route-53)
     * [Route 53 Demos](#route-53-demos)
     * [Routing Policies (Control How Traffic is Directed)](#routing-policies-control-how-traffic-is-directed)
-  * [![r53-private-r-health.png](media/r53-private-r-health.png)](#)
     * [Why Use Route 53?](#why-use-route-53)
   * [AWS S3 (Simple Storage Service)](#aws-s3-simple-storage-service)
     * [Buckets & Objects (Folders & Files)](#buckets--objects-folders--files)
@@ -1533,7 +1532,7 @@ Used to enable **automated DNS failover** — but **only for public resources** 
 
 
 ![r53-private-r-health.png](media/r53-private-r-health.png)
----
+
 - Demos:
   - [create-health-check.gif](media/create-health-check.gif)
   - [calculated-health-check-demo.gif](media/calculated-health-check-demo.gif)
