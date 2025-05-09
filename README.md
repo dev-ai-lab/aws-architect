@@ -93,7 +93,7 @@
     * [EventBridge Scheduler](#eventbridge-scheduler)
     * [Kinesis Data Stream](#kinesis-data-stream)
     * [Amazon Data Firehose](#amazon-data-firehose)
-  * [Kinesis Data Analytics](#kinesis-data-analytics)
+    * [Kinesis Data Analytics](#kinesis-data-analytics)
     * [Amazon MQ](#amazon-mq)
   * [AWS containers: ECS, Fargate, ECR](#aws-containers-ecs-fargate-ecr)
     * [AWS Elastic Container Service (ECS)](#aws-elastic-container-service-ecs)
@@ -2684,7 +2684,7 @@ It's ideal for automating periodic workflows or timed operations in AWS.
 
 ![sqs-sns-kinesis-comparison.png](media/messaging/sqs-sns-kinesis-comparison.png)
 
-## Kinesis Data Analytics
+### Kinesis Data Analytics
 Refer to [Flink](#amazon-managed-service-for-apache-flink)
 
 ### Amazon MQ
