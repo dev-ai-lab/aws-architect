@@ -46,7 +46,9 @@
     * [**Key Features of AWS Route 53**](#key-features-of-aws-route-53)
     * [Route 53 Demos](#route-53-demos)
     * [Routing Policies (Control How Traffic is Directed)](#routing-policies-control-how-traffic-is-directed)
+  * [![r53-private-r-health.png](media/r53-private-r-health.png)](#)
     * [**Why Use Route 53?**](#why-use-route-53)
+  * [AWS S3 (Simple Storage Service)](#aws-s3-simple-storage-service)
     * [Buckets & Objects (Folders & Files)](#buckets--objects-folders--files)
     * [Scalability & Durability](#scalability--durability)
     * [Security & Access Control](#security--access-control)
@@ -86,11 +88,13 @@
     * [AWS DataSync](#aws-datasync)
     * [Storage comparison](#storage-comparison)
   * [AWS Integration and Messaging - decoupling applications: SQS, SNS, Kinesis, Active MQ](#aws-integration-and-messaging---decoupling-applications-sqs-sns-kinesis-active-mq)
-    * [AWS SQS – Standard Queue](#aws-sqs--standard-queue)
+    * [AWS SQS (Simple Queue Service) – Standard Queue](#aws-sqs-simple-queue-service--standard-queue)
     * [AWS SNS](#aws-sns)
     * [AWS EventBridge](#aws-eventbridge)
     * [EventBridge Scheduler](#eventbridge-scheduler)
-    * [AWS Kinesis](#aws-kinesis)
+    * [**Kinesis Data Stream:**](#kinesis-data-stream)
+    * [Amazon Data Firehose:**](#amazon-data-firehose)
+  * [Kinesis Data Analytics](#kinesis-data-analytics)
     * [Amazon MQ](#amazon-mq)
   * [AWS containers: ECS, Fargate, ECR](#aws-containers-ecs-fargate-ecr)
     * [AWS Elastic Container Service (ECS)](#aws-elastic-container-service-ecs)
@@ -2594,12 +2598,9 @@ Amazon EventBridge is a serverless event bus service that makes it easy to conne
 
 It's ideal for automating periodic workflows or timed operations in AWS.
 
-### AWS Kinesis
-- collect and store streaming data in **real-time**
 
-![drafted-kinesis-data-stream.png](media/messaging/drafted-kinesis-data-stream.png)
 
-**Kinesis Data Stream:**
+### **Kinesis Data Stream:**
 - It is a massively scalable and durable real-time data streaming
 - KDS make sure the streaming data is available to multiple real-time analytics applications, to S3, Lambda within 70 milliseconds of the data being collected.
 - Its streams scale from MBs to TBs per hour & scale from thousands to millions of PUTs per second
@@ -2613,6 +2614,9 @@ It's ideal for automating periodic workflows or timed operations in AWS.
   - Write your own: Kinesis Client Library (KCL), AWS SDK
   - Managed: AWS Lambda, Kinesis Data Firehose, Kinesis Data Analytics
   - You have multiple consumers receiving data in parallel, the use enhanced fanout. See [here](https://aws.amazon.com/blogs/aws/kds-enhanced-fanout/).
+
+![drafted-kinesis-data-stream.png](media/messaging/drafted-kinesis-data-stream.png)
+
 - Capacity Modes
   1. Provisioned
      - You choose the number of shards provisioned, scale manually or using API
@@ -2628,7 +2632,7 @@ It's ideal for automating periodic workflows or timed operations in AWS.
 
 [kinesis-data-stream-demo.gif](media/messaging/kinesis-data-stream-demo.gif)
 
-**Amazon Data Firehose:**
+### Amazon Data Firehose:**
 - data collected in firehose can be transformed using a lambda (ex. CSV to JSON).
 - the data is stored in buffer and flushed once in a while into different destinations
 - as in diagram, one can write data or failed data into S3 bucket
@@ -2681,8 +2685,9 @@ It's ideal for automating periodic workflows or timed operations in AWS.
 
 ![sqs-sns-kinesis-comparison.png](media/messaging/sqs-sns-kinesis-comparison.png)
 
-**Kinesis Data Analytics**
+## Kinesis Data Analytics
 Refer to [Flink](#amazon-managed-service-for-apache-flink)
+
 ### Amazon MQ
 - SQS & SNS are AWS proprietary protocols
 - traditional apps might use open source protocols on-premise such as MQTT, AMQP, STOMP, Openwire, WSS
