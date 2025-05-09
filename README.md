@@ -2643,16 +2643,16 @@ It's ideal for automating periodic workflows or timed operations in AWS.
 
 **Kinesis Data Stream vs Amazon Data Firehose**
 
-- When to Use Kinesis Data Streams + Firehose**
+- When to Use Kinesis Data Streams + Firehose
   - Use **Streams** for **real-time processing** (Lambda, KCL).
   - Then use **Firehose** to **deliver processed data** to S3, Redshift, etc.
   - Great for combining **custom logic** with **automated delivery**.
 
-  - Does Firehose Do Processing?**
-    - **Yes**, but limited:
-      - Optional **Lambda transform** (e.g., filter, reformat).
-      - Built-in **format conversion** (JSON → Parquet/ORC).
-      - **Compression & encryption** before delivery.
+- Does Firehose Do Processing?
+  - **Yes**, but limited:
+    - Optional **Lambda transform** (e.g., filter, reformat).
+    - Built-in **format conversion** (JSON → Parquet/ORC).
+    - **Compression & encryption** before delivery.
 
 - **Firehose vs Streams Processing**
   - **Streams** = Full control, real-time analytics, custom processing.
