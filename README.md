@@ -2607,21 +2607,23 @@ It's ideal for automating periodic workflows or timed operations in AWS.
 - Retention between 1 day to 365 days
 - Ability to reprocess (replay) data or retry mechanism
 - Once data is inserted in Kinesis, it can’t be deleted (immutability)
-- Data that shares the same partition goes to the same shard (ordering) • Producers: AWS SDK, Kinesis Producer Library (KPL), Kinesis Agent
+- Data that shares the same partition goes to the same shard (ordering) 
+- Producers: AWS SDK, Kinesis Producer Library (KPL), Kinesis Agent
 - Consumers:
   - Write your own: Kinesis Client Library (KCL), AWS SDK
   - Managed: AWS Lambda, Kinesis Data Firehose, Kinesis Data Analytics
   - You have multiple consumers receiving data in parallel, the use enhanced fanout. See [here](https://aws.amazon.com/blogs/aws/kds-enhanced-fanout/).
-  - Capacity Modes
-    1. Provisioned
-       - You choose the number of shards provisioned, scale manually or using API
-       - Each shard gets 1MB/s in (or 1000 records per second)
-       - Each shard gets 2MB/s out (classic or enhanced fan-out consumer) • You pay per shard provisioned per hour
-    2. On-demand
-       - No need to provision or manage the capacity
-       - Default capacity provisioned (4 MB/s in or 4000 records per second)
-       - Scales automatically based on observed throughput peak during the last 30 days
-       - Pay per stream per hour & data in/out per GB
+- Capacity Modes
+  1. Provisioned
+     - You choose the number of shards provisioned, scale manually or using API
+     - Each shard gets 1MB/s in (or 1000 records per second)
+     - Each shard gets 2MB/s out (classic or enhanced fan-out consumer) 
+     - You pay per shard provisioned per hour
+  2. On-demand
+     - No need to provision or manage the capacity
+     - Default capacity provisioned (4 MB/s in or 4000 records per second)
+     - Scales automatically based on observed throughput peak during the last 30 days
+     - Pay per stream per hour & data in/out per GB
   - Demos
 
 [kinesis-data-stream-demo.gif](media/messaging/kinesis-data-stream-demo.gif)
@@ -2637,6 +2639,24 @@ It's ideal for automating periodic workflows or timed operations in AWS.
 - data 
 
 **Kinesis Data Stream vs Amazon Data Firehose**
+
+- When to Use Kinesis Data Streams + Firehose**
+  - Use **Streams** for **real-time processing** (Lambda, KCL).
+  - Then use **Firehose** to **deliver processed data** to S3, Redshift, etc.
+  - Great for combining **custom logic** with **automated delivery**.
+
+  - Does Firehose Do Processing?**
+    - **Yes**, but limited:
+      - Optional **Lambda transform** (e.g., filter, reformat).
+      - Built-in **format conversion** (JSON → Parquet/ORC).
+      - **Compression & encryption** before delivery.
+
+- **Firehose vs Streams Processing**
+  - **Streams** = Full control, real-time analytics, custom processing.
+  - **Firehose** = Simple, automatic delivery with basic transformations. 
+  - Use **both together** for advanced workflows: **Stream → Process → Firehose → Store**.
+
+  
 - KDS:
   - stream data collection
   - producer, consumer mode
