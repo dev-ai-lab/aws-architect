@@ -2362,6 +2362,12 @@ AWS **Snowball**, **Snowcone**, and **Snowmobile** are all part of AWS's **Snow 
 - File permissions and metadata are preserved (NFS POSIX, SMB...)
 - One agent task can use 10 Gbps, can setup a bandwidth limit
 - Agent should be installed on the on-premise. If we don't have n/w capacity --> `AWS snowcone`
+  - Order Snowcone via AWS Console. 
+  - AWS ships it to your location. 
+  - You connect it locally and run DataSync agent on it.
+  - Copy the data to Snowcone. 
+  - Ship it back to AWS. 
+  - AWS imports your data into S3, EFS, or FSx.
 
 ![drafted-aws-datasync.png](media/advanced-storage/drafted-aws-datasync.png)
 ![drafted-aws-datasync-internal.png](media/advanced-storage/drafted-aws-datasync-internal.png)
@@ -2392,7 +2398,7 @@ AWS **Snowball**, **Snowcone**, and **Snowmobile** are all part of AWS's **Snow 
   - Kinesis: real-time streaming model i.e big data
 - scaling of services are then independent
 
-### AWS SQS – Standard Queue
+### AWS SQS (Simple Queue Service) – Standard Queue
 
 - Fully Managed & Reliable:
   - Over 10 years in service
@@ -2416,11 +2422,6 @@ AWS **Snowball**, **Snowcone**, and **Snowmobile** are all part of AWS's **Snow 
 - Producing message:
   - Messages sent via SDK (SendMessage API)
   - Persisted until consumed & deleted by consumer
-- Delay queues let you postpone the delivery of the new messages to a queue for several seconds
-  - this gives the consumer time 
-  - default(minimum) delay for a queue is 0 seconds and max is 15 minutes
-    ![sqs-delay-queues-diagram.png](media/messaging/sqs-delay-queues-diagram.png)
-
 
 ![aws-sqs.png](media/messaging/aws-sqs.png)
 
@@ -2442,6 +2443,11 @@ AWS **Snowball**, **Snowcone**, and **Snowmobile** are all part of AWS's **Snow 
   - **Low timeout** increases duplicate processing.
 
 ![sqs-message-visibility-timeout.png](media/messaging/sqs-message-visibility-timeout.png)
+
+- Delay queues let you postpone the delivery of the new messages to a queue for several seconds
+  - this gives the consumer time
+  - default(minimum) delay for a queue is 0 seconds and max is 15 minutes
+    ![sqs-delay-queues-diagram.png](media/messaging/sqs-delay-queues-diagram.png)
 
 - SQS Long Polling
   - By default the queue has short polling
