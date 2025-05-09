@@ -92,8 +92,8 @@
     * [AWS SNS](#aws-sns)
     * [AWS EventBridge](#aws-eventbridge)
     * [EventBridge Scheduler](#eventbridge-scheduler)
-    * [**Kinesis Data Stream:**](#kinesis-data-stream)
-    * [Amazon Data Firehose:**](#amazon-data-firehose)
+    * [Kinesis Data Stream](#kinesis-data-stream)
+    * [Amazon Data Firehose](#amazon-data-firehose)
   * [Kinesis Data Analytics](#kinesis-data-analytics)
     * [Amazon MQ](#amazon-mq)
   * [AWS containers: ECS, Fargate, ECR](#aws-containers-ecs-fargate-ecr)
@@ -2600,7 +2600,7 @@ It's ideal for automating periodic workflows or timed operations in AWS.
 
 
 
-### **Kinesis Data Stream:**
+### Kinesis Data Stream
 - It is a massively scalable and durable real-time data streaming
 - KDS make sure the streaming data is available to multiple real-time analytics applications, to S3, Lambda within 70 milliseconds of the data being collected.
 - Its streams scale from MBs to TBs per hour & scale from thousands to millions of PUTs per second
@@ -2632,7 +2632,7 @@ It's ideal for automating periodic workflows or timed operations in AWS.
 
 [kinesis-data-stream-demo.gif](media/messaging/kinesis-data-stream-demo.gif)
 
-### Amazon Data Firehose:**
+### Amazon Data Firehose
 - data collected in firehose can be transformed using a lambda (ex. CSV to JSON).
 - the data is stored in buffer and flushed once in a while into different destinations
 - as in diagram, one can write data or failed data into S3 bucket
