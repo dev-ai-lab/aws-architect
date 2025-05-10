@@ -115,9 +115,11 @@
   * [AWS Serverless overview](#aws-serverless-overview)
     * [AWS Lambda](#aws-lambda)
       * [Cold Start vs Provisioned Concurrency vs SnapStart](#cold-start-vs-provisioned-concurrency-vs-snapstart)
-  * [🧠 Summary Table:](#-summary-table)
+      * [🧠 Summary Table:](#-summary-table)
       * [Customization at the Edge: Lambda at Edge and CloudFront](#customization-at-the-edge-lambda-at-edge-and-cloudfront)
       * [Lambda in VPC:](#lambda-in-vpc)
+      * [RDS activities and lambda - Invoking Lambda vs Event Notification](#rds-activities-and-lambda---invoking-lambda-vs-event-notification)
+      * [Lambda db communication:](#lambda-db-communication)
   * [AWS No SQL - DynamoDB](#aws-no-sql---dynamodb)
     * [DAX caching](#dax-caching)
     * [DynamoDB Streams Processing](#dynamodb-streams-processing)
@@ -3167,7 +3169,7 @@ This YAML creates an **S3 bucket** in your AWS account — from within Kubernete
 - On each invocation, AWS **restores the snapshot**, skipping initialization.
 - Results in up to **10x faster startup**, **at no extra cost**.
 
-## 🧠 Summary Table:
+#### 🧠 Summary Table:
 
 | Feature               | Cold Start  | Provisioned Concurrency | SnapStart                                |
 | --------------------- | ----------- | ----------------------- | ---------------------------------------- |
@@ -3275,18 +3277,18 @@ This YAML creates an **S3 bucket** in your AWS account — from within Kubernete
 
 ![aws-rds-proxy.png](media/serverless/aws-rds-proxy.png)
 
-- RDS - Invoking Lambda vs Event Notification
-  - **Invoking Lambda:**
-    - Trigger Lambda functions from within the database.
-    - Used to process or react to actual data inside the DB (e.g., on insert/update).
-    - Works with RDS for PostgreSQL and Aurora MySQL.
-    - Requires network access from DB to Lambda (via public IP, NAT Gateway, or VPC endpoint).
-    - The DB must have IAM and Lambda permissions set.
-    - Must allow outbound traffic to your Lambda function from within your DB instance (Public, NAT GW,VPC Endpoints)
+#### RDS activities and lambda - Invoking Lambda vs Event Notification
+- Invoking Lambda:
+  - Trigger Lambda functions from within the database.
+  - Used to process or react to actual data inside the DB (e.g., on insert/update).
+  - Works with RDS for PostgreSQL and Aurora MySQL.
+  - Requires network access from DB to Lambda (via public IP, NAT Gateway, or VPC endpoint).
+  - The DB must have IAM and Lambda permissions set.
+  - Must allow outbound traffic to your Lambda function from within your DB instance (Public, NAT GW,VPC Endpoints)
 
 ![rds-invoking-lambda.png](media/serverless/rds-invoking-lambda.png)
 
-- **Event Notification:**
+- Event Notification:
   - Sends alerts about database lifecycle events, such as instance creation, deletion, start, stop, failover, and other state changes
   - Does not include any actual database data.
   - Can notify via SNS or EventBridge.
@@ -3297,7 +3299,7 @@ This YAML creates an **S3 bucket** in your AWS account — from within Kubernete
 
 Use Lambda invocation for data-level actions; use event notifications for monitoring DB activity.
 
-**Lambda db communication:**
+#### Lambda db communication:
 
 **AWS Lambda to RDS using IAM authentication** allows your Lambda function to connect securely to an **Amazon RDS database** (e.g., MySQL or PostgreSQL) **without hardcoding passwords**.
 
