@@ -2679,7 +2679,8 @@ It's ideal for automating periodic workflows or timed operations in AWS.
 ![drafted-aws-data-firehose.png](media/messaging/drafted-aws-data-firehose.png)
   - Demo
 
-[adfirehose-s3-kds-demo.gif](media/messaging/adfirehose-s3-kds-demo.gif)
+[firehose-s3-kds-demo.gif](media/messaging/adfirehose-s3-kds-demo.gif)
+
 **SQS vs SNS vs Kinesis**
 
 ![sqs-sns-kinesis-comparison.png](media/messaging/sqs-sns-kinesis-comparison.png)
@@ -2841,12 +2842,9 @@ Refer to [Flink](#amazon-managed-service-for-apache-flink)
 ![aws-eks-multi-az.png](media/containers/aws-eks-multi-az.png)
   - each worker node is an EC2 instance
 
----
 ### AWS EKS Node Types
 
 When running workloads in Amazon EKS (Elastic Kubernetes Service), you need to provide the compute resources—**nodes**—on which your containers will run. AWS offers three main ways to set up nodes in your EKS cluster, depending on how much control and maintenance responsibility you want.
-
----
 
 #### 1. Managed Node Groups
 
@@ -2866,8 +2864,6 @@ When running workloads in Amazon EKS (Elastic Kubernetes Service), you need to p
 **Best For:**
 - Users who want a balance of flexibility and convenience without managing the infrastructure in detail.
 
----
-
 #### 2. **Self-Managed Nodes**
 
 **Overview:**
@@ -2886,7 +2882,6 @@ When running workloads in Amazon EKS (Elastic Kubernetes Service), you need to p
 - Advanced users who need custom node configurations or want more control over node management.
 - Use cases that require special security hardening, GPU support, or custom AMIs.
 
----
 
 #### 3. **AWS Fargate**
 
@@ -2908,7 +2903,6 @@ When running workloads in Amazon EKS (Elastic Kubernetes Service), you need to p
 - Teams prioritizing ease of use and minimal infrastructure overhead.
 - CI/CD jobs, microservices, or event-driven workloads.
 
----
 
 #### Summary Table
 
@@ -2921,7 +2915,6 @@ When running workloads in Amazon EKS (Elastic Kubernetes Service), you need to p
 | Control & Flexibility   | Medium                      | High                        | Low                          |
 | Use Case Fit            | General purpose             | Custom workloads            | Lightweight, simple apps     |
 
----
 
 ### Amazon EKS – Data Volumes
 - Support for...
@@ -2947,21 +2940,15 @@ When running workloads in Amazon EKS (Elastic Kubernetes Service), you need to p
 
 **Amazon VPC CNI (Container Network Interface)** is a **network plugin for Amazon EKS (Elastic Kubernetes Service)** that enables Kubernetes pods to **natively integrate with AWS VPC networking**.
 
----
-
 **What it does:**
 - Assigns **VPC IP addresses** directly to **Kubernetes pods**, so they appear as **first-class citizens in your VPC**.
 - Enables **high-performance pod-to-pod and pod-to-service communication** using the AWS VPC network.
 - Supports **security groups**, **routing**, and **network policies** at the pod level.
 
----
-
 **AWS Resource Category:**
 - The Amazon VPC CNI is part of the **Amazon EKS ecosystem**, specifically tied to:
   - **Amazon EKS** (Elastic Kubernetes Service)
   - **Amazon EC2 / VPC** (since it leverages ENIs and VPC networking)
-
----
 
 **Key Benefits:**
 - No need for overlay networks like Calico or Flannel.
@@ -2979,7 +2966,46 @@ When running workloads in Amazon EKS (Elastic Kubernetes Service), you need to p
 - In Azure, a zone is a subnet
 
 ## Crossplane
-- Crossplane is an open-source framework that enables you to manage infrastructure and services using Kubernetes APIs. 
+
+**Crossplane in Kubernetes (with AWS)**
+
+**Crossplane** is an open-source **Kubernetes add-on** that lets you **provision and manage cloud infrastructure (like AWS resources) using Kubernetes YAMLs** — just like you deploy apps.
+
+Think of it as:
+
+> **"Infrastructure-as-Code inside Kubernetes"**
+
+In the context of aws:
+- Create and manage **AWS resources** (S3 buckets, RDS databases, IAM roles, etc.)
+- All **declared as Kubernetes Custom Resources (CRDs)**
+- Uses AWS credentials (via a Provider) to talk to AWS APIs
+- Works like Terraform, but from **inside your Kubernetes cluster**
+
+- Example:
+
+```yaml
+apiVersion: s3.aws.crossplane.io/v1beta1
+kind: Bucket
+metadata:
+  name: my-bucket
+spec:
+  forProvider:
+    region: us-east-1
+```
+
+This YAML creates an **S3 bucket** in your AWS account — from within Kubernetes!
+
+
+**Benefits**
+
+- Single control plane for **apps + infra**
+- GitOps-friendly (infra declared like code)
+- Cloud-agnostic: can work across AWS, GCP, Azure with same patterns
+
+
+> ✅ Summary: **Crossplane lets you manage AWS infrastructure using Kubernetes-native tools**, ideal for teams using K8s as their control center.
+
+
 - Key Features of Crossplane
   - Kubernetes-Native: Uses Kubernetes Custom Resource Definitions (CRDs) and Controllers to manage resources. 
   Leverages the Kubernetes API, so you can use kubectl and familiar tools to manage infrastructure. 
@@ -2998,7 +3024,7 @@ When running workloads in Amazon EKS (Elastic Kubernetes Service), you need to p
 - [Connect](https://docs.crossplane.io/latest/getting-started/provider-aws/) Crossplane to AWS to create and manage cloud resources from Kubernetes with the [Upbound AWS Provider](https://marketplace.upbound.io/providers/upbound/provider-family-aws)
 - In the context of Crossplane, the concepts of Composition, Definition, and Claim are part of its Composite Resource (XRC) framework. 
  They enable Crossplane to provide higher-level abstractions for infrastructure, making it easier for application developers to consume infrastructure without dealing with the complexity of raw cloud APIs.
-### Examples:
+
 - Create an AWS VPC as native k8s resource with 
   ```
   apiVersion: aws.composite.scc.bank.io/v1alpha1
@@ -3060,6 +3086,8 @@ When running workloads in Amazon EKS (Elastic Kubernetes Service), you need to p
     - Free tier 400,000 GBs of compute time
   - You can find overall pricing [information](https://aws.amazon.com/lambda/pricing/)
   - It is usually very cheap to run AWS Lambda --> popular
+  - Duration (in seconds) × Allocated Memory (in GB) = GB-seconds
+  - 2 sec × 0.5 GB = 1 GB-second
 
 - Lambda Features:
   - Integrated with the whole AWS suite of services  
@@ -3070,6 +3098,7 @@ When running workloads in Amazon EKS (Elastic Kubernetes Service), you need to p
   - Easy monitoring through AWS CloudWatch
   - Easy to get more resources per functions (up to 10GB of RAM!). Increasing RAM will also improve CPU and network!
   - Lambda Container Image
+    - AWS Lambda supports running container images (up to 10 GB) instead of just ZIP packages
     - The container image must implement the Lambda Runtime API
     - ECS / Fargate is preferred for running arbitrary Docker images
 
@@ -3098,133 +3127,172 @@ When running workloads in Amazon EKS (Elastic Kubernetes Service), you need to p
     - at high invocations ALB fulfilled all request and consumed 1000 limit (account level)
     - all others will be throttled
   - Use `ConcurrentExecutions` or `Invocation exceed the expected threshold` CloudWatch alarms to monitor
-  - 
+
 ![drafted-lambda-concurrency-issue.png](media/serverless/drafted-lambda-concurrency-issue.png)
 ![drafted-lambda-concurrency-issue-async.png](media/serverless/drafted-lambda-concurrency-issue-async.png)
 
   - Demo:
     - [lambda-concurr-demo.gif](media/serverless/lambda-concurr-demo.gif)
-- Cold Start & Provisioned Capacity:
-  - Cold start: 
-    - code loaded + code outside handler run (init). 
-    - If init is large (code, dependencies, SDK) this process can take some time.
-    - first request has higher latency
-  - provisioned concurrency:
-    - pre-warmed instances that are ready to handle requests at all time
-- Lambda SnapStart (at no extra cost):
-  - Improves your Lambda functions performance up to 10x at no extra cost for Java, python & .NET and above
-  - if enabled: function is invoked from a pre-initialized state (no function initialization from scratch)
-  - When you publish a new version:
-    - Lambda initializes your function
-    - Takes a snapshot of memory and disk state of the initialized function
-    - Snapshot is cached for low-latency access
+
+  
+#### Cold Start vs Provisioned Concurrency vs SnapStart
+
+**Cold Start** (Default Behavior)
+
+- Happens when Lambda **spins up a new execution environment**.
+- Involves:
+
+  - **Loading code**
+  - **Running initialization code outside the handler**
+- First request experiences **higher latency**, especially if:
+  - The codebase or dependencies are large
+  - SDKs or clients are initialized during cold start
+
+**Provisioned Concurrency**
+
+- Keeps **a number of pre-initialized Lambda instances always ready**.
+- Eliminates cold start delays.
+- Suitable for **latency-sensitive, high-traffic workloads**.
+- 💰 **Extra cost** for keeping instances warm.
+
+**Lambda SnapStart** (Free, but limited runtimes)
+
+- Applies to **Java, Python, and .NET functions** (certain versions).
+- AWS **pre-initializes your function once** during version publishing:
+
+  - Takes a **snapshot** of memory + disk state after init.
+- On each invocation, AWS **restores the snapshot**, skipping initialization.
+- Results in up to **10x faster startup**, **at no extra cost**.
+
+## 🧠 Summary Table:
+
+| Feature               | Cold Start  | Provisioned Concurrency | SnapStart                                |
+| --------------------- | ----------- | ----------------------- | ---------------------------------------- |
+| Init delay (1st run)? | ❌ Yes       | ✅ No                    | ✅ No                                     |
+| Costs extra?          | ❌ No        | ✅ Yes                   | ❌ No                                     |
+| Always ready?         | ❌ No        | ✅ Yes                   | ✅ Snapshot-based                         |
+| Supported runtimes    | All         | All                     | Java, Python, .NET only                  |
+| Best for              | Low-traffic | High-traffic, APIs      | Latency-critical with supported runtimes |
+
+---
+
+> ✅ Use **Provisioned Concurrency** for high-throughput APIs.
+> ✅ Use **SnapStart** if using supported runtimes for **low-latency at no extra cost**.
+> 🧊 Expect **cold starts** with default behavior in low-traffic or bursty workloads.
 
 ![lambda-snap-start.png](media/serverless/lambda-snap-start.png)
 
-- Customization at the Edge: Lambda at Edge and CloudFront
-  - some modern apps need logic execution at the edge location, these code are called `edge function`
-  - Edge function:
-    - write and attach to CF
-    - run close to user
-    - CloudFront has two kinds of functions: CF functions and Lambda@Edge
-    - deployed globally
-    - use case: customize the CDN content
-  - CF & Lambda@Edge use case:
-    - Website Security and Privacy
-    - Dynamic Web Application at the Edge
-    - Search Engine Optimization (SEO)
-    - Intelligently Route Across Origins and Data Centers • Bot Mitigation at the Edge
-    - Real-time Image Transformation
-    - A/BTesting
-    - User Authentication and Authorization
-    - User Prioritization
-    - User Tracking and Analytics
-  - CF Functions:
-    - Lightweight functions written in JavaScript
-    - For high-scale (millions), latency-sensitive CDN customizations
-    -  max memory: 2 MB
-    - total package: 10 KB
-    - execution time < 1ms
-    - no access to n/w or file system access
-    - Sub-ms startup times, millions of requests/second
-    - Used to change Viewer requests and responses:
-      - Viewer Request: after CloudFront receives a request from a viewer
-      - Viewer Response: before CloudFront forwards the response to the viewer
-    - Native feature of CloudFront (manage code entirely within CloudFront)
+#### Customization at the Edge: Lambda at Edge and CloudFront
+- some modern apps need logic execution at the edge location, these code are called `edge function`
+- Edge function:
+  - write and attach to CF
+  - run close to user
+  - CloudFront has two kinds of functions: CF functions and Lambda@Edge
+  - deployed globally
+  - use case: customize the CDN content
+- CF & Lambda@Edge use case:
+  - Website Security and Privacy
+  - Dynamic Web Application at the Edge
+  - Search Engine Optimization (SEO)
+  - Intelligently Route Across Origins and Data Centers • Bot Mitigation at the Edge
+  - Real-time Image Transformation
+  - A/BTesting
+  - User Authentication and Authorization
+  - User Prioritization
+  - User Tracking and Analytics
+- CF Functions:
+  - Lightweight functions written in JavaScript
+  - For high-scale (millions), latency-sensitive CDN customizations
+  -  max memory: 2 MB
+  - total package: 10 KB
+  - execution time < 1ms
+  - no access to n/w or file system access
+  - Sub-ms startup times, millions of requests/second
+  - Used to change Viewer requests and responses:
+    - Viewer Request: after CloudFront receives a request from a viewer
+    - Viewer Response: before CloudFront forwards the response to the viewer
+  - Native feature of CloudFront (manage code entirely within CloudFront)
 
 ![cf-functions.png](media/serverless/cf-functions.png)
 
-  - Lambda@Edge
-    - Lambda functions written in NodeJS or Python
-    - execution time: 5 - 10 seconds
-    - max memory: 128 MB - 10 GB
-    - total package: 1 - 50 MB
-    - Scales to 1000s of requests/second
-    - Used to change CloudFront requests and responses:
-      - Viewer Request – after CloudFront receives a request from a viewer
-      - Origin Request – before CloudFront forwards the request to the origin
-      - Origin Response – after CloudFront receives the response from the origin
-      - Viewer Response – before CloudFront forwards the response to the viewer
-    - Author your functions in one AWS Region (us-east-1), then CloudFront replicates to its locations
+- Lambda@Edge
+  - Lambda functions written in NodeJS or Python
+  - execution time: 5 - 10 seconds
+  - max memory: 128 MB - 10 GB
+  - total package: 1 - 50 MB
+  - Scales to 1000s of requests/second
+  - Used to change CloudFront requests and responses:
+    - Viewer Request – after CloudFront receives a request from a viewer
+    - Origin Request – before CloudFront forwards the request to the origin
+    - Origin Response – after CloudFront receives the response from the origin
+    - Viewer Response – before CloudFront forwards the response to the viewer
+  - Author your functions in one AWS Region (us-east-1), then CloudFront replicates to its locations
 
 ![img.png](media/serverless/lambda-edge-function.png)
 
-  - CloudFront Functions vs. Lambda@Edge - Use Cases
-    - CF functions:
-      - Cache key normalization
-        - Transform request attributes (headers, cookies, query strings, URL) to create an optimal Cache Key
-      - Header manipulation
-        - Insert/modify/delete HTTP headers in the request or response
-      - URL rewrites or redirects
-      - Request authentication & authorization
-        - Create and validate user-generated tokens (e.g., JWT) to allow/deny requests
-    - Lambda@Edge:
-      - Longer execution time (several ms)
-      - Adjustable CPU or memory
-      - Your code depends on a 3rd libraries (e.g., AWS SDK to access other AWS services)
-      - Network access to use external ser vices for processing
-      - File system access or access to the body of HTTP requests
+- CloudFront Functions vs. Lambda@Edge - Use Cases
+  - CF functions:
+    - Cache key normalization
+      - Transform request attributes (headers, cookies, query strings, URL) to create an optimal Cache Key
+    - Header manipulation
+      - Insert/modify/delete HTTP headers in the request or response
+    - URL rewrites or redirects
+    - Request authentication & authorization
+      - Create and validate user-generated tokens (e.g., JWT) to allow/deny requests
+  - Lambda@Edge:
+    - Longer execution time (several ms)
+    - Adjustable CPU or memory
+    - Your code depends on a 3rd libraries (e.g., AWS SDK to access other AWS services)
+    - Network access to use external ser vices for processing
+    - File system access or access to the body of HTTP requests
 
-- Lambda in VPC:
-  - By default, your Lambda function is launched outside your own VPC (in an AWS-owned VPC) and have access to any public internet address or public aws API
-  - Therefore, it cannot access resources in your VPC (RDS, ElastiCache, internal ELB...)
+#### Lambda in VPC:
+- By default, your Lambda function is launched outside your own VPC (in an AWS-owned VPC) and have access to any public internet address or public aws API
+- Therefore, it cannot access resources in your VPC (RDS, ElastiCache, internal ELB...)
 
 ![lambda-vpc-default.png](media/serverless/lambda-vpc-default.png)
-  - make it VPC-enabled when you need to access a private resource in a private subnet
-    - once enabled, all traffic from your function is subject to the routing rules of your VPC/subnet and interact with public resources, it will need route through a NAT GW
-
-  - we need to launch our lambda in our VPC (in private subnet): 
-    - you need VPC ID, the subnet, and security group
-    - lambda will then create an ENI in your subnet
+- You only need to make your Lambda function VPC-enabled if it needs to access private resources, such as:
+  - A private RDS database 
+  - An EC2 instance in a private subnet 
+  - A private API or internal service in your VPC
+- What happens when you VPC-enable Lambda? 
+  - You choose your VPC, subnets, and security groups. 
+  - AWS creates an Elastic Network Interface (ENI) in one of your subnets. 
+  - That ENI lets your Lambda "live" in the VPC and access your private resources.
 
 ![lambda-vpc-private.png](media/serverless/lambda-vpc-private.png)
-  - Use case: 
-    - use lambda with RDS Proxy: if lambda directly accesses the RDS, it may open many and create high load --> use RDS proxy (it pools connections)
-      - RDS Proxy
-        - Improve scalability by pooling and sharing DB connections
-        - Improve availability by reducing by 66% the failover time and preserving connections
-        - Improve security by enforcing IAM authentication and storing credentials in Secrets Manager
-      - The Lambda function must be deployed in your VPC, because RDS Proxy is never publicly accessible 
+- Use case:
+  - If Lambda connects directly to RDS, it can create too many database connections — each invocation might open a new one — which can overload the database.
+  - **RDS Proxy** helps by:
+    - **Pooling connections**, so many Lambda invocations can share fewer DB connections.
+    - **Reducing failover time** by about 66%, improving availability during issues.
+    - **Enhancing security** by using IAM authentication and storing credentials securely in Secrets Manager. 
+    - RDS Proxy makes Lambda + RDS setups more scalable, reliable, and secure.
+    - The Lambda function must be VPC-enabled, because RDS Proxy is never publicly accessible 
 
 ![aws-rds-proxy.png](media/serverless/aws-rds-proxy.png)
 
 - RDS - Invoking Lambda vs Event Notification
-  - Invoking Lambda:
-    - Invoke Lambda functions from within your DB instance
-    - Allows you to process data events (access to DB data) from within a database
-    - Supported for RDS for PostgreSQL and Aurora MySQL
+  - **Invoking Lambda:**
+    - Trigger Lambda functions from within the database.
+    - Used to process or react to actual data inside the DB (e.g., on insert/update).
+    - Works with RDS for PostgreSQL and Aurora MySQL.
+    - Requires network access from DB to Lambda (via public IP, NAT Gateway, or VPC endpoint).
+    - The DB must have IAM and Lambda permissions set.
     - Must allow outbound traffic to your Lambda function from within your DB instance (Public, NAT GW,VPC Endpoints)
-    - DB instance must have the required permissions to invoke the Lambda function (Lambda Resource-based Policy & IAM Policy)
 
 ![rds-invoking-lambda.png](media/serverless/rds-invoking-lambda.png)
-  - Event Notification:
-    - Notifications that tells information about the DB instance itself (created, stopped, start, ...)
-    - You don’t have any information about the data itself
-    - Subscribe to the following event categories: DB instance, DB snapshot, DB Parameter Group, DB Security Group, RDS Proxy, Custom Engine Version
-    - Near real-time events (up to 5 minutes)
-    - Send notifications to SNS or subscribe to events using EventBridge
+
+- **Event Notification:**
+  - Sends alerts about database lifecycle events, such as instance creation, deletion, start, stop, failover, and other state changes
+  - Does not include any actual database data.
+  - Can notify via SNS or EventBridge.
+  - Subscribe to the following event categories: DB instance, DB snapshot, DB Parameter Group, DB Security Group, RDS Proxy, Custom Engine Version
+  - Delivers events in near real time (within about 5 minutes).
 
 ![rds-event-notification.png](media/serverless/rds-event-notification.png)
+
+Use Lambda invocation for data-level actions; use event notifications for monitoring DB activity.
 
 **Lambda db communication:**
 
