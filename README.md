@@ -3454,7 +3454,7 @@ This setup is **serverless**, real-time, and great for building reactive, event-
 
 ## AWS API Management
 - Example: Building a Serverless API (aws api gateway + lambda + dynamoDB)
-- 
+
 ![serverless-app.png](media/serverless/serverless-app.png)
 - AWS API Gateway:
   - **Serverless API Management**: Works with AWS Lambda, no infrastructure to manage (full serverless).
