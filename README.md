@@ -3845,7 +3845,7 @@ Amazon QuickSight is a **serverless, machine learning-powered business intellige
 - Dashboards retain **filters, parameters, sorting, and controls**.
 - To share a dashboard, it must be **published**, and users with access can see the **underlying data**.
 
-[quick-sight.gif](media/aws-data-analytics/quick-sight.gif)
+![quick-sight.gif](media/aws-data-analytics/quick-sight.gif)
 
 ![aws-quicksight.png](media/aws-data-analytics/aws-quicksight.png)
 
@@ -3859,6 +3859,57 @@ Amazon Glue is a **managed, serverless ETL (Extract, Transform, Load) service** 
 - **Glue DataBrew**: Cleans and normalizes data using **pre-built transformations**.
 - **Glue Studio**: Provides a **GUI** to create, run, and monitor ETL jobs.
 - **Glue Streaming ETL**: **Real-time data processing** using **Apache Spark Structured Streaming**, compatible with **Kinesis, Kafka, and MSK**.
+
+
+🧩 **The Core Idea**
+
+> Glue helps you **organize and prepare data** so that services like **Athena, Redshift Spectrum, or EMR** can **query** it.
+
+
+#### 🔄 Flow Summary:
+
+🧱 1. **S3 / RDS / JDBC** = Raw data sources
+
+- You store raw data in **S3**, or structured data in **RDS**, **JDBC databases**, etc.
+- Data is often unstructured or semi-structured (CSV, JSON, Parquet, logs, etc.)
+
+🔍 2. **Glue Data Crawler**
+
+- A crawler **scans your data** (e.g., S3 buckets or RDS tables).
+- It **detects schema automatically** (column names, data types, partitions).
+- It **creates or updates table definitions** in the **Glue Data Catalog**.
+
+📚 3. **Glue Data Catalog**
+
+- Think of this as your **central metadata repository** (like a database of tables about your data).
+- It stores info like:
+
+  - Table names
+  - Column types
+  - Data location (e.g., `s3://bucket/path/`)
+  - Partition keys (e.g., by date)
+
+🚀 4. **How Other Services Use It**
+
+| Service               | How It Uses the Catalog                                    |
+| --------------------- | ---------------------------------------------------------- |
+| **Athena**            | Runs SQL directly on S3 using the catalog’s table metadata |
+| **Redshift Spectrum** | Queries external S3 data using defined Glue tables         |
+| **EMR (Spark/Hive)**  | Uses Glue catalog instead of maintaining its own metastore |
+
+
+🧠 **Why This Matters**
+
+- You only need to **define tables once** (via crawler).
+- Multiple services can **query the same data** in S3 without moving it.
+- Helps unify your **analytics and ETL workflows** across AWS.
+
+
+🎯 **Summary**
+
+> **Glue Crawler** creates metadata →
+> **Glue Data Catalog** stores it →
+> **Athena, Redshift Spectrum, EMR** use it to **query** data where it lives.
 
 ![aws-glue.png](media/aws-data-analytics/aws-glue.png)
 
