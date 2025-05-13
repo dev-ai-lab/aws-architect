@@ -3781,7 +3781,6 @@ Amazon OpenSearch Service is the **successor to Amazon Elasticsearch**, enabling
 - **Security**: Integrated with **Cognito, IAM, KMS encryption, and TLS**.
 - Includes **OpenSearch Dashboards** for visualization and analytics.
 
-Would you like a summary for **AWS Redshift** instead?
 ![aws-opensearch.png](media/aws-data-analytics/aws-opensearch.png)
 
 ### Amazon EMR
