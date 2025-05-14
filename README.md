@@ -4381,7 +4381,7 @@ AWS KMS (Key Management Service)
     - Customer managed keys imported: $1 / month
 
 - pay for API call to KMS ($0.03 / 10000 calls)
-
+  - only for `customer-managed-keys (CMKs)` or `AWS-managed` keys
 Automatic Key rotation:
   - AWS-managed KMS Key: automatic every 1 year
   - Customer-managed KMS Key: (must be enabled) automatic & on-demand
@@ -4401,9 +4401,9 @@ Copying Snapshots across regions
   - Useful for cross-account access of your KMS key
 
 **Copying snapshots across accounts**
-1. Create a Snapshot, encr ypted with your own KMS Key (Customer Managed Key)
+1. Create a Snapshot, encrypted with your own KMS Key (Customer Managed Key)
 2. Attach a KMS Key Policy to authorize cross-account access
-3. Share the encr ypted snapshot
+3. Share the encrypted snapshot
 4. (in target) Create a copy of the Snapshot, encrypt it with a CMK in your account
 5. Create a volume from the snapshot
 
@@ -4444,7 +4444,8 @@ Copying Snapshots across regions
 ![kms-multi-region-key.png](media/encryption-security/kms-multi-region-key.png)
 
 - Identical KMS keys in different AWS Regions that can be used interchangeably
-- Multi-Region keys have the same key ID, key material, automatic rotation... • Encrypt in one Region and decrypt in other Regions
+- Multi-Region keys have the same key ID, key material, automatic rotation... 
+- Encrypt in one Region and decrypt in other Regions
 - No need to re-encrypt or making cross-Region API calls 
 - KMS Multi-Region are NOT global (Primary + Replicas)
 - Each Multi-Region key is managed independently
@@ -4522,7 +4523,8 @@ Parameters Policies (for advanced parameters)
   - [ssm-parameters-store-demo-2.gif](media/encryption-security/ssm-parameters-store-demo-2.gif)
 
 **Demo: Using allowing a lambda to make use of parameter store**
-![ssm-parameters-store-lambda-demo-1.gif](media/encryption-security/ssm-parameters-store-lambda-demo-1.gif)
+
+[ssm-parameters-store-lambda-demo-1.gif](media/encryption-security/ssm-parameters-store-lambda-demo-1.gif)
 
 With decryption
 
