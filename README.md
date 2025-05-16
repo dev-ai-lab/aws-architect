@@ -5337,8 +5337,8 @@ It simplifies network management by centralizing connectivity, often using **VPN
 ![transit-vpc.jpg](media/vpc/transit-vpc.jpg)
 
 ### VPC - Traffic Mirroring
-✔ **Captures & inspects** network traffic in your VPC in a non-intrusive manner
-✔ Done by routing the traffic to **your security appliances**.
+- **Captures & inspects** network traffic in your VPC in a non-intrusive manner
+- Done by routing the traffic to **your security appliances**.
 
 **Traffic Flow:**
 - **Source (From):** ENIs (Elastic Network Interfaces).
@@ -5349,9 +5349,9 @@ It simplifies network management by centralizing connectivity, often using **VPN
 - Source and target are in the same VPC or across VPCs if  **VPC Peering** is enabled.
 
 **Use Cases:**
-🔹 **Content inspection**  
-🔹 **Threat monitoring**  
-🔹 **Troubleshooting**
+- **Content inspection**  
+- **Threat monitoring**  
+- **Troubleshooting**
 
 ![vpc-traffic-mirroring.png](media/vpc/vpc-traffic-mirroring.png)
 
@@ -5367,18 +5367,18 @@ It simplifies network management by centralizing connectivity, often using **VPN
 
 ### IPv6 in VPC
 
-✔ **IPv4 is always enabled**; IPv6 can be added for **dual-stack mode**.  
-✔ **EC2 instances get:**
-- A **private IPv4** & a **public IPv6**.
-- Can access the internet via an **Internet Gateway** using **either protocol**.
+- **IPv4 is always enabled**; IPv6 can be added for **dual-stack mode**.  
+- **EC2 instances get:**
+  - A **private IPv4** & a **public IPv6**.
+  - Can access the internet via an **Internet Gateway** using **either protocol**.
 
 ![ipv6-in-vpc.png](media/vpc/ipv6-in-vpc.png)
 ### IPv6 Troubleshooting
 
-⚠ **IPv4 cannot be disabled** for VPCs/subnets.  
-⚠ If an **EC2 instance won’t launch**, it’s **not due to IPv6 exhaustion**.  
-✅ **Cause:** No available **IPv4 addresses** in the subnet.  
-✅ **Fix:** Assign a **new IPv4 CIDR** to the subnet.
+- **IPv4 cannot be disabled** for VPCs/subnets.  
+- If an **EC2 instance won’t launch**, it’s **not due to IPv6 exhaustion**.  
+- **Cause:** No available **IPv4 addresses** in the subnet.  
+- **Fix:** Assign a **new IPv4 CIDR** to the subnet.
 
 ![ipv6-troubleshooting.png](media/vpc/ipv6-troubleshooting.png)
 
@@ -5479,7 +5479,7 @@ Demo
 
 ![vpc-level-nw-protection.png](media/network-protection/vpc-level-nw-protection.png)
 
-### Fine-Grained Controls
+#### Fine-Grained Controls
 
 - Supports **thousands of rules** (IP, port, protocol filtering).
 - **Stateful domain rules** (e.g., allow outbound only to `*.mycorp.com`).
@@ -5537,7 +5537,7 @@ Demo
 
 ![all-cloud-multi-region.png](media/dr-and-migration/all-cloud-multi-region.png)
 
-**Disaster RecoveryTips**
+**Disaster Recovery Tips**
 - Backup
   - EBS Snapshots, RDS automated backups / Snapshots, etc...
   - Regular pushes to S3 / S3 IA / Glacier, Lifecycle Policy, Cross Region Replication
@@ -5621,9 +5621,9 @@ Demo
 
 ![rds-aurora-postgres-migration.png](media/dr-and-migration/rds-aurora-postgres-migration.png)
 
----
 
-**On-Premises Strategy with AWS**
+
+### On-Premises Strategy with AWS
 
 - **Download Amazon Linux 2 AMI as a VM (.iso format)**
   - Supported platforms for loading: VMware, KVM, VirtualBox (Oracle VM), Microsoft Hyper-V
@@ -5648,7 +5648,6 @@ Demo
 - **AWS Server Migration Service (SMS)**
   - Enables incremental replication of live on-premises servers to AWS
 
----
 
 ### AWS Backup
 
@@ -5683,7 +5682,6 @@ AWS Backup is a **fully managed service** that helps you centrally manage and au
 
 ![aws-backup-flow.png](media/dr-and-migration/aws-backup-flow.png)
 
----
 **AWS Backup Vault Lock**
 
 Enforces a **WORM (Write Once, Read Many) state**, preventing backups from being deleted or modified.
@@ -5696,10 +5694,6 @@ Provides an extra layer of security for critical backups.
 
 ![aws-backup-vault-lock.png](media/dr-and-migration/aws-backup-vault-lock.png)
 
-Here’s a more readable and concise version while keeping all key details:
-
----
-
 ### AWS Application Discovery Service
 - Helps plan migration by collecting data from on-premises data centers.
 - Provides **server utilization** and **dependency mapping** for better migration planning.
@@ -5709,7 +5703,6 @@ Here’s a more readable and concise version while keeping all key details:
   - Captures system configuration, performance, running processes, and network connections.
 - View collected data in **AWS Migration Hub** for better tracking.
 
----
 
 ### AWS Application Migration Service (MGN)
 - The **successor to CloudEndure Migration**, replacing **AWS Server Migration Service (SMS)**.
