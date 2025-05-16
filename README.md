@@ -5183,7 +5183,6 @@ Components Involved:
 AWS Direct Connect provides a **dedicated, private network connection** between your on-premises infrastructure and AWS. 
 It does **not traverse the public internet**, offering **more consistent network performance**, **lower latency**, and **higher bandwidth**.
 
----
 
 **Features**
 
@@ -5196,7 +5195,6 @@ It does **not traverse the public internet**, offering **more consistent network
   - A **Virtual Private Gateway** (VGW) or **Transit Gateway** attached to your VPC.
 - Supports both **IPv4 and IPv6 traffic**.
 
----
 - Direct Connect Architecture  
   ![aws-direct-conn-diagram.png](media/vpc/aws-direct-conn-diagram.png)
 
@@ -5207,8 +5205,6 @@ It does **not traverse the public internet**, offering **more consistent network
 - **Hybrid cloud architectures** integrating on-premises and cloud resources.
 - **Compliance** scenarios requiring private connections (no internet exposure).
 
----
-
 **Direct Connect Gateway (DXGW):**
 
 - Allows you to **connect to multiple VPCs across different regions** using a **single Direct Connect connection**.
@@ -5217,23 +5213,20 @@ It does **not traverse the public internet**, offering **more consistent network
 
 ![aws-direct-connect-gw.png](media/vpc/aws-direct-connect-gw.png)
 
----
-
 **Connection Types:**
 
 **1. Dedicated Connections**
   - Speeds: **1 Gbps, 10 Gbps, 100 Gbps**
   - Provisioned by requesting through **AWS** directly.
-  - AWS allocates a **dedicated Ethernet port** at a DX location.
+    - AWS allocates a **dedicated Ethernet port** at a DX location.
+    - **Lead time**: Typically **over 1 month** to complete setup.
 
 **2. Hosted Connections**
   - Speeds: **50 Mbps to 10 Gbps**
   - Provisioned via approved **Direct Connect Partners**.
   - **Scalable bandwidth** (can adjust capacity as needed).
   - Availability may vary by partner and region.
-  - **Lead time**: Typically **over 1 month** to complete setup.
-
----
+  - Setup time: Hours to a Few Days
 
 **Encryption Considerations**
 - **Direct Connect is not encrypted** by default.
@@ -5243,8 +5236,6 @@ It does **not traverse the public internet**, offering **more consistent network
   - Increases configuration complexity
 
 ![direct-connect-encryption.png](media/vpc/direct-connect-encryption.png)
-
----
 
 **Resiliency & Backup Options:**
 
@@ -5284,7 +5275,7 @@ AWS Transit Gateway enables you to **connect multiple VPCs and on-premises netwo
 - These **other accounts** can then **attach their VPCs** to the shared Transit Gateway—even though the TGW was not created in their account.
 - This avoids the need to deploy separate TGWs in each account and simplifies **centralized network management**.
 
-### Transit Gateway: Site-to-Site VPN ECMP
+#### Transit Gateway: Site-to-Site VPN ECMP
 - ECMP = Equal-cost multi-path routing
 - Routing strategy to allow to forward a packet over multiple best path
 - Use case: 
@@ -5297,6 +5288,17 @@ AWS Transit Gateway enables you to **connect multiple VPCs and on-premises netwo
 
 **Transit Gateway – Share Direct Connect between multiple accounts**
 ![shared-direct-conn-multiple-ac.png](media/vpc/shared-direct-conn-multiple-ac.png)
+
+| Feature               | **AWS CloudHub**                       | **AWS Transit Gateway (TGW)**              |
+| --------------------- | -------------------------------------- | ------------------------------------------ |
+| **Connectivity type** | VPN via VGW                            | VPN, Direct Connect, VPCs, TGW peering     |
+| **Scalability**       | Low (VPN-only, up to \~50 connections) | Very high (thousands of attachments)       |
+| **Performance**       | Limited (\~1.25 Gbps per VPN tunnel)   | Up to 50 Gbps per attachment               |
+| **Routing Control**   | Basic                                  | Fine-grained (route tables, isolation)     |
+| **Encryption**        | Built-in via VPN                       | VPN-based or none (Direct Connect)         |
+| **Cost**              | Lower                                  | Higher                                     |
+| **Best For**          | Simple WAN over VPN                    | Large, complex multi-VPC/multi-region WANs |
+
 
 ### Resource Access Manager (RAM)
 **AWS Resource Access Manager (RAM)** lets you **share AWS resources** with other **AWS accounts** or **within your organization (via AWS Organizations)**.
