@@ -5713,7 +5713,6 @@ Provides an extra layer of security for critical backups.
 
 ![aws-app-migration-service-MGN.png](media/dr-and-migration/aws-app-migration-service-MGN.png)
 
----
 
 ### Transferring Large Amounts of Data to AWS
 
@@ -5763,7 +5762,6 @@ AWS CloudFormation is a declarative tool for defining and provisioning AWS infra
 - Set up a load balancer (ELB) in front of the EC2 instances  
   CloudFormation then provisions these resources as specified.
 
----
 
 ### Benefits of CloudFormation
 
@@ -5881,7 +5879,7 @@ Automates patching for managed instances, including OS, applications, and securi
 
 ![system-mgmr-patch-manager.png](media/system-mgmr-patch-manager.png)
 
-**Maintenance Windows**
+### Maintenance Windows
 
 Defines scheduled times for automated tasks on instances.
 
