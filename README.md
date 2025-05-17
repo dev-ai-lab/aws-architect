@@ -6017,7 +6017,7 @@ AWS Amplify is a **set of tools and services** for building and deploying **scal
 
 ### AWS Instance Scheduler
 
-AWS Instance Scheduler is a **solution** deployed using CloudFront that **automates start and stop schedules** for EC2, EC2 ASG and RDS instances, helping reduce costs.
+AWS Instance Scheduler is a **solution** deployed using CloudFormation that **automates start and stop schedules** for EC2, EC2 ASG and RDS instances, helping reduce costs.
 
 **Key Features:**
 - **Automated scheduling:** Start/stop instances based on predefined schedules.
