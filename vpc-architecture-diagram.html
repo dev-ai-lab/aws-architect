@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AWS VPC Architecture - Interactive Diagram</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container {
+            max-width: 1400px;
+            width: 100%;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #232f3e 0%, #ff9900 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .controls {
+            background: #f5f5f5;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            border-bottom: 2px solid #ddd;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            font-size: 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-primary {
+            background: #232f3e;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #1a2332;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-secondary {
+            background: #ff9900;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #ec7211;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .diagram-container {
+            padding: 40px;
+            min-height: 700px;
+            position: relative;
+            background: #fafafa;
+        }
+
+        .step-indicator {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 10px;
+            font-size: 1.3em;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        svg {
+            width: 100%;
+            max-width: 1200px;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .vpc-boundary {
+            fill: #e8f4f8;
+            stroke: #2e7d32;
+            stroke-width: 4;
+            stroke-dasharray: 10 5;
+        }
+
+        .subnet {
+            fill: #c8e6c9;
+            stroke: #388e3c;
+            stroke-width: 2;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .subnet:hover {
+            fill: #a5d6a7;
+            stroke-width: 3;
+        }
+
+        .subnet.public {
+            fill: #b3e5fc;
+            stroke: #0277bd;
+        }
+
+        .subnet.public:hover {
+            fill: #81d4fa;
+        }
+
+        .igw {
+            fill: #fff3e0;
+            stroke: #ef6c00;
+            stroke-width: 3;
+        }
+
+        .route-table {
+            fill: #f3e5f5;
+            stroke: #7b1fa2;
+            stroke-width: 2;
+        }
+
+        .arrow {
+            fill: none;
+            stroke: #ff9900;
+            stroke-width: 3;
+            marker-end: url(#arrowhead);
+            animation: dash 2s linear infinite;
+        }
+
+        @keyframes dash {
+            to {
+                stroke-dashoffset: -20;
+            }
+        }
+
+        .arrow.static {
+            animation: none;
+        }
+
+        .label {
+            font-family: 'Segoe UI', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            fill: #333;
+            pointer-events: none;
+        }
+
+        .label.title {
+            font-size: 18px;
+            font-weight: 700;
+            fill: #232f3e;
+        }
+
+        .annotation {
+            font-size: 12px;
+            font-style: italic;
+            fill: #666;
+        }
+
+        .route-text {
+            font-family: 'Courier New', monospace;
+            font-size: 11px;
+            fill: #1a237e;
+        }
+
+        .info-panel {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 30px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .info-panel h3 {
+            color: #232f3e;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+            border-bottom: 3px solid #ff9900;
+            padding-bottom: 10px;
+        }
+
+        .info-panel p {
+            line-height: 1.8;
+            color: #555;
+            margin-bottom: 10px;
+        }
+
+        .legend {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+            padding: 15px;
+            background: #f5f5f5;
+            border-radius: 8px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .legend-color {
+            width: 30px;
+            height: 30px;
+            border-radius: 5px;
+            border: 2px solid #333;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .pulse {
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.5;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8em;
+            }
+
+            .controls {
+                padding: 15px;
+            }
+
+            .btn {
+                padding: 10px 20px;
+                font-size: 14px;
+            }
+
+            .diagram-container {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏗️ AWS VPC Architecture Setup</h1>
+            <p>Interactive Step-by-Step Visualization</p>
+        </div>
+
+        <div class="controls">
+            <button class="btn btn-secondary" id="prevBtn" disabled>⬅️ Previous Step</button>
+            <button class="btn btn-primary" id="nextBtn">Next Step ➡️</button>
+            <button class="btn btn-secondary" id="resetBtn">🔄 Reset</button>
+            <button class="btn btn-primary" id="autoPlayBtn">▶️ Auto Play</button>
+        </div>
+
+        <div class="diagram-container">
+            <div class="step-indicator" id="stepIndicator">
+                Step 1: Create VPC
+            </div>
+
+            <svg id="diagram" viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid meet">
+                <defs>
+                    <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+                        <polygon points="0 0, 10 3, 0 6" fill="#ff9900" />
+                    </marker>
+                    <filter id="shadow">
+                        <feDropShadow dx="2" dy="2" stdDeviation="3" flood-opacity="0.3"/>
+                    </filter>
+                </defs>
+
+                <!-- VPC Container -->
+                <g id="vpc" class="fade-in" style="opacity: 0;">
+                    <rect class="vpc-boundary" x="50" y="50" width="1100" height="700" rx="10" filter="url(#shadow)"/>
+                    <text class="label title" x="600" y="35" text-anchor="middle">AWS VPC (10.0.0.0/16)</text>
+                </g>
+
+                <!-- Subnets -->
+                <g id="subnets" style="opacity: 0;">
+                    <rect class="subnet public" id="subnet1" x="100" y="150" width="300" height="150" rx="8" filter="url(#shadow)"/>
+                    <text class="label" x="250" y="180" text-anchor="middle">WEB Subnet 1</text>
+                    <text class="annotation" x="250" y="200" text-anchor="middle">10.0.1.0/24 (IPv4)</text>
+                    <text class="annotation" x="250" y="220" text-anchor="middle">2001:db8::/64 (IPv6)</text>
+
+                    <rect class="subnet public" id="subnet2" x="450" y="150" width="300" height="150" rx="8" filter="url(#shadow)"/>
+                    <text class="label" x="600" y="180" text-anchor="middle">WEB Subnet 2</text>
+                    <text class="annotation" x="600" y="200" text-anchor="middle">10.0.2.0/24 (IPv4)</text>
+                    <text class="annotation" x="600" y="220" text-anchor="middle">2001:db8:1::/64 (IPv6)</text>
+
+                    <rect class="subnet public" id="subnet3" x="800" y="150" width="300" height="150" rx="8" filter="url(#shadow)"/>
+                    <text class="label" x="950" y="180" text-anchor="middle">WEB Subnet 3</text>
+                    <text class="annotation" x="950" y="200" text-anchor="middle">10.0.3.0/24 (IPv4)</text>
+                    <text class="annotation" x="950" y="220" text-anchor="middle">2001:db8:2::/64 (IPv6)</text>
+                </g>
+
+                <!-- Internet Gateway -->
+                <g id="igw" style="opacity: 0;">
+                    <rect class="igw" x="500" y="-80" width="200" height="100" rx="8" filter="url(#shadow)"/>
+                    <text class="label title" x="600" y="-45" text-anchor="middle">Internet Gateway</text>
+                    <text class="annotation" x="600" y="-25" text-anchor="middle">🌐 igw-xxxxxxxx</text>
+                </g>
+
+                <!-- IGW Attachment Arrow -->
+                <g id="igw-attachment" style="opacity: 0;">
+                    <path class="arrow" d="M 600 20 L 600 50" stroke-dasharray="5 5"/>
+                    <text class="annotation" x="620" y="35" fill="#ff9900">Attached</text>
+                </g>
+
+                <!-- Route Table -->
+                <g id="route-table" style="opacity: 0;">
+                    <rect class="route-table" x="100" y="450" width="400" height="250" rx="8" filter="url(#shadow)"/>
+                    <text class="label title" x="300" y="480" text-anchor="middle">Public Route Table</text>
+                    <text class="annotation" x="300" y="500" text-anchor="middle">rtb-xxxxxxxx</text>
+                    
+                    <!-- Route Table Content -->
+                    <rect fill="#fff" x="120" y="520" width="360" height="160" rx="5"/>
+                    <text class="route-text" x="140" y="545" font-weight="bold">Destination</text>
+                    <text class="route-text" x="320" y="545" font-weight="bold">Target</text>
+                    <line x1="120" y1="555" x2="480" y2="555" stroke="#7b1fa2" stroke-width="1"/>
+                </g>
+
+                <!-- IPv4 Route -->
+                <g id="ipv4-route" style="opacity: 0;">
+                    <text class="route-text" x="140" y="575">0.0.0.0/0</text>
+                    <text class="route-text" x="320" y="575">igw-xxxxxxxx</text>
+                    <text class="annotation" x="140" y="595" font-size="10">Default IPv4 Route</text>
+                </g>
+
+                <!-- IPv6 Route -->
+                <g id="ipv6-route" style="opacity: 0;">
+                    <text class="route-text" x="140" y="620">::/0</text>
+                    <text class="route-text" x="320" y="620">igw-xxxxxxxx</text>
+                    <text class="annotation" x="140" y="640" font-size="10">Default IPv6 Route</text>
+                </g>
+
+                <!-- Local Route -->
+                <g id="local-route" style="opacity: 0;">
+                    <text class="route-text" x="140" y="665">10.0.0.0/16</text>
+                    <text class="route-text" x="320" y="665">local</text>
+                    <text class="annotation" x="140" y="685" font-size="10">VPC Internal Traffic</text>
+                </g>
+
+                <!-- Route Table Associations -->
+                <g id="associations" style="opacity: 0;">
+                    <path class="arrow static" d="M 300 350 L 250 450" stroke-dasharray="none"/>
+                    <path class="arrow static" d="M 400 350 L 350 450" stroke-dasharray="none"/>
+                    <path class="arrow static" d="M 500 350 L 400 450" stroke-dasharray="none"/>
+                    <text class="annotation" x="250" y="400" fill="#ff9900">Associated</text>
+                </g>
+
+                <!-- Internet Connectivity Arrows -->
+                <g id="internet-arrows" style="opacity: 0;">
+                    <path class="arrow" d="M 250 150 L 550 -30" stroke-dasharray="5 5"/>
+                    <path class="arrow" d="M 600 150 L 620 -30" stroke-dasharray="5 5"/>
+                    <path class="arrow" d="M 950 150 L 650 -30" stroke-dasharray="5 5"/>
+                </g>
+
+                <!-- Annotations -->
+                <g id="final-annotation" style="opacity: 0;">
+                    <text class="label" x="700" y="500" fill="#2e7d32">✓ WEB Tier is now PUBLIC</text>
+                    <text class="annotation" x="700" y="525">All subnets can communicate with internet</text>
+                    <text class="annotation" x="700" y="545">via Internet Gateway using default routes</text>
+                </g>
+
+                <!-- Auto-assign Public IPv4 indicators -->
+                <g id="auto-assign-ipv4" style="opacity: 0;">
+                    <!-- Subnet 1 indicator -->
+                    <rect fill="#4caf50" x="110" y="260" width="280" height="30" rx="5" filter="url(#shadow)"/>
+                    <text class="label" x="250" y="280" text-anchor="middle" fill="white">✓ Auto-assign Public IPv4: Enabled</text>
+                    
+                    <!-- Subnet 2 indicator -->
+                    <rect fill="#4caf50" x="460" y="260" width="280" height="30" rx="5" filter="url(#shadow)"/>
+                    <text class="label" x="600" y="280" text-anchor="middle" fill="white">✓ Auto-assign Public IPv4: Enabled</text>
+                    
+                    <!-- Subnet 3 indicator -->
+                    <rect fill="#4caf50" x="810" y="260" width="280" height="30" rx="5" filter="url(#shadow)"/>
+                    <text class="label" x="950" y="280" text-anchor="middle" fill="white">✓ Auto-assign Public IPv4: Enabled</text>
+                </g>
+
+                <!-- Final completion annotation -->
+                <g id="completion-annotation" style="opacity: 0;">
+                    <text class="label" x="600" y="720" text-anchor="middle" fill="#1b5e20" font-size="20">🎉 Setup Complete! All WEB Subnets are Fully Public 🎉</text>
+                    <text class="annotation" x="600" y="745" text-anchor="middle" font-size="14">Instances launched in these subnets will automatically receive public IPv4 addresses</text>
+                </g>
+            </svg>
+
+            <div class="info-panel" id="infoPanel">
+                <h3>Step 1: Create VPC</h3>
+                <p>The Amazon Virtual Private Cloud (VPC) is the foundation of your network infrastructure in AWS. It provides an isolated section of the AWS cloud where you can launch AWS resources in a virtual network that you define.</p>
+                
+                <div class="legend">
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #b3e5fc; border-color: #0277bd;"></div>
+                        <span>Public Subnet (WEB Tier)</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #fff3e0; border-color: #ef6c00;"></div>
+                        <span>Internet Gateway</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #f3e5f5; border-color: #7b1fa2;"></div>
+                        <span>Route Table</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const steps = [
+            {
+                title: "Step 1: Create VPC",
+                description: "The Amazon Virtual Private Cloud (VPC) is the foundation of your network infrastructure in AWS. It provides an isolated section of the AWS cloud where you can launch AWS resources in a virtual network that you define.",
+                elements: ['vpc']
+            },
+            {
+                title: "Step 2: Create Subnets",
+                description: "Subnets are subdivisions of your VPC's IP address range. Here we create three WEB tier subnets across different availability zones. Each subnet supports both IPv4 and IPv6 addressing for dual-stack networking.",
+                elements: ['vpc', 'subnets']
+            },
+            {
+                title: "Step 3: Create Internet Gateway",
+                description: "The Internet Gateway (IGW) is a horizontally scaled, redundant, and highly available VPC component that allows communication between instances in your VPC and the internet. It serves two purposes: provide a target for internet-routable traffic and perform network address translation (NAT).",
+                elements: ['vpc', 'subnets', 'igw']
+            },
+            {
+                title: "Step 4: Attach Internet Gateway to VPC",
+                description: "After creating the Internet Gateway, we must attach it to our VPC. This establishes the connection that will enable internet connectivity for our public subnets. Only one IGW can be attached to a VPC at a time.",
+                elements: ['vpc', 'subnets', 'igw', 'igw-attachment']
+            },
+            {
+                title: "Step 5: Create Route Table",
+                description: "A route table contains rules (routes) that determine where network traffic from your subnets is directed. We create a custom route table specifically for our public WEB tier subnets. The route table will define how traffic flows to and from the internet.",
+                elements: ['vpc', 'subnets', 'igw', 'igw-attachment', 'route-table', 'local-route']
+            },
+            {
+                title: "Step 6: Add IPv4 Route",
+                description: "We add the default IPv4 route (0.0.0.0/0) pointing to the Internet Gateway. This route means: 'Any IPv4 traffic that doesn't match other routes (i.e., traffic destined for the internet) should be forwarded to the Internet Gateway.' This is essential for internet connectivity.",
+                elements: ['vpc', 'subnets', 'igw', 'igw-attachment', 'route-table', 'local-route', 'ipv4-route']
+            },
+            {
+                title: "Step 7: Add IPv6 Route",
+                description: "Similarly, we add the default IPv6 route (::/0) pointing to the Internet Gateway. This enables IPv6 connectivity for resources in the subnets, allowing dual-stack (IPv4 and IPv6) internet communication. Modern applications often require IPv6 support.",
+                elements: ['vpc', 'subnets', 'igw', 'igw-attachment', 'route-table', 'local-route', 'ipv4-route', 'ipv6-route']
+            },
+            {
+                title: "Step 8: Associate Route Table to Subnets",
+                description: "Now we associate the route table with our three WEB tier subnets. This association makes the subnets 'public' by applying the routing rules (including the default routes to IGW) to all resources launched in these subnets. Traffic from these subnets can now reach the internet.",
+                elements: ['vpc', 'subnets', 'igw', 'igw-attachment', 'route-table', 'local-route', 'ipv4-route', 'ipv6-route', 'associations']
+            },
+            {
+                title: "Step 9: WEB Tier is Public! 🎉",
+                description: "Congratulations! The WEB tier is now fully configured as public. All three subnets can send and receive traffic from the internet via the Internet Gateway. The route table associations ensure that any instance launched in these subnets (with a public IP or Elastic IP) can communicate with the internet. Internet-destined traffic is automatically forwarded to the IGW through the default routes.",
+                elements: ['vpc', 'subnets', 'igw', 'igw-attachment', 'route-table', 'local-route', 'ipv4-route', 'ipv6-route', 'associations', 'internet-arrows', 'final-annotation']
+            },
+            {
+                title: "Step 10: Enable Auto-assign Public IPv4",
+                description: "The final step is to configure each WEB subnet to automatically assign public IPv4 addresses to instances launched within them. This subnet setting ensures that every EC2 instance launched in these subnets automatically receives a public IPv4 address without manual assignment. This is essential for instances that need direct internet access, such as web servers. With this configuration, your WEB tier is now fully operational and ready to host publicly accessible applications!",
+                elements: ['vpc', 'subnets', 'igw', 'igw-attachment', 'route-table', 'local-route', 'ipv4-route', 'ipv6-route', 'associations', 'internet-arrows', 'auto-assign-ipv4', 'completion-annotation']
+            }
+        ];
+
+        let currentStep = 0;
+        let autoPlayInterval = null;
+
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const autoPlayBtn = document.getElementById('autoPlayBtn');
+        const stepIndicator = document.getElementById('stepIndicator');
+        const infoPanel = document.getElementById('infoPanel');
+
+        function showStep(stepIndex) {
+            currentStep = stepIndex;
+            const step = steps[stepIndex];
+
+            // Update step indicator
+            stepIndicator.textContent = step.title;
+            stepIndicator.className = 'step-indicator fade-in';
+
+            // Update info panel
+            infoPanel.innerHTML = `
+                <h3>${step.title}</h3>
+                <p>${step.description}</p>
+                <div class="legend">
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #b3e5fc; border-color: #0277bd;"></div>
+                        <span>Public Subnet (WEB Tier)</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #fff3e0; border-color: #ef6c00;"></div>
+                        <span>Internet Gateway</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #f3e5f5; border-color: #7b1fa2;"></div>
+                        <span>Route Table</span>
+                    </div>
+                </div>
+            `;
+
+            // Hide all elements first
+            const allElements = ['vpc', 'subnets', 'igw', 'igw-attachment', 'route-table', 'local-route', 'ipv4-route', 'ipv6-route', 'associations', 'internet-arrows', 'final-annotation', 'auto-assign-ipv4', 'completion-annotation'];
+            allElements.forEach(id => {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.style.opacity = '0';
+                }
+            });
+
+            // Show elements for current step with animation
+            step.elements.forEach((id, index) => {
+                const element = document.getElementById(id);
+                if (element) {
+                    setTimeout(() => {
+                        element.style.opacity = '1';
+                        element.classList.add('fade-in');
+                    }, index * 200);
+                }
+            });
+
+            // Update button states
+            prevBtn.disabled = currentStep === 0;
+            nextBtn.disabled = currentStep === steps.length - 1;
+        }
+
+        function nextStep() {
+            if (currentStep < steps.length - 1) {
+                showStep(currentStep + 1);
+            }
+        }
+
+        function prevStep() {
+            if (currentStep > 0) {
+                showStep(currentStep - 1);
+            }
+        }
+
+        function resetDiagram() {
+            stopAutoPlay();
+            showStep(0);
+        }
+
+        function toggleAutoPlay() {
+            if (autoPlayInterval) {
+                stopAutoPlay();
+            } else {
+                startAutoPlay();
+            }
+        }
+
+        function startAutoPlay() {
+            autoPlayBtn.textContent = '⏸️ Pause';
+            autoPlayBtn.classList.add('pulse');
+            
+            autoPlayInterval = setInterval(() => {
+                if (currentStep < steps.length - 1) {
+                    nextStep();
+                } else {
+                    stopAutoPlay();
+                    setTimeout(() => resetDiagram(), 2000);
+                }
+            }, 3000);
+        }
+
+        function stopAutoPlay() {
+            if (autoPlayInterval) {
+                clearInterval(autoPlayInterval);
+                autoPlayInterval = null;
+                autoPlayBtn.textContent = '▶️ Auto Play';
+                autoPlayBtn.classList.remove('pulse');
+            }
+        }
+
+        // Event listeners
+        nextBtn.addEventListener('click', () => {
+            stopAutoPlay();
+            nextStep();
+        });
+
+        prevBtn.addEventListener('click', () => {
+            stopAutoPlay();
+            prevStep();
+        });
+
+        resetBtn.addEventListener('click', resetDiagram);
+        autoPlayBtn.addEventListener('click', toggleAutoPlay);
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') {
+                stopAutoPlay();
+                nextStep();
+            } else if (e.key === 'ArrowLeft') {
+                stopAutoPlay();
+                prevStep();
+            } else if (e.key === ' ') {
+                e.preventDefault();
+                toggleAutoPlay();
+            }
+        });
+
+        // Interactive subnet hover effects
+        const subnets = document.querySelectorAll('.subnet');
+        subnets.forEach(subnet => {
+            subnet.addEventListener('mouseenter', function() {
+                this.style.filter = 'url(#shadow) brightness(1.1)';
+            });
+            subnet.addEventListener('mouseleave', function() {
+                this.style.filter = 'url(#shadow)';
+            });
+        });
+
+        // Initialize diagram
+        showStep(0);
+    </script>
+</body>
+</html>

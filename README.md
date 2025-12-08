@@ -4832,6 +4832,71 @@ Macie helps enhance **data visibility, compliance, and security** across AWS env
 There is a default VPC created. Without it, it would be very difficult for newcomers. For PROD, create your own.
 ![aws-vps-diagram.png](media/vpc/aws-vps-diagram.png)
 
+### 🎨 Interactive VPC Architecture Diagram
+
+We've created an **interactive step-by-step diagram** that visualizes the complete AWS VPC setup process with a public web tier. 
+
+📂 **File**: [`vpc-architecture-diagram.html`](vpc-architecture-diagram.html)
+
+#### How to View the Diagram
+
+1. **Open the HTML file** in any modern web browser:
+   - Double-click the `vpc-architecture-diagram.html` file, or
+   - Right-click → Open with → Your preferred browser (Chrome, Firefox, Safari, Edge)
+
+2. **No installation required** - It's a standalone HTML file with embedded CSS and JavaScript
+
+#### Interactive Features
+
+- **Navigation Controls**:
+  - ➡️ **Next Step**: Move forward through the setup process
+  - ⬅️ **Previous Step**: Go back to review earlier steps
+  - 🔄 **Reset**: Return to the beginning
+  - ▶️ **Auto Play**: Automatically cycle through all steps (3 seconds per step)
+
+- **Keyboard Shortcuts**:
+  - `Right Arrow`: Next step
+  - `Left Arrow`: Previous step
+  - `Spacebar`: Play/Pause auto-play
+
+- **Visual Interactivity**:
+  - Hover over subnets to see highlight effects
+  - Animated arrows show traffic flow
+  - Color-coded components (Public subnets, Internet Gateway, Route Tables)
+
+#### What the Diagram Shows
+
+The diagram illustrates the **10-step process** to set up a public VPC with WEB tier:
+
+1. **Create VPC** - Foundation of your network infrastructure
+2. **Create Subnets** - Three WEB tier subnets with IPv4 and IPv6 support
+3. **Create Internet Gateway** - Enable internet connectivity
+4. **Attach Internet Gateway to VPC** - Establish the connection
+5. **Create Route Table** - Define routing rules
+6. **Add IPv4 Route** - Default route (0.0.0.0/0) → IGW
+7. **Add IPv6 Route** - Default route (::/0) → IGW
+8. **Associate Route Table to Subnets** - Apply routing to WEB tier
+9. **WEB Tier is Public** - Internet connectivity established
+10. **Enable Auto-assign Public IPv4** - Automatic IP assignment for instances
+
+#### Architecture Components
+
+- **VPC Container** (Green dashed border) - Virtual Private Cloud (10.0.0.0/16)
+- **WEB Subnets** (Blue boxes) - Three public subnets across availability zones
+- **Internet Gateway** (Orange box) - Gateway to the internet
+- **Route Table** (Purple box) - Contains routing rules
+- **Routes** - IPv4 (0.0.0.0/0), IPv6 (::/0), and local VPC routes
+- **Arrows** - Show traffic flow and associations
+
+#### Key Concepts Explained
+
+- **Public Subnet**: A subnet associated with a route table that has a route to an Internet Gateway
+- **Default Routes**: 0.0.0.0/0 (IPv4) and ::/0 (IPv6) forward all non-VPC traffic to the IGW
+- **Route Table Association**: Links subnets to routing rules, enabling internet access
+- **Auto-assign Public IPv4**: Subnet setting that automatically assigns public IPs to EC2 instances
+
+---
+
 - Understanding CIDR – IPv4
   - Classless Inter-Domain Routing – a method for allocating IP addresses 
   - Used in Security Groups rules and AWS networking in general
