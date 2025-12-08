@@ -512,7 +512,7 @@
             },
             {
                 title: "Step 9: WEB Tier is Public! 🎉",
-                description: "Congratulations! The WEB tier is now fully configured as public. All three subnets can send and receive traffic from the internet via the Internet Gateway. The route table associations ensure that any instance launched in these subnets (with a public IP or Elastic IP) can communicate with the internet. Non-VPC internal traffic is automatically forwarded to the IGW through the default routes.",
+                description: "Congratulations! The WEB tier is now fully configured as public. All three subnets can send and receive traffic from the internet via the Internet Gateway. The route table associations ensure that any instance launched in these subnets (with a public IP or Elastic IP) can communicate with the internet. Internet-destined traffic is automatically forwarded to the IGW through the default routes.",
                 elements: ['vpc', 'subnets', 'igw', 'igw-attachment', 'route-table', 'local-route', 'ipv4-route', 'ipv6-route', 'associations', 'internet-arrows', 'final-annotation']
             },
             {
