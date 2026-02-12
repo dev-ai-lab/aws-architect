@@ -1,0 +1,52 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: >
+  This template implements an IAM user 'john' with access to S3 buckets for
+  items and orders, but denies access to the card bucket.
+  Resources created:
+  An S3 bucket for items 
+  An S3 bucket for orders 
+  An S3 bucket for cards data (restricted access)
+  And permissions appropriate for john.
+Parameters:
+  johnpassword:
+    NoEcho: true
+    Description: IAM User john Password
+    Type: String
+Resources:
+  cards:
+    Type:  AWS::S3::Bucket
+  items:
+    Type:  AWS::S3::Bucket
+  john:
+    Type: AWS::IAM::User
+    Properties:
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/IAMUserChangePassword
+      LoginProfile:
+        Password: !Ref johnpassword
+        PasswordResetRequired: "true"
+  policy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties: 
+      Description: Allow access to all S3 buckets, except cards
+      ManagedPolicyName: AllowAllS3ExceptCards
+      PolicyDocument: 
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Action: 's3:*'
+            Resource: '*' 
+          - Effect: Deny
+            Action: 's3:*'
+            #ALWAYS list both the bucket and all objects in the bucket as rule of thumb
+            Resource: [ !GetAtt cards.Arn, !Join ['', [!GetAtt cards.Arn, '/*']]]
+Outputs:
+  cardsbucketname:
+    Description: Bucketname for cards data
+    Value: !Ref cards
+  itmesbucketname:
+    Description: Bucketname for itmes
+    Value: !Ref items
+  johnusername:
+    Description: IAM Username for John
+    Value: !Ref john

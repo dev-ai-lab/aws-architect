@@ -1,8 +1,10 @@
 # AWS Certifications
 <!-- TOC -->
 * [AWS Certifications](#aws-certifications)
-* [AWS Solution Architect](#aws-solution-architect)
+* [AWS Solution Architect - Associate and Professional Path](#aws-solution-architect---associate-and-professional-path)
   * [AWS Introduction - AWS Certified Solutions Architect(SAA-C03)](#aws-introduction---aws-certified-solutions-architectsaa-c03)
+  * [AWS global infrastructure:](#aws-global-infrastructure-)
+  * [Shared Responsibility Model](#shared-responsibility-model)
   * [How to access AWS:](#how-to-access-aws)
     * [Install aws cli on MacOS:](#install-aws-cli-on-macos)
   * [IAM](#iam)
@@ -30,7 +32,7 @@
     * [High availability and scalability](#high-availability-and-scalability)
   * [ELB - AWS managed Load Balancer](#elb---aws-managed-load-balancer)
     * [Classic: (Old) - 2009](#classic-old---2009)
-    * [Application LB:** HTTP, HTTPS, Websocket - 2016: Layer 7 only LB](#application-lb-http-https-websocket---2016-layer-7-only-lb-)
+    * [Application LB: HTTP, HTTPS, Websocket - 2016: Layer 7 only LB](#application-lb-http-https-websocket---2016-layer-7-only-lb-)
     * [Network LB: TCP, TLS (secure TLS), UDP - 2017.](#network-lb-tcp-tls-secure-tls-udp---2017-)
     * [Gateway LB: operates at layer 3 (Network layer) - IP protocol](#gateway-lb-operates-at-layer-3-network-layer---ip-protocol)
     * [Sticky Sessions:](#sticky-sessions)
@@ -139,6 +141,7 @@
     * [Amazon EMR](#amazon-emr)
     * [Amazon QuickSight](#amazon-quicksight)
     * [Amazon Glue](#amazon-glue)
+      * [🔄 Flow Summary:](#-flow-summary)
     * [Amazon Lake Formation](#amazon-lake-formation)
     * [Amazon Managed Service for Apache Flink](#amazon-managed-service-for-apache-flink)
     * [Amazon MSK (Managed Streaming for Apache Kafka)](#amazon-msk-managed-streaming-for-apache-kafka)
@@ -178,6 +181,7 @@
   * [Amazon VPC](#amazon-vpc)
     * [Public vs. Private IP (IPv4)](#public-vs-private-ip-ipv4)
     * [VPC in AWS – IPv4 Overview](#vpc-in-aws--ipv4-overview)
+    * [VPC Planning](#vpc-planning)
     * [Internet Gateway (IGW)](#internet-gateway-igw)
     * [Bastion Hosts](#bastion-hosts)
     * [NAT Instance (Legacy but Exam-Relevant)](#nat-instance-legacy-but-exam-relevant)
@@ -191,7 +195,7 @@
     * [AWS Site-to-Site VPN](#aws-site-to-site-vpn)
     * [AWS Direct Connect (DX)](#aws-direct-connect-dx)
     * [AWS Transit Gateway](#aws-transit-gateway)
-    * [Transit Gateway: Site-to-Site VPN ECMP](#transit-gateway-site-to-site-vpn-ecmp)
+      * [Transit Gateway: Site-to-Site VPN ECMP](#transit-gateway-site-to-site-vpn-ecmp)
     * [Resource Access Manager (RAM)](#resource-access-manager-ram)
     * [Shared Services VPC](#shared-services-vpc)
     * [Transit VPC](#transit-vpc)
@@ -210,10 +214,11 @@
   * [Network Protection](#network-protection)
     * [Network Protection on AWS](#network-protection-on-aws)
     * [AWS Network Firewall](#aws-network-firewall)
-    * [Fine-Grained Controls](#fine-grained-controls)
+      * [Fine-Grained Controls](#fine-grained-controls)
   * [Disaster Recovery & Migration](#disaster-recovery--migration)
     * [Disaster Recovery Strategies](#disaster-recovery-strategies)
     * [AWS DMS – Database Migration Service](#aws-dms--database-migration-service)
+    * [On-Premises Strategy with AWS](#on-premises-strategy-with-aws)
     * [AWS Backup](#aws-backup)
     * [AWS Application Discovery Service](#aws-application-discovery-service)
     * [AWS Application Migration Service (MGN)](#aws-application-migration-service-mgn)
@@ -232,6 +237,7 @@
     * [SSM Session Manager](#ssm-session-manager)
     * [Run Command](#run-command)
     * [AWS Systems Manager - Patch Manager](#aws-systems-manager---patch-manager)
+    * [Maintenance Windows](#maintenance-windows)
     * [AWS Systems Manager – Automation](#aws-systems-manager--automation)
     * [AWS Cost Explorer](#aws-cost-explorer)
     * [AWS Compute Optimizer](#aws-compute-optimizer)
@@ -260,7 +266,7 @@
   * [General cloud adoption principles](#general-cloud-adoption-principles)
     * [Enterprise cloud adoption principles](#enterprise-cloud-adoption-principles)
 * [Disaster Recovery](#disaster-recovery)
-* [Software Solution Architect - General Approach](#software-solution-architect---general-approach)
+* [Solution Architect 1 - General Approach](#solution-architect-1---general-approach)
 * [Solution Architect 2](#solution-architect-2)
   * [Lambda, SNS & SQS](#lambda-sns--sqs)
   * [**S3 Event Notifications**](#s3-event-notifications)
@@ -292,7 +298,7 @@
   * [Prompt Engineering Certifications](#prompt-engineering-certifications)
 * [AWS AI/ML Path](#aws-aiml-path)
 <!-- TOC -->
-# AWS Solution Architect
+# AWS Solution Architect - Associate and Professional Path
 ## AWS Introduction - AWS Certified Solutions Architect(SAA-C03)
 - Foundational Level --> Associate Level --> Professional Level --> Specialty
 - Application Architect [Path](https://d1.awsstatic.com/training-and-certification/docs/AWS_certification_paths.pdf): 
@@ -307,11 +313,22 @@
   - Enterprise IT, Backup & Storage, Big Data Analytics
   - Website hosting, Backend for mobile and social application
   - Gaming
-- AWS global infrastructure: 
+
+## AWS global infrastructure: 
+- infrastructure
   - Aws regions
   - Aws AZ
-  - Aws Data Centers
   - Aws Edge locations / Points of Presence
+  
+![region-and-az-concept.png](media/global-infrastructure/region-and-az-concept.png)
+
+- Service resilience
+  - global resilient service: IAM, Route53
+  - region resilient service
+  - zone resilient service
+
+![service-resiliency-levels.png](media/global-infrastructure/service-resiliency-levels.png)
+
 - Choice of region:
   - compliance
   - proximity: reduce latency
@@ -339,6 +356,15 @@
      - Elastic Beanstalk (Platform as a Service)
      - Lambda (Function as a Service)
      - Rekogniation (Software as a Service)
+## Shared Responsibility Model
+![shared-responsibility-model.png](media/global-infrastructure/shared-responsibility-model.png)
+
+- High Availability (HA) vs Fault Tolerance (FT) vs Disaster Recovery (DR)
+  - HA: not about user experience, it is about maximizing a system's online time and minimizing the downtime
+  - FA: enables the system to continue operating properly in the event of failure of some of its components. costlier!! harder 
+  - DR: set of policies, tools and procedure to enable the recovery or continuation of vital tech infras following natural or human-induced disaster
+    - First pre-planning --> DR process
+    - When HA and DR don't work
 ## How to access AWS:
 - There are 3 ways to access aws:
   - AWS management console (Web UI)
@@ -349,15 +375,27 @@
 ### Install aws cli on MacOS:
 - Follow these [steps](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html): 
 - Create access keys: it can be created only for a user, not for root. Go to user --> security credentials --> Create Access Key --> CLI key
-Recommended alternative: Use the AWS CLI V2 and enable authentication through a user in IAM Identity Center.
+Recommended alternative: Use the AWS CLI V2 and enable authentication through a user in IAM Identity Center. 
 ```
- ~ % aws configure
+ ~ % aws configure --profile dev-ai-admin-user
 AWS Access Key ID [None]: AKIA2XXVXXVDXANC
 AWS Secret Access Key [None]: Basfhv/xxxxxx/QxysfdfFGDlkerws
 Default region name [None]: eu-central-1
 Default output format [None]:
-~ % aws iam list-users
+~ % aws iam list-users --profile dev-ai-admin-user
 ```
+- Named profiles allows to configure multiple aws accounts. Without name, it would be default one
+```
+ ~ % aws configure --profile named-profile-dev
+AWS Access Key ID [None]: AKIA2XXVXXVDXANC
+AWS Secret Access Key [None]: Basfhv/xxxxxx/QxysfdfFGDlkerws
+Default region name [None]: eu-central-1
+Default output format [None]:
+~ % aws iam list-users --profile named-profile-dev
+~ % aws s3 ls --profile named-profile-dev
+~ % aws s3 ls # this will use default profile
+```
+
 
 ## IAM
 - You manage access to AWS by creating policies and attaching them to **IAM identities** (users, groups, roles) or aws resources
@@ -386,6 +424,8 @@ Default output format [None]:
   }
   ```
 - Root account shouldn't be used or shared
+
+![aws-iam-resources.png](media/iam/aws-iam-resources.png)
 - Users: people that can be grouped
 - Group: contains only users and not other groups
   - group `developers` --> [ahmad, alice, kai], group `operations` --> [david, edward], group `audit team` --> [kai, david]
@@ -783,9 +823,15 @@ AWS Control Tower – Guardrails
 ## EC2 Service (Elastic Compute Cloud) - Infras as a service
 - Think of it as a computer in the cloud. It’s where you can run applications, websites, or other tasks, just like you would on your laptop or a physical server.
 - You can choose the size, speed, and capacity of this "cloud computer" based on what you need
+- EC2 launched int a subnet => **AZ-resilient**
 *Notes about budget alerts*:
 1. In root account, activate it: accounts --> IAM user and roll access to billing information
 2. Setting up budget to avoid surprisings: account --> budgets --> setup i.e zero spend budget --> add email
+
+- instance life cycles
+
+![ec2-instance-life-cycle.png](media/ec2/ec2-instance-life-cycle.png)
+
 ### EC2 Capabilities
 EC2 or elastic computing 2 is infrastructure as a service
 - Renting virtual machines (EC2)
@@ -793,6 +839,9 @@ EC2 or elastic computing 2 is infrastructure as a service
 - Distributing load across machines (ELB)
 - Scaling services using an auto-scaling group (ASG)
 - EC2 instance [types](https://aws.amazon.com/ec2/instance-types/?nc1=h_ls)
+
+![instance-types-reference.png](media/vpc/instance-types-reference.png)
+
 - A comparison of different instance types [see](https://instances.vantage.sh/).
 - For demo purposes, we will use t2.micro
 - Fundamental part of cloud
@@ -816,6 +865,10 @@ echo "<h1>Hello World from $(hostname -f)</h1>" > /var/www/html/index.html
 ![ec2-summary.png](media/ec2-summary.png)
 
 ![ec2-summary-part-2.png](media/ec2-summary-part-2.png)
+- ec2 key pair:
+  - we download the private part and the public part is on the aws
+  - `chmod 400 on the private key`
+  - `ssh -i mykey.pem ec2-user@public-ipxxxx.amazonaws.com
 - Patch test:
   - put `ReplaceUnhealthy` in standby or 
   - put instance into standby state
@@ -933,6 +986,10 @@ To influence this, use placement group
   - Connect to the instance and use 'uptime' command, then hibernate and start again and check the uptime. (should be increasing & not from start from 0)
 
 ### EC2 Instance Storage - EBS
+- Storage Performance:
+
+![storage-optimization.png](media/vpc/storage-optimization.png)
+
 - EBS (Elastic Block Store)
   - Now, every computer needs storage, right? EBS is the hard drive for your EC2 instance.
   - It's like an external SSD or HDD attached to your cloud computer where you can store your files, databases, or any data your application uses.
@@ -999,6 +1056,8 @@ To influence this, use placement group
 ---
 
 [ebs-volume-demo.gif](media/ebs-volume-demo.gif)
+
+![instance-vs-ebs-choice.png](media/vpc/instance-vs-ebs-choice.png)
 
 **EBS Snapshots**
 
@@ -1073,19 +1132,20 @@ By default, when restoring from a snapshot, AWS uses lazy loading—data is pull
 ![elastic-file-system-efs.png](media/elastic-file-system-efs.png)
 
 - EFS vs EBS vs Instance Store
-  - EFS
-    - one instance (except io1/io2 - multi-az), locked to one AZ (can be migrated to another AZ using snapshotting technques)
-    - gp2: I/O increases if disk size increases
-    - gp3 & IO1: can increase IO independent of size
-    - Root terminated by default
-  - EFS Creation Demo:
-  
-[efs-creation-demo.gif](media/efs-creation-demo.gif)
-  - EBS:
-    - Mounting 100s of instances across AZs
+  - EFS:
+    - Mounting 100s (actually thousands) of instances across AZs
     - Linux system only
+    - Elastic, managed NFS-like file system
+  - EBS 
+    - One instance at a time (except io1/io2 Multi-Attach), locked to one AZ (can be migrated to another AZ using snapshotting techniques)
+    - gp2: I/O increases if disk size increases 
+    - gp3 & io1/io2: can increase I/O independent of size 
+    - EBS root volumes are deleted when the instance is terminated, unless you disable the Delete on Termination setting.
   - Instance Store:
     - It is physically attached to EC2 instance. If instance lost, storage is lost
+
+- EFS Creation Demo:
+[efs-creation-demo.gif](media/efs-creation-demo.gif)
 
 ### High availability and scalability
 - Scalability 
@@ -1119,7 +1179,7 @@ By default, when restoring from a snapshot, AWS uses lazy loading—data is pull
   - While LB accepts HTTP and HTTPS from everyone on port 80
 - ELB Types: Classic, Application LB, Network LB, Gateway LB
 ### Classic: (Old) - 2009
-### Application LB:** HTTP, HTTPS, Websocket - 2016: Layer 7 only LB 
+### Application LB: HTTP, HTTPS, Websocket - 2016: Layer 7 only LB 
 - LB to multiple HTTP apps across machines (target groups)
 - LB to multiple applications on the same machine (i.e containers)
 - It has only static DNS name and not static IP. Only NLB has static IP
@@ -1301,6 +1361,14 @@ When Auto Scaling needs to terminate an instance (e.g., during scale-in), it fol
 - see the documentation in bank-docs under section Databases
 
 ## AWS Route 53
+Two main jobs:
+1. Register domains (it will create hosted zones automatically). If we delete the hosted zone, domain remains registered and can be re-associated with another hosted zone with new nameservers)
+2. Host Zones - managed nameservers
+
+It is a global service with single database. It is globally resilient (replicated between regions)
+
+![route53-parts-correlation.png](media/route53/route53-parts-correlation.png)
+
 Route 53 is a **highly available (100% SLA), scalable, and reliable** ** authoritative DNS (Domain Name System) service** by AWS.
 Authoritative means the use can update the DNS records.
 Think of **AWS Route 53** as a **phonebook for the internet** 📖📞. It helps users connect domain names (like `example.com`) to actual web servers (like `192.168.1.1`). 
@@ -1507,7 +1575,7 @@ AWS Route 53 has several routing policies to **control how users reach your webs
 Used to enable **automated DNS failover** — but **only for public resources** (except when using CloudWatch alarms). There are **three types**:
 
 **1. Endpoint Health Checks**
-- Route 53 uses ~15 global health checkers to monitor a **public endpoint** (e.g., ALB, which checks EC2).
+- Route 53 uses ~15 global health checkers to monitor a[A4L_VPC_3PUBLICINSTANCES_AL2023.yaml](../../../Downloads/A4L_VPC_3PUBLICINSTANCES_AL2023.yaml) **public endpoint** (e.g., ALB, which checks EC2).
 - **Default settings:**
   - Interval: 30 seconds
   - Healthy/Unhealthy threshold: 3
@@ -1516,7 +1584,6 @@ Used to enable **automated DNS failover** — but **only for public resources** 
   - Considered healthy if >18% of checkers report healthy
 - Make sure your **firewalls/routers allow incoming checks** from [Route 53 health checker IPs](https://ip-ranges.amazonaws.com/ip-ranges.json) (`ROUTE53_HEALTHCHECKS`)
 - **Important:** Health checkers are **outside the VPC**.
-
 ---
 
 **2. Calculated Health Checks**
@@ -1607,7 +1674,7 @@ Used to enable **automated DNS failover** — but **only for public resources** 
 
 ## AWS S3 (Simple Storage Service)
 Think of **AWS S3** like an **infinite online hard drive** where you can store and retrieve any kind of file (documents, images, videos, backups, etc.) anytime from anywhere in the world.
-
+- it is global storage, regional based/resilient
 - Use cases:
   - Backup and storage
   - Disaster recovery (if a region goes down)
@@ -1767,7 +1834,7 @@ Waterfall model for transitioning between storage classes:
   - S3 transfer acceleration:
     - increase transfer speed by transferring the file to and AWS edge location which will forward the data to the target region
     - edge location is compatible with multi-part upload
-
+    - test it in [here](https://s3-accelerate-speedtest.s3-accelerate.amazonaws.com/en/accelerate-speed-comparsion.html)
   - S3 Byte-Range Fetches
     - parallelize GETs by requesting specific byte ranges
     - better resilience in case of failure
@@ -1921,7 +1988,7 @@ Waterfall model for transitioning between storage classes:
   - log all accesses to the S3 by any user
   - logs put into logging bucket (both must be in the same region)
   - never make the app bucket and the log bucket --> it creates a loop (grows exponentially)
-  - Demo:
+  - Demo: `aws s3 presigned s3://my-bucket/my-object --expires-in 3600 (in seconds)`
     - [s3-logging-demo.gif](media/s3/s3-logging-demo.gif)
     - [s3-logging-demo-2.gif](media/s3/s3-logging-demo-2.gif)
 
@@ -1977,7 +2044,11 @@ These features work together to optimize **latency** and provide **automatic fai
 ![drafted-s3-access-point.png](media/s3/drafted-s3-access-point.png)
 This is **highly complementary** to the multi-region setup:  
 Multi-Region Access Points use individual access points as the **regional targets**, so using access points for **security and routing** is a best practice in this architecture.
-
+```# create a test file
+dd if=/dev/urandom of=test1.file bs=1M count=10
+# upload using access point and the access point uses the closest bucket region
+aws s3 cp test1.file s3://arn:aws:s3::123456789012:accesspoint/mu7cpm7zpa117.mrap/
+```
 3. **VPC Endpoint Policies and Access Point Permissions**
    - **Goal:** Enforce secure, **private access to S3** from within your VPC.
    - **How it works:**
@@ -4085,6 +4156,13 @@ Amazon Textract is an **AI/ML-powered service** that **automatically extracts te
 
 ## AWS Monitoring & Audit: CloudWatch, CloudTrail & Config
 ### AWS Cloud Watch
+- CloudWatch performs 3 main jobs
+  - Metrics (cloudwatch agent needed in non-native env)
+  - Logs 
+  - Events (from aws services, generate events with schedule)
+
+![cloudwatch-3-duties.png](media/monitoring/cloudwatch-3-duties.png)
+
 - **Amazon CloudWatch Metrics**
   - Provides **metrics** for AWS services (e.g., **CPUUtilization, NetworkIn**).
   - Metrics belong to **namespaces** and have up to **30 dimensions** (e.g., **instance ID, environment**).
@@ -4176,6 +4254,17 @@ ALARM --state-reason "testing purposes"
 
 - Demo
   - [ec2-alarm-action.gif](media/monitoring/ec2-alarm-action.gif)
+
+- Simulating ec2 alarm using stress:
+  - Enable Detailed Monitoring (1 min interval) for ec2 instance
+  - Create the alarm on CPUUtilization > 70% for 2 consecutive periods of 1 min
+  - Install stress tool on ec2 instance
+```
+sudo yum install -y stress
+# CPU stress
+stress --cpu 1 --timeout 600
+```
+
 #### AWS Event Bridge (formerly CloudWatch Events)
 ![event-bridge-usages.png](media/monitoring/event-bridge-usages.png)
 - Event Bridge Rules
@@ -4439,6 +4528,23 @@ Copying Snapshots across regions
 
 [kms-customer-managed-key-demo.gif](media/encryption-security/kms-customer-managed-key-demo.gif)
 
+- cli commands to interact with kms key:
+```
+echo "find all the doggos, distract them with the yumz" > battleplans.txt
+
+aws kms encrypt \
+    --key-id alias/demo-key \
+    --plaintext fileb://password.txt \
+    --output text \
+    --query CiphertextBlob \
+    | base64 --decode > not_password.enc 
+    
+aws kms decrypt \
+    --ciphertext-blob fileb://not_battleplans.enc \
+    --output text \
+    --query Plaintext | base64 --decode > decryptedplans.txt
+```
+- decrypt cmd didn't need keyname as the account will have to have access the call the KMS to decrypt.
 **KMS Multi-Region Keys**
 
 ![kms-multi-region-key.png](media/encryption-security/kms-multi-region-key.png)
@@ -4829,7 +4935,19 @@ Macie helps enhance **data visibility, compliance, and security** across AWS env
 ![aws-macie.png](media/encryption-security/aws-macie.png)
 
 ## Amazon VPC
+Different zones in the context of aws:
+
+![aws-public-vs-private-zones.png](media/vpc/aws-public-vs-private-zones.png)
+
+VPC is a service to create private n/w in aws. It is also a service used to connect aws private n/w to on-premise. It is also a service used to connect multiple cloud platforms.
+- a regional service
+- within 1 account and 1 region
 There is a default VPC created. Without it, it would be very difficult for newcomers. For PROD, create your own.
+  - it has the same CIDR for all regions
+  - usually not for prod due to limitation
+
+![img.png](media/vpc/default-vpc.png)
+
 ![aws-vps-diagram.png](media/vpc/aws-vps-diagram.png)
 
 - Understanding CIDR – IPv4
@@ -4891,6 +5009,13 @@ VPC – Subnet (IPv4)
 - Exam Tip, if you need 29 IP addresses for EC2 instances:
   - You can’t choose a subnet of size /27 (32 IP addresses, 32 – 5 = 27 < 29)
   - You need to choose a subnet of size /26 (64 IP addresses, 64 – 5 = 59 > 29)
+
+### VPC Planning
+- It is important to thing in the future when planning VPC and its subnets and how we size them.
+
+[vpc-ip-subnet-planning.pdf](media/vpc/vpc-ip-subnet-planning.pdf)
+
+![vpc-ip-subnet-planning.png](media/vpc/vpc-ip-subnet-planning.png)
 
 **Demos**
 
@@ -5863,6 +5988,8 @@ Run commands or scripts across multiple instances **without SSH**.
 
 **Key Features:**
 - Execute commands on multiple instances via **resource groups**
+- Allow to run arbitrary shell cmds on instances
+- Patching third party applications
 - View output in the **AWS Console**, **S3**, or **CloudWatch Logs**
 - Send **SNS notifications** on command status (In Progress, Success, Failed, etc.)
 - Integrated with **IAM**, **CloudTrail**, and can be triggered via **EventBridge**
@@ -5876,6 +6003,7 @@ Automates patching for managed instances, including OS, applications, and securi
 - Patch **on-demand** or schedule via **Maintenance Windows**.
 - Scan instances and generate **compliance reports** for missing patches.
 - Integrates with **EventBridge** for automated execution.
+- Patching only at O.S level and not for third party apps
 
 ![system-mgmr-patch-manager.png](media/system-mgmr-patch-manager.png)
 
@@ -6308,7 +6436,7 @@ vandalism, and other unexpected events, depending on the policy terms.
   - warm standby
   - multi-site
 
-# Software Solution Architect - General Approach
+# Solution Architect 1 - General Approach
 - from 500 to 5000 users and slow system? increase the instance type to something like t2.large or M5 (but with downtime)
   - better scale horizontally
 - evolve: downtime --> h-scaling --> many IPs? route 53 --> one IP down due to TTL user's bad experience --> ELB + health checks
@@ -6443,9 +6571,11 @@ AWS provides specialized **compute and networking** options for high-speed, scal
 **Networking Enhancements:**
 - **EC2 Placement Groups** – Cluster instances for **low-latency, high-throughput communication**.
 - **EC2 Enhanced Networking (SR-IOV)** – Reduces latency and increases packet throughput.
+  - Enhanced Networking (SR-IOV) “bypasses much of the virtualization overhead,” we mean that it allows virtualized EC2 instances to interact more directly with the underlying physical network hardware, rather than routing all network traffic through the host hypervisor
   - **Elastic Network Adapter (ENA):** Up to **100 Gbps** bandwidth.
   - **Intel 82599 VF:** Up to **10 Gbps** (legacy option).
 - **Elastic Fabric Adapter (EFA)** – Optimized networking for tightly coupled HPC workloads.
+  - EFA is a network interface for EC2 instances that provides ultra-low latency, high bandwidth, and OS-bypass capabilities for tightly coupled, HPC applications running in the AWS cloud
   - A network device attached to EC2 instances that enhances performance of inter-instance communication
   - Works only on **Linux** and supports the **Message Passing Interface (MPI)**.
   - Bypasses Linux OS for **low-latency, high-speed communication** between instances.

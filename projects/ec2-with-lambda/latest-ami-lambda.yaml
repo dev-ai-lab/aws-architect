@@ -1,0 +1,107 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Lambda-backed Custom Resource to fetch latest Amazon Linux AMI ID from SSM Parameter Store.
+
+Parameters:
+  AmiSsmParameterPath:
+    Type: String
+    Default: /aws/service/ami-amazon-linux-latest/al2023-ami-kernel-default-x86_64
+    Description: SSM parameter path to the latest AMI ID.
+
+Resources:
+  LatestAmiLambdaRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Path: '/'
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      Policies:
+        - PolicyName: SSMReadParameter
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - ssm:GetParameter
+                Resource: '*'
+                # You can scope to the specific parameter with arn if desired.
+
+  LatestAmiLambdaFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      Runtime: python3.12
+      Handler: index.handler
+      Role: !GetAtt LatestAmiLambdaRole.Arn
+      Timeout: 30
+      MemorySize: 128
+      Description: Reads latest AMI ID from SSM Parameter Store and returns it for CFN custom resource.
+      Environment:
+        Variables:
+          AMI_SSM_PARAMETER_PATH: !Ref AmiSsmParameterPath
+      Code:
+        ZipFile: |
+          import json
+          import os
+          import boto3
+          import urllib3
+
+          ssm = boto3.client('ssm')
+          http = urllib3.PoolManager()
+
+          def send_response(event, context, status, data=None, reason=None):
+              response_body = {
+                  'Status': status,
+                  'Reason': reason or f'See CloudWatch Log Stream: {context.log_stream_name}',
+                  'PhysicalResourceId': 'LatestAmiCustomResource',
+                  'StackId': event['StackId'],
+                  'RequestId': event['RequestId'],
+                  'LogicalResourceId': event['LogicalResourceId'],
+                  'Data': data or {}
+              }
+              http.request('PUT', event['ResponseURL'], body=json.dumps(response_body))
+
+          def handler(event, context):
+              try:
+                  param_path = os.environ.get('AMI_SSM_PARAMETER_PATH')
+                  if event.get('ResourceProperties', {}).get('AmiSsmParameterPath'):
+                      param_path = event['ResourceProperties']['AmiSsmParameterPath']
+
+                  if event['RequestType'] in ('Create', 'Update'):
+                      resp = ssm.get_parameter(Name=param_path)
+                      ami_id = resp['Parameter']['Value']
+                      send_response(event, context, 'SUCCESS', {'LatestAmiId': ami_id})
+                  elif event['RequestType'] == 'Delete':
+                      send_response(event, context, 'SUCCESS', {'LatestAmiId': ''})
+                  else:
+                      send_response(event, context, 'FAILED', reason=f'Unsupported RequestType: {event.get("RequestType")}')
+              except Exception as e:
+                  send_response(event, context, 'FAILED', reason=str(e))
+
+  LatestAmiLambdaInvokePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref LatestAmiLambdaFunction
+      Principal: cloudformation.amazonaws.com
+
+  LatestAmiCustomResource:
+    Type: Custom::LatestAmi
+    Properties:
+      ServiceToken: !GetAtt LatestAmiLambdaFunction.Arn
+      AmiSsmParameterPath: !Ref AmiSsmParameterPath
+
+Outputs:
+  LatestAmiId:
+    Description: The latest AMI ID fetched from SSM via Lambda-backed custom resource.
+    Value: !GetAtt LatestAmiCustomResource.LatestAmiId
+    Export:
+      Name: LatestAmiId
+
